@@ -11,6 +11,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ILoaiRepository, LoaiRepository>();
 builder.Services.AddScoped<IDotRepository, DotRepository>();
+builder.Services.AddScoped<ISinhvienRepository, SinhvienRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
+
+
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

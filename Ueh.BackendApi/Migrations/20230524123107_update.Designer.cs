@@ -12,8 +12,8 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    [Migration("20230522083236_dbTT")]
-    partial class dbTT
+    [Migration("20230524123107_update")]
+    partial class update
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,20 @@ namespace Ueh.BackendApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chuyennganh", b =>
+                {
+                    b.Property<string>("macn")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("tencn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("macn");
+
+                    b.ToTable("Chuyennganhs", (string)null);
+                });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dangky", b =>
                 {
@@ -47,7 +61,7 @@ namespace Ueh.BackendApi.Migrations
 
                     b.Property<string>("mssv")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -56,6 +70,9 @@ namespace Ueh.BackendApi.Migrations
                     b.HasIndex("magv");
 
                     b.HasIndex("maloai");
+
+                    b.HasIndex("mssv")
+                        .IsUnique();
 
                     b.ToTable("Dangky", (string)null);
                 });
@@ -85,6 +102,10 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("magv")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("macn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("makhoa")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -94,6 +115,8 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("magv");
+
+                    b.HasIndex("macn");
 
                     b.HasIndex("makhoa");
 
@@ -130,11 +153,8 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Review", b =>
                 {
-                    b.Property<short>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("Id"), 1L, 1);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("ngay")
                         .HasColumnType("datetime2");
@@ -183,9 +203,6 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Khoamakhoa")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("chuyennganh")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -215,8 +232,6 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("mssv");
-
-                    b.HasIndex("Khoamakhoa");
 
                     b.ToTable("Sinhviens", (string)null);
                 });
@@ -260,7 +275,7 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired();
 
                     b.HasOne("Ueh.BackendApi.Data.Entities.Giangvien", "giangvien")
-                        .WithMany("dangkies")
+                        .WithMany("dangkys")
                         .HasForeignKey("magv")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -271,21 +286,38 @@ namespace Ueh.BackendApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
+                        .WithOne("dangky")
+                        .HasForeignKey("Ueh.BackendApi.Data.Entities.Dangky", "mssv")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("dot");
 
                     b.Navigation("giangvien");
 
                     b.Navigation("loai");
+
+                    b.Navigation("sinhvien");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Giangvien", b =>
                 {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Chuyennganh", "chuyennganh")
+                        .WithMany("giangviens")
+                        .HasForeignKey("macn")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_GangVien_ChuyenNganh");
+
                     b.HasOne("Ueh.BackendApi.Data.Entities.Khoa", "khoa")
                         .WithMany("giangviens")
                         .HasForeignKey("makhoa")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_GangVien_Khoa");
+
+                    b.Navigation("chuyennganh");
 
                     b.Navigation("khoa");
                 });
@@ -307,21 +339,6 @@ namespace Ueh.BackendApi.Migrations
                     b.Navigation("reviewer");
 
                     b.Navigation("sinhvien");
-                });
-
-            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Sinhvien", b =>
-                {
-                    b.HasOne("Ueh.BackendApi.Data.Entities.Khoa", null)
-                        .WithMany("students")
-                        .HasForeignKey("Khoamakhoa");
-
-                    b.HasOne("Ueh.BackendApi.Data.Entities.Dangky", "dangky")
-                        .WithOne("sinhvien")
-                        .HasForeignKey("Ueh.BackendApi.Data.Entities.Sinhvien", "mssv")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("dangky");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienDot", b =>
@@ -362,10 +379,9 @@ namespace Ueh.BackendApi.Migrations
                     b.Navigation("sinhvien");
                 });
 
-            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dangky", b =>
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chuyennganh", b =>
                 {
-                    b.Navigation("sinhvien")
-                        .IsRequired();
+                    b.Navigation("giangviens");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dot", b =>
@@ -375,14 +391,12 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Giangvien", b =>
                 {
-                    b.Navigation("dangkies");
+                    b.Navigation("dangkys");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Khoa", b =>
                 {
                     b.Navigation("giangviens");
-
-                    b.Navigation("students");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Loai", b =>
@@ -399,6 +413,9 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Sinhvien", b =>
                 {
+                    b.Navigation("dangky")
+                        .IsRequired();
+
                     b.Navigation("reviews");
 
                     b.Navigation("sinhviendots");

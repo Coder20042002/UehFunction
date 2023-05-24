@@ -13,7 +13,6 @@ namespace Ueh.BackendApi.Controllers
     public class DotController : ControllerBase
     {
         private readonly IDotRepository _dotRepository;
-        private readonly UehDbContext _context;
         private readonly IMapper _mapper;
 
         public DotController(IDotRepository dotRepository, IMapper mapper)
@@ -118,7 +117,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (!_dotRepository.UpdateDot(dotMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating category");
+                ModelState.AddModelError("", "Something went wrong updating ");
                 return StatusCode(500, ModelState);
             }
 
@@ -143,7 +142,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (!_dotRepository.DeleteDot(dotToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting category");
+                ModelState.AddModelError("", "Something went wrong deleting ");
             }
 
             return NoContent();

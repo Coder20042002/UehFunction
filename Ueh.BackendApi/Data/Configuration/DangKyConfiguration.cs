@@ -15,8 +15,8 @@ namespace Ueh.BackendApi.Data.Configuration
             builder.ToTable("Dangky");
             builder.HasKey(dk => dk.Id);
 
-            builder.HasOne(dk => dk.sinhvien).WithOne(sv => sv.dangky).HasForeignKey<Sinhvien>(sv => sv.mssv);
-            builder.HasOne(dk => dk.giangvien).WithMany(gv => gv.dangkies).HasForeignKey(dk => dk.magv);
+            builder.HasOne(dk => dk.sinhvien).WithOne(sv => sv.dangky).HasForeignKey<Dangky>(sv => sv.mssv);
+            builder.HasOne(dk => dk.giangvien).WithMany(gv => gv.dangkys).HasForeignKey(dk => dk.magv);
             builder.HasOne(dk => dk.loai).WithMany(l => l.dangkies).HasForeignKey(dk => dk.maloai);
 
         }

@@ -24,6 +24,8 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new ReviewerConfiguration());
             modelBuilder.ApplyConfiguration(new SinhVienLoaiConfiguration());
             modelBuilder.ApplyConfiguration(new SinhvienDotConfiguration());
+            modelBuilder.ApplyConfiguration(new ChuyenNganhConfiguration());
+
 
 
 
@@ -40,6 +42,7 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<Reviewer> Reviewers { get; set; }
         public DbSet<SinhvienLoai> SinhvienLoai { get; set; }
         public DbSet<SinhvienDot> SinhvienDot { get; set; }
+        public DbSet<Chuyennganh> Chuyennganhs { get; set; }
 
 
 

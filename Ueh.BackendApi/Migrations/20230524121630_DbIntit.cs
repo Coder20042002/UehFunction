@@ -5,16 +5,30 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ueh.BackendApi.Migrations
 {
-    public partial class dbInit : Migration
+    public partial class DbIntit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Chuyennganhs",
+                columns: table => new
+                {
+                    macn = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    tencn = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chuyennganhs", x => x.macn);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Dots",
                 columns: table => new
                 {
                     madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    dateEnd = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,49 +77,23 @@ namespace Ueh.BackendApi.Migrations
                 {
                     magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     tengv = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    macn = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Giangviens", x => x.magv);
                     table.ForeignKey(
+                        name: "FK_GangVien_ChuyenNganh",
+                        column: x => x.macn,
+                        principalTable: "Chuyennganhs",
+                        principalColumn: "macn",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_GangVien_Khoa",
                         column: x => x.makhoa,
                         principalTable: "Khoas",
                         principalColumn: "makhoa",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Dangky",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    mssv = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    maloai = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    madot = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dangky", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Dangky_Dots_madot",
-                        column: x => x.madot,
-                        principalTable: "Dots",
-                        principalColumn: "madot",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Dangky_Giangviens_magv",
-                        column: x => x.magv,
-                        principalTable: "Giangviens",
-                        principalColumn: "magv",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Dangky_Loais_maloai",
-                        column: x => x.maloai,
-                        principalTable: "Loais",
-                        principalColumn: "maloai",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -128,12 +116,6 @@ namespace Ueh.BackendApi.Migrations
                 {
                     table.PrimaryKey("PK_Sinhviens", x => x.mssv);
                     table.ForeignKey(
-                        name: "FK_Sinhviens_Dangky_mssv",
-                        column: x => x.mssv,
-                        principalTable: "Dangky",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Sinhviens_Khoas_Khoamakhoa",
                         column: x => x.Khoamakhoa,
                         principalTable: "Khoas",
@@ -141,11 +123,50 @@ namespace Ueh.BackendApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Dangky",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    maloai = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    madot = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dotmadot = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dangky", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Dangky_Dots_dotmadot",
+                        column: x => x.dotmadot,
+                        principalTable: "Dots",
+                        principalColumn: "madot",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dangky_Giangviens_magv",
+                        column: x => x.magv,
+                        principalTable: "Giangviens",
+                        principalColumn: "magv",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dangky_Loais_maloai",
+                        column: x => x.maloai,
+                        principalTable: "Loais",
+                        principalColumn: "maloai",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dangky_Sinhviens_mssv",
+                        column: x => x.mssv,
+                        principalTable: "Sinhviens",
+                        principalColumn: "mssv",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reviews",
                 columns: table => new
                 {
-                    Id = table.Column<short>(type: "smallint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     noidung = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ngay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     reviewerid = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -217,9 +238,9 @@ namespace Ueh.BackendApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dangky_madot",
+                name: "IX_Dangky_dotmadot",
                 table: "Dangky",
-                column: "madot");
+                column: "dotmadot");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Dangky_magv",
@@ -230,6 +251,17 @@ namespace Ueh.BackendApi.Migrations
                 name: "IX_Dangky_maloai",
                 table: "Dangky",
                 column: "maloai");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dangky_mssv",
+                table: "Dangky",
+                column: "mssv",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Giangviens_macn",
+                table: "Giangviens",
+                column: "macn");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Giangviens_makhoa",
@@ -265,6 +297,9 @@ namespace Ueh.BackendApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Dangky");
+
+            migrationBuilder.DropTable(
                 name: "Reviews");
 
             migrationBuilder.DropTable(
@@ -274,22 +309,22 @@ namespace Ueh.BackendApi.Migrations
                 name: "SinhvienLoais");
 
             migrationBuilder.DropTable(
+                name: "Giangviens");
+
+            migrationBuilder.DropTable(
                 name: "Reviewers");
-
-            migrationBuilder.DropTable(
-                name: "Sinhviens");
-
-            migrationBuilder.DropTable(
-                name: "Dangky");
 
             migrationBuilder.DropTable(
                 name: "Dots");
 
             migrationBuilder.DropTable(
-                name: "Giangviens");
+                name: "Loais");
 
             migrationBuilder.DropTable(
-                name: "Loais");
+                name: "Sinhviens");
+
+            migrationBuilder.DropTable(
+                name: "Chuyennganhs");
 
             migrationBuilder.DropTable(
                 name: "Khoas");
