@@ -15,6 +15,7 @@ namespace Ueh.BackendApi.Helper
             CreateMap<Sinhvien, SinhvienDto>();
             CreateMap<SinhvienDto, Sinhvien>();
             CreateMap<Giangvien, GiangvienDto>();
+            CreateMap<GiangvienDto, Giangvien>();
             CreateMap<ReviewDto, Review>();
             CreateMap<ReviewerDto, Reviewer>();
             CreateMap<Review, ReviewDto>();

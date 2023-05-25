@@ -14,6 +14,8 @@ builder.Services.AddScoped<IDotRepository, DotRepository>();
 builder.Services.AddScoped<ISinhvienRepository, SinhvienRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
+builder.Services.AddScoped<IGiangvienRepository, GiangvienRepository>();
+
 
 
 
