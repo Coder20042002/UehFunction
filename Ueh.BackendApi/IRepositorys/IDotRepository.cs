@@ -1,6 +1,6 @@
 ﻿using Ueh.BackendApi.Data.Entities;
 
-namespace Ueh.BackendApi.Repositorys
+namespace Ueh.BackendApi.IRepositorys
 {
     public interface IDotRepository
     {

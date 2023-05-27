@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ueh.BackendApi.Data.EF;
+using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
 
 var builder = WebApplication.CreateBuilder(args);

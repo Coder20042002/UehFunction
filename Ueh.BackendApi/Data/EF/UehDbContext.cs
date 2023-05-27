@@ -25,7 +25,7 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new SinhVienLoaiConfiguration());
             modelBuilder.ApplyConfiguration(new SinhvienDotConfiguration());
             modelBuilder.ApplyConfiguration(new ChuyenNganhConfiguration());
-
+            modelBuilder.ApplyConfiguration(new PhancongConfiguration());
 
 
 
@@ -44,7 +44,7 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<SinhvienDot> SinhvienDot { get; set; }
         public DbSet<Chuyennganh> Chuyennganhs { get; set; }
 
-
+        public DbSet<PhanCong> Phancongs { get; set; }
 
 
     }

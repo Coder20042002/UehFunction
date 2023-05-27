@@ -1,7 +1,7 @@
 ﻿using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 
-namespace Ueh.BackendApi.Repositorys
+namespace Ueh.BackendApi.IRepositorys
 {
     public interface IGiangvienRepository
     {

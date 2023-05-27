@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
-using Ueh.BackendApi.Repositorys;
+using Ueh.BackendApi.IRepositorys;
 
 namespace Ueh.BackendApi.Controllers
 {

@@ -1,9 +1,23 @@
+using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using Ueh.BackendApi.Data.EF;
+using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Repositorys;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+builder.Services.AddScoped<IPhanCongRepository, PhancongRepository>();
+
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // ho?c LicenseContext.Commercial n?u s? d?ng th??ng m?i
+
+builder.Services.AddDbContext<UehDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("UehDb")));
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -22,6 +36,6 @@ app.UseAuthorization();
 app.UseSession();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Excel}/{action=ImportExcelFile}/{id?}");
 
 app.Run();
