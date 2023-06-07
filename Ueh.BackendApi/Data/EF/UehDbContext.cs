@@ -26,6 +26,8 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new SinhvienDotConfiguration());
             modelBuilder.ApplyConfiguration(new ChuyenNganhConfiguration());
             modelBuilder.ApplyConfiguration(new PhancongConfiguration());
+            modelBuilder.ApplyConfiguration(new SinhvienKhoaConfiguration());
+            modelBuilder.ApplyConfiguration(new SinhvienChuyenNganhConfiguration());
 
 
 
@@ -37,14 +39,15 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<Giangvien> Giangviens { get; set; }
         public DbSet<Loai> Loais { get; set; }
         public DbSet<Khoa> Khoas { get; set; }
-        public DbSet<Dangky> Dankys { get; set; }
+        public DbSet<Dangky> Dangkys { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Reviewer> Reviewers { get; set; }
-        public DbSet<SinhvienLoai> SinhvienLoai { get; set; }
-        public DbSet<SinhvienDot> SinhvienDot { get; set; }
+        public DbSet<SinhvienLoai> SinhvienLoais { get; set; }
+        public DbSet<SinhvienDot> SinhvienDots { get; set; }
         public DbSet<Chuyennganh> Chuyennganhs { get; set; }
-
         public DbSet<PhanCong> Phancongs { get; set; }
+        public DbSet<SinhvienKhoa> SinhvienKhoas { get; set; }
+        public DbSet<SinhvienChuyenNganh> SinhvienChuyennganhs { get; set; }
 
 
     }

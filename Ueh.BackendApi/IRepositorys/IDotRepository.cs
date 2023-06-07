@@ -1,16 +1,17 @@
-﻿using Ueh.BackendApi.Data.Entities;
+﻿using ServiceStack;
+using Ueh.BackendApi.Data.Entities;
 
 namespace Ueh.BackendApi.IRepositorys
 {
     public interface IDotRepository
     {
-        ICollection<Dot> GetAllDot();
-        Dot GetDot(string id);
-        ICollection<Sinhvien> GetSinhvienByDot(string dotId);
-        bool DotExists(string id);
-        bool CreateDot(Dot dot);
-        bool UpdateDot(Dot dot);
-        bool DeleteDot(Dot dot);
-        bool Save();
+        Task<ICollection<Dot>> GetAllDot();
+        Task<Dot> GetDot(string id);
+        Task<ICollection<Sinhvien>> GetSinhvienByDot(string dotId);
+        Task<bool> DotExists(string id);
+        Task<bool> CreateDot(Dot dot);
+        Task<bool> UpdateDot(Dot dot);
+        Task<bool> DeleteDot(Dot dot);
+        Task<bool> Save();
     }
 }

@@ -21,6 +21,11 @@ namespace Ueh.BackendApi.Helper
             CreateMap<Review, ReviewDto>();
             CreateMap<Reviewer, ReviewerDto>();
             CreateMap<Dangky, DangkyDto>();
+            CreateMap<DangkyDto, Dangky>();
+            CreateMap<PhanCong, PhanCongDto>();
+            CreateMap<PhanCongDto, PhanCong>();
+
+
 
         }
     }

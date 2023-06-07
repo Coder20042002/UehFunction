@@ -3,13 +3,16 @@
     public class PhanCong
     {
         public Guid Id { get; set; }
-        public int stt { get; set; }
         public string mssv { get; set; }
-        public string lopsv { get; set; }
-        public string ho { get; set; }
-        public string ten { get; set; }
-        public string ngaysinh { get; set; }
-        public string tengv { get; set; }
+        public string magv { get; set; }
+        public string madot { get; set; }
+        public string maloai { get; set; }
+        public string macn { get; set; }
+        public Giangvien Giangvien { get; set; }
+        public Sinhvien Sinhvien { get; set; }
+        public Dot dot { get; set; }
+        public Loai loai { get; set; }
+        public Chuyennganh chuyennganh { get; set; }
     }
 }
 

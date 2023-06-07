@@ -24,7 +24,8 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDots()
         {
-            var categories = _mapper.Map<List<DotDto>>(_dotRepository.GetAllDot());
+            var getalldot = await _dotRepository.GetAllDot();
+            var categories = _mapper.Map<List<DotDto>>(getalldot);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,12 +36,13 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("{dotId}")]
         [ProducesResponseType(200, Type = typeof(Dot))]
         [ProducesResponseType(400)]
-        public IActionResult GetDot(string dotId)
+        public async Task<IActionResult> GetDot(string dotId)
         {
-            if (!_dotRepository.DotExists(dotId))
+            bool exists = await _dotRepository.DotExists(dotId);
+            if (!exists)
                 return NotFound();
-
-            var dot = _mapper.Map<DotDto>(_dotRepository.GetDot(dotId));
+            Dot dotid = await _dotRepository.GetDot(dotId);
+            var dot = _mapper.Map<DotDto>(dotid);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -51,10 +53,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("sinhvien/{dotId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Sinhvien>))]
         [ProducesResponseType(400)]
-        public IActionResult GetSinhvienByDotId(string dotId)
+        public async Task<IActionResult> GetSinhvienByDotId(string dotId)
         {
-            var sinhviens = _mapper.Map<List<SinhvienDto>>(
-                _dotRepository.GetSinhvienByDot(dotId));
+            var sinhvien = await _dotRepository.GetSinhvienByDot(dotId);
+            var sinhviens = _mapper.Map<List<SinhvienDto>>(sinhvien
+               );
 
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -66,14 +69,15 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateDot([FromBody] DotDto dotcreate)
+        public async Task<IActionResult> CreateDot([FromBody] DotDto dotcreate)
         {
             if (dotcreate == null)
                 return BadRequest(ModelState);
 
-            var dot = _dotRepository.GetAllDot()
-                .Where(c => c.madot == dotcreate.madot)
+            var dots = await _dotRepository.GetAllDot();
+            var dot = dots.Where(c => c.madot == dotcreate.madot)
                 .FirstOrDefault();
+
 
             if (dot != null)
             {
@@ -86,7 +90,8 @@ namespace Ueh.BackendApi.Controllers
 
             var dotMap = _mapper.Map<Dot>(dotcreate);
 
-            if (!_dotRepository.CreateDot(dotMap))
+            bool createdot = await _dotRepository.CreateDot(dotMap);
+            if (!createdot)
             {
                 ModelState.AddModelError("", "Something went wrong while savin");
                 return StatusCode(500, ModelState);
@@ -99,7 +104,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateCategory(string dotId, [FromBody] DotDto updateDot)
+        public async Task<IActionResult> UpdateCategory(string dotId, [FromBody] DotDto updateDot)
         {
             if (updateDot == null)
                 return BadRequest(ModelState);
@@ -107,15 +112,17 @@ namespace Ueh.BackendApi.Controllers
             if (dotId != updateDot.madot)
                 return BadRequest(ModelState);
 
-            if (!_dotRepository.DotExists(dotId))
+            bool exists = await _dotRepository.DotExists(dotId);
+
+            if (!exists)
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var dotMap = _mapper.Map<Dot>(updateDot);
-
-            if (!_dotRepository.UpdateDot(dotMap))
+            bool update = await _dotRepository.UpdateDot(dotMap);
+            if (!update)
             {
                 ModelState.AddModelError("", "Something went wrong updating ");
                 return StatusCode(500, ModelState);
@@ -128,19 +135,21 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteCategory(string dotId)
+        public async Task<IActionResult> DeleteCategory(string dotId)
         {
-            if (!_dotRepository.DotExists(dotId))
+            bool exists = await _dotRepository.DotExists(dotId);
+            if (!exists)
             {
                 return NotFound();
             }
 
-            var dotToDelete = _dotRepository.GetDot(dotId);
+            var dotToDelete = await _dotRepository.GetDot(dotId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_dotRepository.DeleteDot(dotToDelete))
+            bool delete = await _dotRepository.DeleteDot(dotToDelete);
+            if (!delete)
             {
                 ModelState.AddModelError("", "Something went wrong deleting ");
             }

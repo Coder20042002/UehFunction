@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
@@ -6,6 +7,7 @@ using Ueh.BackendApi.Repositorys;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -16,6 +18,10 @@ builder.Services.AddScoped<ISinhvienRepository, SinhvienRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 builder.Services.AddScoped<IGiangvienRepository, GiangvienRepository>();
+builder.Services.AddScoped<IDangkyRepository, DangkyRepository>();
+builder.Services.AddScoped<IPhanCongRepository, PhancongRepository>();
+
+
 
 
 

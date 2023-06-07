@@ -12,10 +12,6 @@ namespace Ueh.BackendApi.Data.Configuration
             builder.HasKey(t => new { t.mssv, t.maloai });
 
 
-
-            builder.HasOne(t => t.sinhvien).WithMany(pc => pc.sinhvienloais)
-                .HasForeignKey(pc => pc.mssv).OnDelete(DeleteBehavior.Restrict);
-
             builder.HasOne(t => t.loai).WithMany(pc => pc.sinhvienloais)
               .HasForeignKey(pc => pc.maloai).OnDelete(DeleteBehavior.Restrict);
 

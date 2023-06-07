@@ -16,6 +16,8 @@ namespace Ueh.BackendApi.Data.Entities
         public Khoa khoa { get; set; }
         public Chuyennganh chuyennganh { get; set; }
         public ICollection<Dangky> dangkys { get; set; }
+        public ICollection<PhanCong> phanCongs { get; set; }
+
 
     }
 }

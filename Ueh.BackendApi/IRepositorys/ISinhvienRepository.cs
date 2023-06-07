@@ -5,14 +5,16 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface ISinhvienRepository
     {
-        ICollection<Sinhvien> GetSinhviens();
-        Sinhvien GetSinhvien(string mssv);
-        Sinhvien GetSinhvienName(string name);
-        Sinhvien GetSinhvienTrimToUpper(SinhvienDto sinhvienCreate);
-        bool SinhvienExists(string mssv);
-        bool CreateSinhvien(string madot, string maloai, Sinhvien sinhvien);
-        bool UpdateSinhvien(string madot, string maloai, Sinhvien sinhvien);
-        bool DeleteSinhvien(Sinhvien sinhvien);
-        bool Save();
+        Task<ICollection<Sinhvien>> GetSinhviens();
+        Task<Sinhvien> GetSinhvien(string mssv);
+        Task<Sinhvien> GetSinhvienName(string name);
+        Task<Sinhvien> GetSinhvienTrimToUpper(SinhvienDto sinhvienCreate);
+        Task<bool> SinhvienExists(string mssv);
+        Task<bool> CreateSinhvien(string madot, string makhoa, Sinhvien sinhvien);
+        Task<bool> UpdateSinhvien(string madot, string makhoa, Sinhvien sinhvien);
+        Task<bool> DeleteSinhvien(Sinhvien sinhvien);
+        Task<bool> ImportExcelFile(string madot, string makhoa, IFormFile formFile);
+        Task<byte[]> ExportToExcel();
+        Task<bool> Save();
     }
 }

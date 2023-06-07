@@ -14,59 +14,56 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-
-        public Byte[] ExportToExcel()
+        public async Task<bool> CreatePhanCong(PhanCong Phancong)
         {
-            // Lấy danh sách phân công từ cơ sở dữ liệu
-            var phanCongs = _context.Phancongs.ToList();
+            var PhanCongkhoa = await _context.Phancongs.Where(a => a.mssv == Phancong.mssv).FirstOrDefaultAsync();
 
-            // Tạo một package Excel
-            using (var package = new ExcelPackage())
-            {
-                // Tạo một worksheet trong package
-                var worksheet = package.Workbook.Worksheets.Add("PhanCong");
+            if (PhanCongkhoa == null)
+                _context.Add(Phancong);
 
-                // Đặt tiêu đề cho các cột
-                worksheet.Cells["A1"].Value = "STT";
-                worksheet.Cells["B1"].Value = "MSSV";
-                worksheet.Cells["C1"].Value = "LopSV";
-                worksheet.Cells["D1"].Value = "Ho";
-                worksheet.Cells["E1"].Value = "Ten";
-                worksheet.Cells["F1"].Value = "NgaySinh";
-                worksheet.Cells["G1"].Value = "TenGV";
-
-                // Ghi dữ liệu vào worksheet
-                int rowIndex = 2;
-                foreach (var phanCong in phanCongs)
-                {
-                    worksheet.Cells[$"A{rowIndex}"].Value = phanCong.stt;
-                    worksheet.Cells[$"B{rowIndex}"].Value = phanCong.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = phanCong.lopsv;
-                    worksheet.Cells[$"D{rowIndex}"].Value = phanCong.ho;
-                    worksheet.Cells[$"E{rowIndex}"].Value = phanCong.ten;
-                    worksheet.Cells[$"F{rowIndex}"].Value = phanCong.ngaysinh;
-                    worksheet.Cells[$"G{rowIndex}"].Value = phanCong.tengv;
-
-                    rowIndex++;
-                }
-
-                // Tự động điều chỉnh kích thước các cột
-                worksheet.Cells.AutoFitColumns();
-
-                // Xuất file Excel
-                var content = package.GetAsByteArray();
-                return content;
-            }
-
-
+            return await Save();
         }
 
-        public ICollection<PhanCong> GetPhanCongs()
+        public async Task<bool> DeletePhanCong(PhanCong PhanCong)
         {
-            return _context.Phancongs.ToList();
+            _context.Remove(PhanCong);
+            return await Save();
         }
 
-        public bool ImportExcelFile(IFormFile formFile)
+
+        public async Task<PhanCong> GetPhanCong(string mssv)
+        {
+            return await _context.Phancongs.Where(s => s.mssv == mssv).FirstOrDefaultAsync();
+        }
+
+
+
+        public async Task<ICollection<PhanCong>> GetPhanCongs()
+        {
+            return await _context.Phancongs.OrderBy(s => s.mssv).ToListAsync();
+        }
+
+        public async Task<bool> Save()
+        {
+            var saved = _context.SaveChangesAsync();
+            return await saved > 0 ? true : false;
+        }
+
+        public async Task<bool> PhanCongExists(string mssv)
+        {
+            return await _context.Phancongs.AnyAsync(s => s.mssv == mssv);
+        }
+
+        public async Task<bool> UpdatePhanCong(PhanCong PhanCong)
+        {
+            bool PhanCongExists = await _context.Phancongs.AnyAsync(s => s.mssv == PhanCong.mssv);
+
+            if (PhanCongExists != false)
+                _context.Update(PhanCong);
+            return await Save();
+        }
+
+        public async Task<bool> ImportExcelFile(IFormFile formFile)
         {
             if (formFile != null && formFile.Length > 0)
             {
@@ -83,26 +80,21 @@ namespace Ueh.BackendApi.Repositorys
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
                         for (int row = 2; row <= rowCount; row++)
                         {
-                            double numericDate = Convert.ToDouble(worksheet.Cells[row, 6].Value);
-                            DateTime date = DateTime.FromOADate(numericDate);
-                            string ngaysinh = date.ToString("MM/dd/yyyy");
 
-                            var phanCong = new PhanCong
+                            var phancong = new PhanCong
                             {
                                 Id = Guid.NewGuid(),
-                                stt = Convert.ToInt32(worksheet.Cells[row, 1].Value),
                                 mssv = worksheet.Cells[row, 2].Value?.ToString(),
-                                lopsv = worksheet.Cells[row, 3].Value?.ToString(),
-                                ho = worksheet.Cells[row, 4].Value?.ToString(),
-                                ten = worksheet.Cells[row, 5].Value?.ToString(),
-                                ngaysinh = ngaysinh,
-                                tengv = worksheet.Cells[row, 7].Value?.ToString()
+                                magv = worksheet.Cells[row, 3].Value?.ToString(),
+                                macn = worksheet.Cells[row, 4].Value?.ToString(),
+                                maloai = worksheet.Cells[row, 5].Value?.ToString(),
+                                madot = worksheet.Cells[row, 6].Value?.ToString(),
                             };
 
-                            _context.Phancongs.AddRange(phanCong);
+                            await _context.Phancongs.AddRangeAsync(phancong);
                         }
 
-                        return Save();
+                        return await Save();
                     }
                 }
 
@@ -110,10 +102,49 @@ namespace Ueh.BackendApi.Repositorys
             return false;
         }
 
-        public bool Save()
+        public async Task<byte[]> ExportToExcel()
         {
-            var save = _context.SaveChanges();
-            return save > 0 ? true : false;
+            var PhanCongs = await _context.Phancongs
+                .Include(d => d.Sinhvien)
+                .Include(d => d.Giangvien)
+                .ToListAsync();
+
+            // Tạo một package Excel
+            using (var package = new ExcelPackage())
+            {
+                // Tạo một worksheet trong package
+                var worksheet = package.Workbook.Worksheets.Add("PhanCong");
+
+                // Đặt tiêu đề cho các cột
+                worksheet.Cells["A1"].Value = "STT";
+                worksheet.Cells["B1"].Value = "MSSV";
+                worksheet.Cells["C1"].Value = "Lớp Sinh Viên";
+                worksheet.Cells["D1"].Value = "Họ Tên Sinh Viên";
+                worksheet.Cells["E1"].Value = "Ngày Sinh";
+                worksheet.Cells["F1"].Value = "Giáo Viên Hướng Dẫn";
+
+                // Ghi dữ liệu vào worksheet
+                int rowIndex = 2;
+                int count = 0;
+                foreach (var PhanCong in PhanCongs)
+                {
+                    worksheet.Cells[$"A{rowIndex}"].Value = count++;
+                    worksheet.Cells[$"B{rowIndex}"].Value = PhanCong.mssv;
+                    worksheet.Cells[$"C{rowIndex}"].Value = PhanCong.Sinhvien?.tenlop;
+                    worksheet.Cells[$"D{rowIndex}"].Value = PhanCong.Sinhvien?.hoten;
+                    worksheet.Cells[$"E{rowIndex}"].Value = PhanCong.Sinhvien?.ngaysinh;
+                    worksheet.Cells[$"F{rowIndex}"].Value = PhanCong.Giangvien?.tengv;
+
+                    rowIndex++;
+                }
+
+                // Tự động điều chỉnh kích thước các cột
+                worksheet.Cells.AutoFitColumns();
+
+                // Xuất file Excel
+                var content = package.GetAsByteArray();
+                return content;
+            }
         }
     }
 }
