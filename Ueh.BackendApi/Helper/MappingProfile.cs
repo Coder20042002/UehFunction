@@ -24,6 +24,8 @@ namespace Ueh.BackendApi.Helper
             CreateMap<DangkyDto, Dangky>();
             CreateMap<PhanCong, PhanCongDto>();
             CreateMap<PhanCongDto, PhanCong>();
+            CreateMap<Chuyennganh, ChuyennganhDto>();
+            CreateMap<ChuyennganhDto, Chuyennganh>();
 
 
 
