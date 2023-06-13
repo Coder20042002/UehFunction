@@ -22,12 +22,14 @@ namespace Ueh.BackendApi.Helper
             CreateMap<Reviewer, ReviewerDto>();
             CreateMap<Dangky, DangkyDto>();
             CreateMap<DangkyDto, Dangky>();
-            CreateMap<PhanCong, PhanCongDto>();
-            CreateMap<PhanCongDto, PhanCong>();
+            CreateMap<Phancong, PhancongDto>();
+            CreateMap<PhancongDto, Phancong>();
             CreateMap<Chuyennganh, ChuyennganhDto>();
             CreateMap<ChuyennganhDto, Chuyennganh>();
-
-
+            CreateMap<Chitiet, ChitietDto>();
+            CreateMap<ChitietDto, Chitiet>();
+            CreateMap<Ketqua, KetquaDto>();
+            CreateMap<KetquaDto, Ketqua>();
 
         }
     }

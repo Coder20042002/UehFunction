@@ -19,9 +19,12 @@ namespace Ueh.BackendApi.Data.Entities
 
         public ICollection<Review> reviews { get; set; }
         public ICollection<SinhvienDot> sinhviendots { get; set; }
-        public ICollection<PhanCong> phanCongs { get; set; }
+        public ICollection<Phancong> phancongs { get; set; }
         public ICollection<SinhvienKhoa> sinhvienkhoas { get; set; }
         public ICollection<SinhvienChuyenNganh> sinhvienchuyennganhs { get; set; }
+        public ICollection<Chitiet> chitiets { get; set; }
+        public ICollection<Ketqua> ketquas { get; set; }
+
 
     }
 

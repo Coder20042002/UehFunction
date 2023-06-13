@@ -14,7 +14,6 @@ namespace Ueh.BackendApi.IRepositorys
         Task<bool> UpdateSinhvien(string madot, string makhoa, Sinhvien sinhvien);
         Task<bool> DeleteSinhvien(Sinhvien sinhvien);
         Task<bool> ImportExcelFile(string madot, string makhoa, IFormFile formFile);
-        Task<byte[]> ExportToExcel();
         Task<bool> Save();
     }
 }

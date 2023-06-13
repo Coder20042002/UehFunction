@@ -2,14 +2,14 @@
 
 namespace Ueh.BackendApi.IRepositorys
 {
-    public interface IPhanCongRepository
+    public interface IPhancongRepository
     {
-        Task<ICollection<PhanCong>> GetPhanCongs();
-        Task<PhanCong> GetPhanCong(string magv);
-        Task<bool> PhanCongExists(string magv);
-        Task<bool> CreatePhanCong(PhanCong PhanCong);
-        Task<bool> UpdatePhanCong(PhanCong PhanCong);
-        Task<bool> DeletePhanCong(PhanCong PhanCong);
+        Task<ICollection<Phancong>> GetPhancongs();
+        Task<Phancong> GetPhancong(string magv);
+        Task<bool> PhancongExists(string magv);
+        Task<bool> CreatePhancong(Phancong Phancong);
+        Task<bool> UpdatePhancong(Phancong Phancong);
+        Task<bool> DeletePhancong(Phancong Phancong);
         Task<bool> ImportExcelFile(IFormFile formFile);
         Task<byte[]> ExportToExcel();
         Task<bool> Save();

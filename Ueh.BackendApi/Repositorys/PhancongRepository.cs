@@ -6,7 +6,7 @@ using Ueh.BackendApi.IRepositorys;
 
 namespace Ueh.BackendApi.Repositorys
 {
-    public class PhancongRepository : IPhanCongRepository
+    public class PhancongRepository : IPhancongRepository
     {
         private readonly UehDbContext _context;
 
@@ -14,31 +14,31 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-        public async Task<bool> CreatePhanCong(PhanCong Phancong)
+        public async Task<bool> CreatePhancong(Phancong Phancong)
         {
-            var PhanCongkhoa = await _context.Phancongs.Where(a => a.mssv == Phancong.mssv).FirstOrDefaultAsync();
+            var Phancongkhoa = await _context.Phancongs.Where(a => a.mssv == Phancong.mssv).FirstOrDefaultAsync();
 
-            if (PhanCongkhoa == null)
+            if (Phancongkhoa == null)
                 _context.Add(Phancong);
 
             return await Save();
         }
 
-        public async Task<bool> DeletePhanCong(PhanCong PhanCong)
+        public async Task<bool> DeletePhancong(Phancong Phancong)
         {
-            _context.Remove(PhanCong);
+            _context.Remove(Phancong);
             return await Save();
         }
 
 
-        public async Task<PhanCong> GetPhanCong(string mssv)
+        public async Task<Phancong> GetPhancong(string mssv)
         {
             return await _context.Phancongs.Where(s => s.mssv == mssv).FirstOrDefaultAsync();
         }
 
 
 
-        public async Task<ICollection<PhanCong>> GetPhanCongs()
+        public async Task<ICollection<Phancong>> GetPhancongs()
         {
             return await _context.Phancongs.OrderBy(s => s.mssv).ToListAsync();
         }
@@ -49,17 +49,17 @@ namespace Ueh.BackendApi.Repositorys
             return await saved > 0 ? true : false;
         }
 
-        public async Task<bool> PhanCongExists(string mssv)
+        public async Task<bool> PhancongExists(string mssv)
         {
             return await _context.Phancongs.AnyAsync(s => s.mssv == mssv);
         }
 
-        public async Task<bool> UpdatePhanCong(PhanCong PhanCong)
+        public async Task<bool> UpdatePhancong(Phancong Phancong)
         {
-            bool PhanCongExists = await _context.Phancongs.AnyAsync(s => s.mssv == PhanCong.mssv);
+            bool PhancongExists = await _context.Phancongs.AnyAsync(s => s.mssv == Phancong.mssv);
 
-            if (PhanCongExists != false)
-                _context.Update(PhanCong);
+            if (PhancongExists != false)
+                _context.Update(Phancong);
             return await Save();
         }
 
@@ -81,7 +81,7 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
 
-                            var phancong = new PhanCong
+                            var phanconglist = new Phancong
                             {
                                 Id = Guid.NewGuid(),
                                 mssv = worksheet.Cells[row, 2].Value?.ToString(),
@@ -91,7 +91,7 @@ namespace Ueh.BackendApi.Repositorys
                                 madot = worksheet.Cells[row, 6].Value?.ToString(),
                             };
 
-                            await _context.Phancongs.AddRangeAsync(phancong);
+                            await _context.Phancongs.AddRangeAsync(phanconglist);
                         }
 
                         return await Save();
@@ -104,7 +104,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<byte[]> ExportToExcel()
         {
-            var PhanCongs = await _context.Phancongs
+            var Phancongs = await _context.Phancongs
                 .Include(d => d.Sinhvien)
                 .Include(d => d.Giangvien)
                 .ToListAsync();
@@ -113,7 +113,7 @@ namespace Ueh.BackendApi.Repositorys
             using (var package = new ExcelPackage())
             {
                 // Tạo một worksheet trong package
-                var worksheet = package.Workbook.Worksheets.Add("PhanCong");
+                var worksheet = package.Workbook.Worksheets.Add("Phancong");
 
                 // Đặt tiêu đề cho các cột
                 worksheet.Cells["A1"].Value = "STT";
@@ -126,14 +126,14 @@ namespace Ueh.BackendApi.Repositorys
                 // Ghi dữ liệu vào worksheet
                 int rowIndex = 2;
                 int count = 0;
-                foreach (var PhanCong in PhanCongs)
+                foreach (var Phancong in Phancongs)
                 {
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
-                    worksheet.Cells[$"B{rowIndex}"].Value = PhanCong.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = PhanCong.Sinhvien?.tenlop;
-                    worksheet.Cells[$"D{rowIndex}"].Value = PhanCong.Sinhvien?.hoten;
-                    worksheet.Cells[$"E{rowIndex}"].Value = PhanCong.Sinhvien?.ngaysinh;
-                    worksheet.Cells[$"F{rowIndex}"].Value = PhanCong.Giangvien?.tengv;
+                    worksheet.Cells[$"B{rowIndex}"].Value = Phancong.mssv;
+                    worksheet.Cells[$"C{rowIndex}"].Value = Phancong.Sinhvien?.tenlop;
+                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.Sinhvien?.hoten;
+                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.Sinhvien?.ngaysinh;
+                    worksheet.Cells[$"F{rowIndex}"].Value = Phancong.Giangvien?.tengv;
 
                     rowIndex++;
                 }

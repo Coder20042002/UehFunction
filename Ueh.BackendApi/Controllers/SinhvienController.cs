@@ -171,28 +171,6 @@ namespace Ueh.BackendApi.Controllers
             return BadRequest("Unknown error occurred");
         }
 
-        [HttpGet("generate")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> ExportToExcel()
-        {
-            try
-            {
-                var content = await _sinhvienRepository.ExportToExcel();
-                if (content != null)
-                {
-                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSdangky.xlsx");
-                }
-                else
-                {
-                    return BadRequest("No data available to export.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Something went wrong: {ex.Message}");
-            }
-        }
 
     }
 }
