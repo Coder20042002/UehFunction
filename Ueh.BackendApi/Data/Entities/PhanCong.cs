@@ -1,6 +1,6 @@
 ﻿namespace Ueh.BackendApi.Data.Entities
 {
-    public class PhanCong
+    public class Phancong
     {
         public Guid Id { get; set; }
         public string mssv { get; set; }
@@ -13,6 +13,9 @@
         public Dot dot { get; set; }
         public Loai loai { get; set; }
         public Chuyennganh chuyennganh { get; set; }
+        public ICollection<Chitiet> chitiets { get; set; }
+        public ICollection<Ketqua> ketquas { get; set; }
+
     }
 }
 

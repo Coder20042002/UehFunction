@@ -20,6 +20,21 @@ namespace Ueh.BackendApi.Data.EF
                 Description = "Administrator role"
             });
 
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = new Guid("63E7E1BD-88EA-498E-BE49-823EA3952484"),
+                Name = "student",
+                NormalizedName = "student",
+                Description = "Studentistrator role"
+            });
+
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = new Guid("3686DA9D-DB16-48AB-A9B2-AAFB842A9FCC"),
+                Name = "teacher",
+                NormalizedName = "teacher",
+                Description = "Tearchistrator role"
+            });
             var hasher = new PasswordHasher<AppUser>();
             modelBuilder.Entity<AppUser>().HasData(new AppUser
             {

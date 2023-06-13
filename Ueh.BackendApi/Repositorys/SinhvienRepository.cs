@@ -144,49 +144,6 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<byte[]> ExportToExcel()
-        {
-            var PhanCongs = await _context.Phancongs
-                .Include(d => d.Sinhvien)
-                .Include(d => d.Giangvien)
-                .ToListAsync();
 
-            // Tạo một package Excel
-            using (var package = new ExcelPackage())
-            {
-                // Tạo một worksheet trong package
-                var worksheet = package.Workbook.Worksheets.Add("PhanCong");
-
-                // Đặt tiêu đề cho các cột
-                worksheet.Cells["A1"].Value = "STT";
-                worksheet.Cells["B1"].Value = "MSSV";
-                worksheet.Cells["C1"].Value = "Lớp Sinh Viên";
-                worksheet.Cells["D1"].Value = "Họ Tên Sinh Viên";
-                worksheet.Cells["E1"].Value = "Ngày Sinh";
-                worksheet.Cells["F1"].Value = "Giáo Viên Hướng Dẫn";
-
-                // Ghi dữ liệu vào worksheet
-                int rowIndex = 2;
-                int count = 0;
-                foreach (var PhanCong in PhanCongs)
-                {
-                    worksheet.Cells[$"A{rowIndex}"].Value = count++;
-                    worksheet.Cells[$"B{rowIndex}"].Value = PhanCong.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = PhanCong.Sinhvien?.tenlop;
-                    worksheet.Cells[$"D{rowIndex}"].Value = PhanCong.Sinhvien?.hoten;
-                    worksheet.Cells[$"E{rowIndex}"].Value = PhanCong.Sinhvien?.ngaysinh;
-                    worksheet.Cells[$"F{rowIndex}"].Value = PhanCong.Giangvien?.tengv;
-
-                    rowIndex++;
-                }
-
-                // Tự động điều chỉnh kích thước các cột
-                worksheet.Cells.AutoFitColumns();
-
-                // Xuất file Excel
-                var content = package.GetAsByteArray();
-                return content;
-            }
-        }
     }
 }

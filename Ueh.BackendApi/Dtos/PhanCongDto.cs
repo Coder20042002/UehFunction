@@ -1,6 +1,6 @@
 ﻿namespace Ueh.BackendApi.Dtos
 {
-    public class PhanCongDto
+    public class PhancongDto
     {
         public Guid Id { get; set; }
         public string mssv { get; set; }

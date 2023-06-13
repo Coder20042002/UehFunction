@@ -35,7 +35,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 builder.Services.AddScoped<IGiangvienRepository, GiangvienRepository>();
 builder.Services.AddScoped<IDangkyRepository, DangkyRepository>();
-builder.Services.AddScoped<IPhanCongRepository, PhancongRepository>();
+builder.Services.AddScoped<IPhancongRepository, PhancongRepository>();
 builder.Services.AddScoped<IChuyennganhRepository, ChuyennganhRepository>();
 
 builder.Services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();

@@ -79,7 +79,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (reviews != null)
             {
-                ModelState.AddModelError("", "Review already exists");
+                ModelState.AddModelError("", "Đánh giá đã tồn tại");
                 return StatusCode(422, ModelState);
             }
 
@@ -98,7 +98,7 @@ namespace Ueh.BackendApi.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok("Thêm thành công");
         }
 
         [HttpPut("{reviewId}")]
@@ -123,7 +123,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (!_reviewRepository.UpdateReview(reviewMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating review");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật đánh giá");
                 return StatusCode(500, ModelState);
             }
 
