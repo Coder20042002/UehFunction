@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
@@ -9,6 +10,7 @@ namespace Ueh.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ChuyennganhController : ControllerBase
     {
         private readonly IChuyennganhRepository _ChuyennganhRepository;
