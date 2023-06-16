@@ -14,12 +14,29 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-        public async Task<bool> CreatePhancong(Phancong Phancong)
+        public async Task<bool> CreatePhancong(Phancong phancong)
         {
-            var Phancongkhoa = await _context.Phancongs.Where(a => a.mssv == Phancong.mssv).FirstOrDefaultAsync();
+            var Phancongkhoa = await _context.Phancongs.Where(a => a.mssv == phancong.mssv).FirstOrDefaultAsync();
+            var ketqua = new Ketqua
+            {
+                mapc = phancong.Id,
+                mssv = phancong.mssv,
+            };
+            var chitiet = new Chitiet
+            {
+                mapc = phancong.Id,
+                mssv = phancong.mssv,
+            };
 
             if (Phancongkhoa == null)
-                _context.Add(Phancong);
+            {
+                _context.Add(phancong);
+                _context.Add(ketqua);
+                _context.Add(chitiet);
+            }
+
+
+
 
             return await Save();
         }
