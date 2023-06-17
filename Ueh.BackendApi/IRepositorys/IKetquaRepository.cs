@@ -8,6 +8,7 @@ namespace Ueh.BackendApi.IRepositorys
         Task<Ketqua> GetScores(string mssv);
         Task<bool> ScoresExists(string mssv);
         Task<bool> UpdateScores(Ketqua ketqua);
+        Task<ICollection<Ketqua>> GetKetQuaByMaGV(string magv);
         Task<bool> Save();
     }
 }

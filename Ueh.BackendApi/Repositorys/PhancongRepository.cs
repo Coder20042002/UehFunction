@@ -68,12 +68,13 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> PhancongExists(string mssv)
         {
-            return await _context.Phancongs.AnyAsync(s => s.mssv == mssv);
+            return await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true");
         }
+
 
         public async Task<bool> UpdatePhancong(Phancong Phancong)
         {
-            bool PhancongExists = await _context.Phancongs.AnyAsync(s => s.mssv == Phancong.mssv);
+            bool PhancongExists = await _context.Phancongs.AnyAsync(s => s.mssv == Phancong.mssv && s.status == "true");
 
             if (PhancongExists != false)
                 _context.Update(Phancong);
@@ -97,11 +98,19 @@ namespace Ueh.BackendApi.Repositorys
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
                         for (int row = 2; row <= rowCount; row++)
                         {
+                            var mssv = worksheet.Cells[row, 2].Value?.ToString();
+                            bool existingPhancong = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true"); ;
+
+                            if (existingPhancong != false)
+                            {
+                                // Nếu MSSV đã tồn tại, bỏ qua sinh viên này và tiếp tục với dòng tiếp theo
+                                continue;
+                            }
 
                             var phanconglist = new Phancong
                             {
                                 Id = Guid.NewGuid(),
-                                mssv = worksheet.Cells[row, 2].Value?.ToString(),
+                                mssv = mssv,
                                 magv = worksheet.Cells[row, 3].Value?.ToString(),
                                 macn = worksheet.Cells[row, 4].Value?.ToString(),
                                 maloai = worksheet.Cells[row, 5].Value?.ToString(),
@@ -145,6 +154,10 @@ namespace Ueh.BackendApi.Repositorys
                 int count = 0;
                 foreach (var Phancong in Phancongs)
                 {
+                    if (Phancong.status != "true")
+                    {
+                        continue; // Bỏ qua bản ghi không có status bằng "true"
+                    }
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
                     worksheet.Cells[$"B{rowIndex}"].Value = Phancong.mssv;
                     worksheet.Cells[$"C{rowIndex}"].Value = Phancong.Sinhvien?.tenlop;
@@ -162,6 +175,24 @@ namespace Ueh.BackendApi.Repositorys
                 var content = package.GetAsByteArray();
                 return content;
             }
+        }
+
+        public async Task<ICollection<Phancong>> SearchByTenSinhVien(string tenSinhVien)
+        {
+            var result = await _context.Phancongs
+                        .Include(p => p.Sinhvien)
+                        .Where(p => p.Sinhvien.hoten.Contains(tenSinhVien))
+                        .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<ICollection<Phancong>> GetPhanCongByMaGV(string magv)
+        {
+            var phanconglist = await _context.Phancongs
+                .Where(p => p.magv == magv)
+                .ToListAsync();
+            return phanconglist;
         }
     }
 }

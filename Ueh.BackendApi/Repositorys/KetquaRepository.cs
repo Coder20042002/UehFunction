@@ -14,14 +14,25 @@ namespace Ueh.BackendApi.Repositorys
             _context = context;
         }
 
+        public async Task<ICollection<Ketqua>> GetKetQuaByMaGV(string magv)
+        {
+            var phanCongIds = await _context.Phancongs.Where(pc => pc.magv == magv && pc.status == "true").Select(pc => pc.Id).ToListAsync();
+            var ketQuaList = await _context.Ketquas.Where(kq => phanCongIds.Contains(kq.mapc)).ToListAsync();
+
+
+            return ketQuaList;
+        }
+
         public async Task<ICollection<Ketqua>> GetScores()
         {
-            return await _context.Ketquas.OrderBy(s => s.mssv).ToListAsync();
+            var phanCongIds = await _context.Phancongs.Where(pc => pc.status == "true").Select(pc => pc.Id).ToListAsync();
+            return await _context.Ketquas.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mssv).ToListAsync();
         }
 
         public async Task<Ketqua> GetScores(string mssv)
         {
-            return await _context.Ketquas.Where(s => s.mssv == mssv).FirstOrDefaultAsync();
+            var phanCongIds = await _context.Phancongs.Where(pc => pc.status == "true").Select(pc => pc.Id).ToListAsync();
+            return await _context.Ketquas.Where(kq => kq.mssv == mssv && phanCongIds.Contains(kq.mapc)).FirstOrDefaultAsync();
         }
 
         public async Task<bool> Save()
@@ -32,7 +43,8 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> ScoresExists(string mssv)
         {
-            return await _context.Ketquas.AnyAsync(s => s.mssv == mssv);
+            var phanCongIds = await _context.Phancongs.Where(pc => pc.status == "true").Select(pc => pc.Id).ToListAsync();
+            return await _context.Ketquas.AnyAsync(kq => kq.mssv == mssv && phanCongIds.Contains(kq.mapc));
         }
 
         public Task<bool> UpdateScores(Ketqua ketqua)

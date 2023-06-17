@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Repositorys;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -48,7 +50,16 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Ketqua);
         }
 
+        [HttpGet("GetKetQuaByMaGV")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Ketqua>))]
+        public async Task<ActionResult<List<Ketqua>>> GetKetQuaByMaGV(string maGV)
+        {
+            var ketQuaList = await _KetquaRepository.GetKetQuaByMaGV(maGV);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            return Ok(ketQuaList);
+        }
 
 
 

@@ -12,6 +12,8 @@ namespace Ueh.BackendApi.IRepositorys
         Task<bool> DeletePhancong(Phancong Phancong);
         Task<bool> ImportExcelFile(IFormFile formFile);
         Task<byte[]> ExportToExcel();
+        Task<ICollection<Phancong>> SearchByTenSinhVien(string tenSinhVien);
+        Task<ICollection<Phancong>> GetPhanCongByMaGV(string magv);
         Task<bool> Save();
     }
 }

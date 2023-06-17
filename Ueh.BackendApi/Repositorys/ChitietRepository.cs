@@ -14,14 +14,25 @@ namespace Ueh.BackendApi.Repositorys
             _context = context;
         }
 
+        public async Task<ICollection<Chitiet>> GetChitietByMaGV(string magv)
+        {
+            var phanCongIds = await _context.Phancongs.Where(ct => ct.magv == magv && ct.status == "true").Select(ct => ct.Id).ToListAsync();
+            var ketQuaList = await _context.Chitiets.Where(kq => phanCongIds.Contains(kq.mapc)).ToListAsync();
+
+
+            return ketQuaList;
+        }
+
         public async Task<ICollection<Chitiet>> GetChitiet()
         {
-            return await _context.Chitiets.OrderBy(s => s.mssv).ToListAsync();
+            var phanCongIds = await _context.Phancongs.Where(ct => ct.status == "true").Select(ct => ct.Id).ToListAsync();
+            return await _context.Chitiets.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mssv).ToListAsync();
         }
 
         public async Task<Chitiet> GetChitiet(string mssv)
         {
-            return await _context.Chitiets.Where(s => s.mssv == mssv).FirstOrDefaultAsync();
+            var phanCongIds = await _context.Phancongs.Where(ct => ct.status == "true").Select(ct => ct.Id).ToListAsync();
+            return await _context.Chitiets.Where(kq => kq.mssv == mssv && phanCongIds.Contains(kq.mapc)).FirstOrDefaultAsync();
         }
 
         public async Task<bool> Save()
@@ -32,12 +43,13 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> ChitietExists(string mssv)
         {
-            return await _context.Chitiets.AnyAsync(s => s.mssv == mssv);
+            var phanCongIds = await _context.Phancongs.Where(ct => ct.status == "true").Select(ct => ct.Id).ToListAsync();
+            return await _context.Chitiets.AnyAsync(s => s.mssv == mssv && phanCongIds.Contains(s.mapc));
         }
 
-        public Task<bool> UpdateChitiet(Chitiet Chitiet)
+        public Task<bool> UpdateChitiet(Chitiet ketqua)
         {
-            _context.Update(Chitiet);
+            _context.Update(ketqua);
             return Save();
         }
     }

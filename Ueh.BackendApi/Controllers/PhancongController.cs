@@ -61,6 +61,7 @@ namespace Ueh.BackendApi.Controllers
         {
             try
             {
+
                 bool success = await _PhancongRepository.ImportExcelFile(formFile);
                 if (success)
                 {
@@ -189,5 +190,32 @@ namespace Ueh.BackendApi.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("search")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Phancong>))]
+        public async Task<ActionResult<List<Phancong>>> SearchByTenSinhVien([FromQuery(Name = "tensinhvien")] string tenSinhVien)
+        {
+            var phanCongList = await _PhancongRepository.SearchByTenSinhVien(tenSinhVien);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(phanCongList);
+        }
+
+
+        [HttpGet("getphancongbymagv")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<PhancongDto>))]
+        public async Task<ActionResult<ICollection<PhancongDto>>> GetPhanCongByMaGV(string magv)
+        {
+            var phanCongList = await _PhancongRepository.GetPhanCongByMaGV(magv);
+            var phanCongDtoList = _mapper.Map<List<PhancongDto>>(phanCongList);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(phanCongDtoList);
+        }
+
     }
+
+
 }

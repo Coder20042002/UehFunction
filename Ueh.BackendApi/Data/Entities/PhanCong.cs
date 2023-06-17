@@ -8,6 +8,7 @@
         public string madot { get; set; }
         public string maloai { get; set; }
         public string macn { get; set; }
+        public string status { get; set; } = "true";
         public Giangvien Giangvien { get; set; }
         public Sinhvien Sinhvien { get; set; }
         public Dot dot { get; set; }

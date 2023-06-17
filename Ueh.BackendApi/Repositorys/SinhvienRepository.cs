@@ -58,18 +58,18 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<Sinhvien> GetSinhvien(string mssv)
         {
-            return await _context.Sinhviens.Where(s => s.mssv == mssv).FirstOrDefaultAsync();
+            return await _context.Sinhviens.Where(s => s.mssv == mssv && s.status == "true").FirstOrDefaultAsync();
         }
 
         public async Task<Sinhvien> GetSinhvienName(string name)
         {
-            return await _context.Sinhviens.Where(s => s.hoten == name).FirstOrDefaultAsync();
+            return await _context.Sinhviens.Where(s => s.hoten == name && s.status == "true").FirstOrDefaultAsync();
 
         }
 
         public async Task<ICollection<Sinhvien>> GetSinhviens()
         {
-            return await _context.Sinhviens.OrderBy(s => s.mssv).ToListAsync();
+            return await _context.Sinhviens.Where(s => s.status == "true").OrderBy(s => s.mssv).ToListAsync();
         }
 
         public async Task<bool> Save()
@@ -80,7 +80,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> SinhvienExists(string mssv)
         {
-            return await _context.Sinhviens.AnyAsync(s => s.mssv == mssv);
+            return await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true");
         }
 
         public Task<bool> UpdateSinhvien(string madot, string makhoa, Sinhvien sinhvien)
@@ -106,9 +106,18 @@ namespace Ueh.BackendApi.Repositorys
 
                         for (int row = 2; row <= rowCount; row++)
                         {
+                            var mssv = worksheet.Cells[row, 2].Value?.ToString();
+                            bool existing = await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true"); ;
+
+                            if (existing != false)
+                            {
+                                // Nếu MSSV đã tồn tại, bỏ qua sinh viên này và tiếp tục với dòng tiếp theo
+                                continue;
+                            }
+
                             var sinhvien = new Sinhvien
                             {
-                                mssv = worksheet.Cells[row, 2].Value?.ToString(),
+                                mssv = mssv,
                                 hoten = worksheet.Cells[row, 3].Value?.ToString(),
                                 email = worksheet.Cells[row, 4].Value?.ToString(),
                                 tenlop = worksheet.Cells[row, 5].Value?.ToString(),

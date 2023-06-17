@@ -25,27 +25,28 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> DeleteDangky(Dangky Dangky)
+        public async Task<bool> DeleteDangky(Dangky dangky)
         {
-            _context.Remove(Dangky);
+            dangky.status = "false";
+            _context.Update(dangky);
             return await Save();
         }
 
 
         public async Task<Dangky> GetDangky(string mssv)
         {
-            return await _context.Dangkys.Where(s => s.mssv == mssv).FirstOrDefaultAsync();
+            return await _context.Dangkys.Where(s => s.mssv == mssv && s.status == "true").FirstOrDefaultAsync();
         }
 
         public async Task<Dangky> GetDangkyName(string name)
         {
-            return await _context.Dangkys.Where(s => s.hotensv == name).FirstOrDefaultAsync();
+            return await _context.Dangkys.Where(s => s.hotensv == name && s.status == "true").FirstOrDefaultAsync();
 
         }
 
         public async Task<ICollection<Dangky>> GetDangkys()
         {
-            return await _context.Dangkys.OrderBy(s => s.mssv).ToListAsync();
+            return await _context.Dangkys.Where(s => s.status == "true").OrderBy(s => s.mssv).ToListAsync();
         }
 
         public async Task<bool> Save()
@@ -56,12 +57,12 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> DangkyExists(string mssv)
         {
-            return await _context.Dangkys.AnyAsync(s => s.mssv == mssv);
+            return await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true");
         }
 
         public async Task<bool> UpdateDangky(Dangky Dangky)
         {
-            bool dangkyExists = await _context.Dangkys.AnyAsync(s => s.mssv == Dangky.mssv);
+            bool dangkyExists = await _context.Dangkys.AnyAsync(s => s.mssv == Dangky.mssv && s.status == "true");
 
             if (dangkyExists != false)
                 _context.Update(Dangky);
@@ -85,10 +86,17 @@ namespace Ueh.BackendApi.Repositorys
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
                         for (int row = 2; row <= rowCount; row++)
                         {
+                            var mssv = worksheet.Cells[row, 2].Value?.ToString();
+                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true"); ;
 
+                            if (existing != false)
+                            {
+                                // Nếu MSSV đã tồn tại, bỏ qua sinh viên này và tiếp tục với dòng tiếp theo
+                                continue;
+                            }
                             var dangky = new Dangky
                             {
-                                mssv = worksheet.Cells[row, 2].Value?.ToString(),
+                                mssv = mssv,
                                 hotensv = worksheet.Cells[row, 3].Value?.ToString(),
                                 magv = worksheet.Cells[row, 4].Value?.ToString(),
                                 maloai = worksheet.Cells[row, 5].Value?.ToString(),
@@ -132,6 +140,10 @@ namespace Ueh.BackendApi.Repositorys
                 int count = 0;
                 foreach (var dangky in dangkys)
                 {
+                    if (dangky.status != "true")
+                    {
+                        continue; // Bỏ qua bản ghi không có status bằng "true"
+                    }
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
                     worksheet.Cells[$"B{rowIndex}"].Value = dangky.mssv;
                     worksheet.Cells[$"C{rowIndex}"].Value = dangky.hotensv;
