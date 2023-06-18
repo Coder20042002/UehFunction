@@ -41,9 +41,10 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> DeletePhancong(Phancong Phancong)
+        public async Task<bool> DeletePhancong(Phancong phancong)
         {
-            _context.Remove(Phancong);
+            phancong.status = "false";
+            _context.Update(phancong);
             return await Save();
         }
 
