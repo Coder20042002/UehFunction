@@ -1,0 +1,355 @@
+﻿@page "/"
+@layout EmptyLayout
+@inject NavigationManager NavigationManager
+
+@code {
+    @* private async Task GetSessionData()
+    {
+        // Call the API to retrieve session data
+        var sessionData = await HttpClient.GetFromJsonAsync<string>("/api/session");
+        return sessionData.Get("account");
+    } *@
+
+    private void LoginStUeh(string returnUrl = "/trangchu")
+    {
+        string uri = NavigationManager.ToAbsoluteUri(returnUrl).ToString();
+        NavigationManager.NavigateTo("https://loginst.ueh.edu.vn/?returnUrl=" + uri);
+    }
+}
+
+<header class="py-4">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <nav class="relative z-50 flex justify-between">
+            <div class="flex items-center md:gap-x-12">
+                <a aria-label="Home" href="/">
+                    <img src="/images/ueh-logo-full.png" class="h-16 mr-3" alt="Logo" />
+                </a>
+                <div class="hidden md:flex md:gap-x-6">
+                    <a class="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        href="https://salient.tailwindui.com/#features">Thực tập
+                    </a>
+                    <a class="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        href="https://salient.tailwindui.com/#testimonials">Khóa luận
+                    </a>
+                    <a class="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        href="https://salient.tailwindui.com/#pricing">Thông báo
+                    </a>
+                </div>
+            </div>
+            <div class="flex items-center gap-x-5 md:gap-x-8">
+                <a class="inline-block rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 border-2 border-teal-800"
+                    href="/ueherlogin">
+                    UEHer đăng nhập
+                </a>
+                <button
+                    class="inline-block rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-teal-800 text-white hover:text-slate-100 hover:bg-teal-700 border-2 border-teal-800 hover:border-teal-700 active:bg-teal-800 active:text-teal-100 focus-visible:outline-teal-700"
+                    @onclick="() => LoginStUeh()">
+                    Sinh viên đăng nhập
+                </button>
+                <div class="-mr-1 md:hidden">
+                    <div data-headlessui-state="">
+                        <button
+                            class="relative z-10 flex h-8 w-8 items-center justify-center [&amp;:not(:focus-visible)]:focus:outline-none"
+                            aria-label="Toggle Navigation" type="button" aria-expanded="false" data-headlessui-state=""
+                            id="headlessui-popover-button-:R3p6:">
+                            <svg aria-hidden="true" class="h-3.5 w-3.5 overflow-visible stroke-slate-700" fill="none"
+                                stroke-width="2" stroke-linecap="round">
+                                <path d="M0 1H14M0 7H14M0 13H14" class="origin-center transition">
+                                </path>
+                                <path d="M2 2L12 12M12 2L2 12" class="origin-center transition scale-90 opacity-0">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<main>
+    <section id="welcome" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-72 pt-80 text-center lg:pt-32">
+        <h1 class="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-teal-900 sm:text-7xl">
+            Dành cho
+            <span class="whitespace-nowrap text-orange-600">
+                sinh viên UEH
+            </span>
+        </h1>
+        <p class="mx-auto mt-4 max-w-2xl text-lg tracking-tight text-slate-700">
+            Quản lý thực tập và luận tốt nghiệp dễ dàng và tiện lợi hơn bao giờ
+            hết.
+        </p>
+        <div class="mt-24 flex justify-center gap-x-6">
+            <a class="group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-teal-800 text-white hover:bg-border-teal-700 hover:text-slate-100 active:bg-teal-700 active:text-slate-300 focus-visible:outline-slate-900"
+                href="/">Đăng nhập ngay
+            </a>
+            <a class="group inline-flex ring-1 items-center justify-center rounded-full py-2 px-4 text-sm focus:outline-none ring-orange-200 text-slate-700 hover:text-slate-900 hover:ring-orange-300 active:bg-orange-100 active:text-slate-600 focus-visible:outline-blue-600 focus-visible:ring-orange-300"
+                href="/">
+                <svg aria-hidden="true" class="h-3 w-3 flex-none fill-orange-500 group-active:fill-current">
+                    <path
+                        d="m9.997 6.91-7.583 3.447A1 1 0 0 1 1 9.447V2.553a1 1 0 0 1 1.414-.91L9.997 5.09c.782.355.782 1.465 0 1.82Z">
+                    </path>
+                </svg>
+                <span class="ml-3">Xem hướng dẫn
+                </span>
+            </a>
+        </div>
+    </section>
+    <section id="features" aria-label="Features for running your books"
+        class="relative overflow-hidden bg-teal-700 pb-28 pt-20 sm:py-32">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div class="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
+                <h2 class="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
+                    Nhanh chóng, dễ dàng, hiệu quả
+                </h2>
+                <p class="mt-6 text-lg tracking-tight text-blue-100">
+                    Tất cả những gì bạn cần để quản lý thực tập và luận án tốt
+                    nghiệp
+                </p>
+            </div>
+            <div class="mt-16 grid grid-cols-1 items-center gap-y-2 pt-10 sm:gap-y-6 md:mt-20 lg:grid-cols-12 lg:pt-0">
+                <div class="-mx-4 flex overflow-x-auto pb-4 sm:mx-0 sm:overflow-visible sm:pb-0 lg:col-span-5">
+                    <div class="relative z-10 flex gap-x-4 whitespace-nowrap px-4 sm:mx-auto sm:px-0 lg:mx-0 lg:block lg:gap-x-0 lg:gap-y-1 lg:whitespace-normal"
+                        role="tablist" aria-orientation="vertical">
+                        <div
+                            class="group relative rounded-full px-4 py-1 lg:rounded-l-xl lg:rounded-r-none lg:p-6 hover:bg-white/10 lg:hover:bg-white/5">
+                            <h3>
+                                <button
+                                    class="font-display text-lg [&amp;:not(:focus-visible)]:focus:outline-none text-blue-600 lg:text-white"
+                                    id="headlessui-tabs-tab-:R2ba9m:" role="tab" type="button" aria-selected="true"
+                                    tabindex="0" data-headlessui-state="selected"
+                                    aria-controls="headlessui-tabs-panel-:Rda9m:">
+                                    <span class="absolute inset-0 rounded-full lg:rounded-l-xl lg:rounded-r-none">
+                                    </span>Quản lý thực tập
+                                </button>
+                            </h3>
+                            <p class="mt-2 hidden text-sm lg:block text-white">
+                                Theo dõi thông tin và lịch trình thực tập của
+                                sinh viên. Quản lý các hồ sơ thực tập và cung
+                                cấp thông tin chi tiết về đề tài, người hướng
+                                dẫn, và kết quả thực tập.
+                            </p>
+                        </div>
+                        <div
+                            class="group relative rounded-full px-4 py-1 lg:rounded-l-xl lg:rounded-r-none lg:p-6 hover:bg-white/10 lg:hover:bg-white/5">
+                            <h3>
+                                <button
+                                    class="font-display text-lg [&amp;:not(:focus-visible)]:focus:outline-none text-blue-100 hover:text-white lg:text-white"
+                                    id="headlessui-tabs-tab-:R2ja9m:" role="tab" type="button" aria-selected="false"
+                                    tabindex="-1" data-headlessui-state=""
+                                    aria-controls="headlessui-tabs-panel-:Rla9m:">
+                                    <span class="absolute inset-0 rounded-full lg:rounded-l-xl lg:rounded-r-none">
+                                    </span>Quản lý luận án tốt nghiệp
+                                </button>
+                            </h3>
+                            <p class="mt-2 hidden text-sm lg:block text-blue-100 group-hover:text-white">
+                                Hỗ trợ quá trình đăng ký và quản lý luận án tốt
+                                nghiệp. Cung cấp thông tin về đề tài, hướng dẫn
+                                viết luận án, và tiến độ hoàn thành.
+                            </p>
+                        </div>
+                        <div
+                            class="group relative rounded-full px-4 py-1 lg:rounded-l-xl lg:rounded-r-none lg:p-6 hover:bg-white/10 lg:hover:bg-white/5">
+                            <h3>
+                                <button
+                                    class="font-display text-lg [&amp;:not(:focus-visible)]:focus:outline-none text-blue-100 hover:text-white lg:text-white"
+                                    id="headlessui-tabs-tab-:R2ra9m:" role="tab" type="button" aria-selected="false"
+                                    tabindex="-1" data-headlessui-state=""
+                                    aria-controls="headlessui-tabs-panel-:Rta9m:">
+                                    <span class="absolute inset-0 rounded-full lg:rounded-l-xl lg:rounded-r-none">
+                                    </span>Báo cáo
+                                </button>
+                            </h3>
+                            <p class="mt-2 hidden text-sm lg:block text-blue-100 group-hover:text-white">
+                                Dễ dàng xuất dữ liệu liên quan đến thực tập và
+                                luận án tốt nghiệp thành các báo cáo dễ đọc và
+                                trực quan. Cung cấp khả năng tùy chỉnh báo cáo
+                                theo nhu cầu của bạn.
+                            </p>
+                        </div>
+                        <div
+                            class="group relative rounded-full px-4 py-1 lg:rounded-l-xl lg:rounded-r-none lg:p-6 hover:bg-white/10 lg:hover:bg-white/5">
+                            <h3>
+                                <button
+                                    class="font-display text-lg [&amp;:not(:focus-visible)]:focus:outline-none text-blue-100 hover:text-white lg:text-white"
+                                    id="headlessui-tabs-tab-:R33a9m:" role="tab" type="button" aria-selected="false"
+                                    tabindex="-1" data-headlessui-state=""
+                                    aria-controls="headlessui-tabs-panel-:R15a9m:">
+                                    <span class="absolute inset-0 rounded-full lg:rounded-l-xl lg:rounded-r-none">
+                                    </span>Hỗ trợ kỹ thuật
+                                </button>
+                            </h3>
+                            <p class="mt-2 hidden text-sm lg:block text-blue-100 group-hover:text-white">
+                                Cung cấp dịch vụ hỗ trợ qua email được cung cấp
+                                trên trang web, giải đáp mọi thắc mắc và giải
+                                quyết vấn đề kỹ thuật một cách nhanh chóng.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7">
+                    <div id="headlessui-tabs-panel-:Rda9m:" role="tabpanel" tabindex="0" data-headlessui-state=""
+                        aria-labelledby="headlessui-tabs-tab-:R2ba9m:">
+                        <div
+                            class="mt-10 w-[45rem] overflow-hidden rounded-xl bg-slate-50 shadow-xl shadow-blue-900/20 sm:w-auto lg:mt-0 lg:w-[67.8125rem]">
+                            <img alt="" fetchpriority="high" width="2174" height="1464" decoding="async" data-nimg="1"
+                                class="w-full" style="color: transparent"
+                                sizes="(min-width: 1024px) 67.8125rem, (min-width: 640px) 100vw, 45rem"
+                                src="./images/bg-ueh.jpg" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="faq" aria-labelledby="faq-title" class="relative overflow-hidden bg-slate-50 py-20 sm:py-32">
+        <img alt="" loading="lazy" width="1558" height="946" decoding="async" data-nimg="1"
+            class="absolute left-1/2 top-0 max-w-none -translate-y-1/4 translate-x-[-30%]" style="color: transparent"
+            src="./images/background/background-2.jpg" />
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div class="mx-auto max-w-2xl lg:mx-0">
+                <h2 id="faq-title" class="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
+                    Câu hỏi thường gặp
+                </h2>
+                <p class="mt-4 text-lg tracking-tight text-slate-700">
+                    Nếu bạn không tìm thấy thông tin bạn đang tìm kiếm, hãy gửi
+                    email cho chúng tôi.
+                </p>
+            </div>
+            <ul role="list" class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3">
+                <li>
+                    <ul role="list" class="flex flex-col gap-y-8">
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để đăng ký thực tập?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Để đăng ký thực tập, bạn cần truy cập vào trang
+                                đăng ký và điền đầy đủ thông tin cần thiết.
+                            </p>
+                        </li>
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để tạo hồ sơ thực tập?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Để tạo hồ sơ thực tập, bạn cần truy cập vào phần
+                                quản lý hồ sơ và sử dụng chức năng "Tạo hồ sơ
+                                mới" để nhập thông tin của bạn.
+                            </p>
+                        </li>
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để đăng ký luận án tốt nghiệp?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Để đăng ký luận án tốt nghiệp, bạn cần truy cập
+                                vào trang đăng ký luận án và hoàn thành các bước
+                                đăng ký theo hướng dẫn.
+                            </p>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <ul role="list" class="flex flex-col gap-y-8">
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để xem thông tin lịch trình thực
+                                tập?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Để xem thông tin lịch trình thực tập, bạn cần
+                                truy cập vào phần quản lý lịch trình và tìm kiếm
+                                lịch trình thực tập của bạn.
+                            </p>
+                        </li>
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để thay đổi thông tin trong hồ sơ
+                                thực tập?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Để thay đổi thông tin trong hồ sơ thực tập, bạn
+                                cần truy cập vào phần quản lý hồ sơ và sử dụng
+                                chức năng "Chỉnh sửa hồ sơ" để cập nhật thông
+                                tin của bạn.
+                            </p>
+                        </li>
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Tôi có thể tham gia nhiều chương trình thực tập
+                                cùng một lúc không?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Đối với mỗi học kỳ, bạn chỉ có thể tham gia một
+                                chương trình thực tập duy nhất.
+                            </p>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <ul role="list" class="flex flex-col gap-y-8">
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để tìm kiếm đề tài luận án tốt
+                                nghiệp?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Bạn có thể truy cập vào trang tìm kiếm đề tài
+                                luận án và sử dụng các tiêu chí tìm kiếm để tìm
+                                kiếm đề tài phù hợp với lĩnh vực quan tâm của
+                                bạn.
+                            </p>
+                        </li>
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để yêu cầu hỗ trợ kỹ thuật?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Để yêu cầu hỗ trợ kỹ thuật, bạn có thể gửi email
+                                đến địa chỉ support@ueh.edu.vn hoặc liên hệ trực
+                                tiếp với bộ phận hỗ trợ kỹ thuật theo thông tin
+                                liên hệ được cung cấp trên trang web.
+                            </p>
+                        </li>
+                        <li>
+                            <h3 class="font-display text-lg leading-7 text-slate-900">
+                                Làm thế nào để tải xuống biểu mẫu liên quan đến
+                                quản lý thực tập?
+                            </h3>
+                            <p class="mt-4 text-sm text-slate-700">
+                                Bạn có thể truy cập vào phần tài liệu và tải
+                                xuống các biểu mẫu liên quan đến quản lý thực
+                                tập từ đó.
+                            </p>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+</main>
+<footer class="bg-slate-50">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="py-16 flex justify-center flex-col items-center">
+            <img src="/images/ueh-logo-full.png" class="h-20 mr-3" alt="Logo" />
+            <nav class="mt-10 text-sm" aria-label="quick links">
+                <div class="-my-1 flex justify-center gap-x-6">
+                    <a class="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        href="https://salient.tailwindui.com/#features">E-learning
+                    </a>
+                    <a class="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        href="https://salient.tailwindui.com/#testimonials">Cơ hội nghề nghiệp
+                    </a>
+                    <a class="inline-block rounded-lg px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                        href="https://salient.tailwindui.com/#pricing">Tuyển sinh
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <div class="flex items-center justify-between border-t border-slate-400/10 py-10">
+            <p class="mt-6 text-sm text-slate-500 sm:mt-0">
+                Copyright © 2023 UEH. All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>

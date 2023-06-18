@@ -1,0 +1,32 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+
+<PageTitle>UEH Intern</PageTitle>
+
+<div>
+    <NavMenu />
+</div>
+
+<div class="flex pt-20 overflow-hidden bg-gray-50">
+    <aside id="sidebar" class="fixed top-16 left-0 z-20 flex flex-col flex-shrink-0 hidden transition-width 
+    bg-white border-r border-gray-200 w-64 h-full pt-4 font-normal duration-75 lg:flex">
+        <SideBar />
+    </aside>
+
+    <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64">
+        <main class="px-4 pt-4">
+            @Body
+        </main>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("executeScript");
+        }
+    }
+
+}

@@ -1,18 +1,18 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:11353",
-      "sslPort": 44315
+      "applicationUrl": "http://localhost:26097",
+      "sslPort": 44327
     }
   },
   "profiles": {
-    "Ueh.WebApp": {
+    "UehInterface": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7048;http://localhost:5048",
+      "applicationUrl": "https://localhost:6001;http://localhost:6000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
