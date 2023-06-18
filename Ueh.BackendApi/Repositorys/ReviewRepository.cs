@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
+using Ueh.BackendApi.IRepositorys;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -17,6 +18,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public bool CreateReview(Review review)
         {
+            
             _context.Add(review);
             return Save();
         }
@@ -35,7 +37,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public Review GetReview(string reviewId)
         {
-            return _context.Reviews.Where(r => r.Id == reviewId).FirstOrDefault();
+            return _context.Reviews.Where(r => r.Id.ToString() == reviewId).FirstOrDefault();
         }
 
         public ICollection<Review> GetReviews()
@@ -50,7 +52,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public bool ReviewExists(string reviewId)
         {
-            return _context.Reviews.Any(r => r.Id == reviewId);
+            return _context.Reviews.Any(r => r.Id.ToString() == reviewId);
         }
 
         public bool Save()

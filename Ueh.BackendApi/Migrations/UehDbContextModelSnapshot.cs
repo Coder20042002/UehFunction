@@ -22,6 +22,289 @@ namespace Ueh.BackendApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("AppUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("AppUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            RoleId = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc")
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("AppUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.AppRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
+                            ConcurrencyStamp = "28e84175-b927-4458-a699-e0df80a2ca8a",
+                            Description = "Administrator role",
+                            Name = "admin",
+                            NormalizedName = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("63e7e1bd-88ea-498e-be49-823ea3952484"),
+                            ConcurrencyStamp = "7bce9df9-d383-4ead-a8f5-eee1e74dcdfa",
+                            Description = "Studentistrator role",
+                            Name = "student",
+                            NormalizedName = "student"
+                        },
+                        new
+                        {
+                            Id = new Guid("3686da9d-db16-48ab-a9b2-aafb842a9fcc"),
+                            ConcurrencyStamp = "336cc0c3-8cbe-40db-b7b8-62b8e8e37cff",
+                            Description = "Tearchistrator role",
+                            Name = "teacher",
+                            NormalizedName = "teacher"
+                        });
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.AppUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e6cda152-74bb-4148-9add-05565c2833cf",
+                            Email = "phuong123@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Phương",
+                            LastName = "Trần Hoài",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "phuong123@gmail.com",
+                            NormalizedUserName = "admin",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDvuN9Aimh91/4DWjSzzCZmF/sKvG5HyHgdY/zz+7TjWf7UD/Gl5+zlpLSoUxskixg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chitiet", b =>
+                {
+                    b.Property<Guid>("mapc")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("mssv")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("chucvu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("huongdan")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("sdt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("stdhd")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("tencty")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("tendetai")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("vitri")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("website")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("mapc", "mssv");
+
+                    b.HasIndex("mssv");
+
+                    b.ToTable("Chitiets", (string)null);
+                });
+
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chuyennganh", b =>
                 {
                     b.Property<string>("macn")
@@ -38,41 +321,30 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dangky", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("mssv")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("dotmadot")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("madot")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("magv")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("maloai")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("mssv")
+                    b.Property<string>("hotensv")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("dotmadot");
+                    b.HasKey("mssv", "magv", "maloai");
 
                     b.HasIndex("magv");
 
                     b.HasIndex("maloai");
 
-                    b.HasIndex("mssv")
-                        .IsUnique();
-
-                    b.ToTable("Dangky", (string)null);
+                    b.ToTable("Dangkys", (string)null);
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dot", b =>
@@ -108,6 +380,10 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("tengv")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -119,6 +395,42 @@ namespace Ueh.BackendApi.Migrations
                     b.HasIndex("makhoa");
 
                     b.ToTable("Giangviens", (string)null);
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Ketqua", b =>
+                {
+                    b.Property<Guid>("mapc")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("mssv")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<float?>("tieuchi1")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("tieuchi2")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("tieuchi3")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("tieuchi4")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("tieuchi5")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("tieuchi6")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("tieuchi7")
+                        .HasColumnType("real");
+
+                    b.HasKey("mapc", "mssv");
+
+                    b.HasIndex("mssv");
+
+                    b.ToTable("Ketquas", (string)null);
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Khoa", b =>
@@ -147,6 +459,51 @@ namespace Ueh.BackendApi.Migrations
                     b.HasKey("maloai");
 
                     b.ToTable("Loais", (string)null);
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Phancong", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("macn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("madot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("magv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("maloai")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("mssv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("macn");
+
+                    b.HasIndex("madot");
+
+                    b.HasIndex("magv");
+
+                    b.HasIndex("maloai");
+
+                    b.HasIndex("mssv");
+
+                    b.ToTable("Phancongs", (string)null);
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Review", b =>
@@ -201,10 +558,6 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("chuyennganh")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -213,7 +566,7 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("khoa")
+                    b.Property<string>("ngaysinh")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -234,6 +587,21 @@ namespace Ueh.BackendApi.Migrations
                     b.ToTable("Sinhviens", (string)null);
                 });
 
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienChuyenNganh", b =>
+                {
+                    b.Property<string>("mssv")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("macn")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("mssv", "macn");
+
+                    b.HasIndex("macn");
+
+                    b.ToTable("SinhvienChuyenNganhs", (string)null);
+                });
+
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienDot", b =>
                 {
                     b.Property<string>("mssv")
@@ -247,6 +615,21 @@ namespace Ueh.BackendApi.Migrations
                     b.HasIndex("madot");
 
                     b.ToTable("SinhvienDots", (string)null);
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienKhoa", b =>
+                {
+                    b.Property<string>("mssv")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("makhoa")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("mssv", "makhoa");
+
+                    b.HasIndex("makhoa");
+
+                    b.ToTable("SinhvienKhoas", (string)null);
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienLoai", b =>
@@ -264,14 +647,27 @@ namespace Ueh.BackendApi.Migrations
                     b.ToTable("SinhvienLoais", (string)null);
                 });
 
-            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dangky", b =>
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chitiet", b =>
                 {
-                    b.HasOne("Ueh.BackendApi.Data.Entities.Dot", "dot")
-                        .WithMany()
-                        .HasForeignKey("dotmadot")
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Phancong", "phancong")
+                        .WithMany("chitiets")
+                        .HasForeignKey("mapc")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
+                        .WithMany("chitiets")
+                        .HasForeignKey("mssv")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("phancong");
+
+                    b.Navigation("sinhvien");
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dangky", b =>
+                {
                     b.HasOne("Ueh.BackendApi.Data.Entities.Giangvien", "giangvien")
                         .WithMany("dangkys")
                         .HasForeignKey("magv")
@@ -284,19 +680,9 @@ namespace Ueh.BackendApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
-                        .WithOne("dangky")
-                        .HasForeignKey("Ueh.BackendApi.Data.Entities.Dangky", "mssv")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("dot");
-
                     b.Navigation("giangvien");
 
                     b.Navigation("loai");
-
-                    b.Navigation("sinhvien");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Giangvien", b =>
@@ -320,6 +706,68 @@ namespace Ueh.BackendApi.Migrations
                     b.Navigation("khoa");
                 });
 
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Ketqua", b =>
+                {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Phancong", "phancong")
+                        .WithMany("ketquas")
+                        .HasForeignKey("mapc")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
+                        .WithMany("ketquas")
+                        .HasForeignKey("mssv")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("phancong");
+
+                    b.Navigation("sinhvien");
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Phancong", b =>
+                {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Chuyennganh", "chuyennganh")
+                        .WithMany("phanCongs")
+                        .HasForeignKey("macn")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Dot", "dot")
+                        .WithMany("phanCongs")
+                        .HasForeignKey("madot")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Giangvien", "Giangvien")
+                        .WithMany("phancongs")
+                        .HasForeignKey("magv")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Loai", "loai")
+                        .WithMany("phanCongs")
+                        .HasForeignKey("maloai")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "Sinhvien")
+                        .WithMany("phancongs")
+                        .HasForeignKey("mssv")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Giangvien");
+
+                    b.Navigation("Sinhvien");
+
+                    b.Navigation("chuyennganh");
+
+                    b.Navigation("dot");
+
+                    b.Navigation("loai");
+                });
+
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Review", b =>
                 {
                     b.HasOne("Ueh.BackendApi.Data.Entities.Reviewer", "reviewer")
@@ -335,6 +783,25 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired();
 
                     b.Navigation("reviewer");
+
+                    b.Navigation("sinhvien");
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienChuyenNganh", b =>
+                {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Chuyennganh", "chuyennganh")
+                        .WithMany("sinhvienChuyenNganhs")
+                        .HasForeignKey("macn")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
+                        .WithMany("sinhvienchuyennganhs")
+                        .HasForeignKey("mssv")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("chuyennganh");
 
                     b.Navigation("sinhvien");
                 });
@@ -358,6 +825,25 @@ namespace Ueh.BackendApi.Migrations
                     b.Navigation("sinhvien");
                 });
 
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienKhoa", b =>
+                {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Khoa", "khoa")
+                        .WithMany("sinhvienKhoas")
+                        .HasForeignKey("makhoa")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
+                        .WithMany("sinhvienkhoas")
+                        .HasForeignKey("mssv")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("khoa");
+
+                    b.Navigation("sinhvien");
+                });
+
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.SinhvienLoai", b =>
                 {
                     b.HasOne("Ueh.BackendApi.Data.Entities.Loai", "loai")
@@ -367,9 +853,9 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired();
 
                     b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
-                        .WithMany("sinhvienloais")
+                        .WithMany()
                         .HasForeignKey("mssv")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("loai");
@@ -380,28 +866,47 @@ namespace Ueh.BackendApi.Migrations
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chuyennganh", b =>
                 {
                     b.Navigation("giangviens");
+
+                    b.Navigation("phanCongs");
+
+                    b.Navigation("sinhvienChuyenNganhs");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dot", b =>
                 {
+                    b.Navigation("phanCongs");
+
                     b.Navigation("sinhviendots");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Giangvien", b =>
                 {
                     b.Navigation("dangkys");
+
+                    b.Navigation("phancongs");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Khoa", b =>
                 {
                     b.Navigation("giangviens");
+
+                    b.Navigation("sinhvienKhoas");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Loai", b =>
                 {
                     b.Navigation("dangkies");
 
+                    b.Navigation("phanCongs");
+
                     b.Navigation("sinhvienloais");
+                });
+
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Phancong", b =>
+                {
+                    b.Navigation("chitiets");
+
+                    b.Navigation("ketquas");
                 });
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Reviewer", b =>
@@ -411,14 +916,19 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Sinhvien", b =>
                 {
-                    b.Navigation("dangky")
-                        .IsRequired();
+                    b.Navigation("chitiets");
+
+                    b.Navigation("ketquas");
+
+                    b.Navigation("phancongs");
 
                     b.Navigation("reviews");
 
+                    b.Navigation("sinhvienchuyennganhs");
+
                     b.Navigation("sinhviendots");
 
-                    b.Navigation("sinhvienloais");
+                    b.Navigation("sinhvienkhoas");
                 });
 #pragma warning restore 612, 618
         }

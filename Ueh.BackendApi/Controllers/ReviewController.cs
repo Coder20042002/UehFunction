@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
-using Ueh.BackendApi.Repositorys;
+using Ueh.BackendApi.IRepositorys;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -68,7 +68,7 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateReview([FromQuery] string reviewerId, [FromQuery] string mssv, [FromBody] ReviewDto reviewCreate)
+        public async Task<IActionResult> CreateReview([FromQuery] string reviewerId, [FromQuery] string mssv, [FromBody] ReviewDto reviewCreate)
         {
             if (reviewCreate == null)
                 return BadRequest(ModelState);
@@ -79,7 +79,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (reviews != null)
             {
-                ModelState.AddModelError("", "Review already exists");
+                ModelState.AddModelError("", "Đánh giá đã tồn tại");
                 return StatusCode(422, ModelState);
             }
 
@@ -88,17 +88,17 @@ namespace Ueh.BackendApi.Controllers
 
             var reviewMap = _mapper.Map<Review>(reviewCreate);
 
-            reviewMap.sinhvien = _sinhvienRepository.GetSinhvien(mssv);
+            reviewMap.sinhvien = await _sinhvienRepository.GetSinhvien(mssv);
             reviewMap.reviewer = _reviewerRepository.GetReviewer(reviewerId);
 
 
             if (!_reviewRepository.CreateReview(reviewMap))
             {
-                ModelState.AddModelError("", "Something went wrong while savin");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok("Thêm thành công");
         }
 
         [HttpPut("{reviewId}")]
@@ -123,7 +123,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (!_reviewRepository.UpdateReview(reviewMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating review");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật đánh giá");
                 return StatusCode(500, ModelState);
             }
 
@@ -148,7 +148,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (!_reviewRepository.DeleteReview(reviewToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting owner");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa chủ sở hữu");
             }
 
             return NoContent();

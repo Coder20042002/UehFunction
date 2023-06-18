@@ -1,5 +1,7 @@
-﻿using Ueh.BackendApi.Data.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
+using Ueh.BackendApi.IRepositorys;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -11,51 +13,51 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-        public bool CreateDot(Dot dot)
+        public async Task<bool> CreateDot(Dot dot)
         {
             _context.Add(dot);
-            return Save();
+            return await Save();
         }
 
-        public bool DeleteDot(Dot dot)
+        public async Task<bool> DeleteDot(Dot dot)
         {
             _context.Remove(dot);
-            return Save();
+            return await Save();
         }
 
-        public bool DotExists(string id)
+        public async Task<bool> DotExists(string id)
         {
-            return _context.Dots.Any(c => c.madot == id);
+            return await _context.Dots.AnyAsync(c => c.madot == id);
         }
 
-        public ICollection<Dot> GetAllDot()
+        public async Task<ICollection<Dot>> GetAllDot()
         {
-            return _context.Dots.ToList();
+            return await _context.Dots.ToListAsync();
         }
 
 
 
-        public Dot GetDot(string id)
+        public async Task<Dot> GetDot(string id)
         {
-            return _context.Dots.Where(e => e.madot == id).FirstOrDefault();
+            return await _context.Dots.Where(e => e.madot == id).FirstOrDefaultAsync();
 
         }
 
-        public ICollection<Sinhvien> GetSinhvienByDot(string dotId)
+        public async Task<ICollection<Sinhvien>> GetSinhvienByDot(string dotId)
         {
-            return _context.SinhvienDot.Where(e => e.madot == dotId).Select(c => c.sinhvien).ToList();
+            return await _context.SinhvienDots.Where(e => e.madot == dotId).Select(c => c.sinhvien).ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateDot(Dot dot)
+        public async Task<bool> UpdateDot(Dot dot)
         {
             _context.Update(dot);
-            return Save();
+            return await Save();
         }
     }
 }

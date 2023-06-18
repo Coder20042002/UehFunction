@@ -1,5 +1,6 @@
 ﻿using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
+using Ueh.BackendApi.IRepositorys;
 
 namespace Ueh.BackendApi.Repositorys
 {

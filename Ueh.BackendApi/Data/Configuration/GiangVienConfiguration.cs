@@ -16,6 +16,7 @@ namespace Ueh.BackendApi.Data.Configuration
         {
             builder.ToTable("Giangviens");
             builder.HasKey(x => x.magv);
+
             builder.HasOne(x => x.khoa)
                 .WithMany(x => x.giangviens)
                 .HasForeignKey(x => x.makhoa)

@@ -6,13 +6,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="lib.ueh" Version="1.0.5" />
-		<PackageReference Include="ServiceStack" Version="6.8.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Controllers\" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ueh.BackendApi\Ueh.BackendApi.csproj" />
+  </ItemGroup>
 
 </Project>

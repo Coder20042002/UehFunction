@@ -12,16 +12,20 @@ namespace Ueh.BackendApi.Data.Entities
         public string email { get; set; }
         public string hoten { get; set; }
         public string tenlop { get; set; }
-        public string khoa { get; set; }
-        public string chuyennganh { get; set; }
-        public string status { get; set; }
+        public string ngaysinh { get; set; }
         public string sdt { get; set; }
         public string HDT { get; set; }
+        public string status { get; set; }
 
         public ICollection<Review> reviews { get; set; }
-        public Dangky dangky { get; set; }
-        public ICollection<SinhvienLoai> sinhvienloais { get; set; }
         public ICollection<SinhvienDot> sinhviendots { get; set; }
+        public ICollection<Phancong> phancongs { get; set; }
+        public ICollection<SinhvienKhoa> sinhvienkhoas { get; set; }
+        public ICollection<SinhvienChuyenNganh> sinhvienchuyennganhs { get; set; }
+        public ICollection<Chitiet> chitiets { get; set; }
+        public ICollection<Ketqua> ketquas { get; set; }
+
+
     }
 
 }

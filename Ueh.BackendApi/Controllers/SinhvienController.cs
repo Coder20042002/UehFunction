@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
+using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
 
 namespace Ueh.BackendApi.Controllers
@@ -24,9 +25,9 @@ namespace Ueh.BackendApi.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Sinhvien>))]
-        public IActionResult GetSinhviens()
+        public async Task<IActionResult> GetSinhviens()
         {
-            var Sinhviens = _mapper.Map<List<SinhvienDto>>(_sinhvienRepository.GetSinhviens());
+            var Sinhviens = _mapper.Map<List<SinhvienDto>>(await _sinhvienRepository.GetSinhviens());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -37,12 +38,12 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("{mssv}")]
         [ProducesResponseType(200, Type = typeof(Sinhvien))]
         [ProducesResponseType(400)]
-        public IActionResult GetSinhvien(string mssv)
+        public async Task<IActionResult> GetSinhvien(string mssv)
         {
-            if (!_sinhvienRepository.SinhvienExists(mssv))
+            if (!await _sinhvienRepository.SinhvienExists(mssv))
                 return NotFound();
 
-            var Sinhvien = _mapper.Map<SinhvienDto>(_sinhvienRepository.GetSinhvien(mssv));
+            var Sinhvien = _mapper.Map<SinhvienDto>(await _sinhvienRepository.GetSinhvien(mssv));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -55,16 +56,16 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateSinhvien([FromQuery] string madot, [FromQuery] string maloai, [FromBody] SinhvienDto SinhvienCreate)
+        public async Task<IActionResult> CreateSinhvien([FromQuery] string madot, [FromQuery] string makhoa, [FromBody] SinhvienDto SinhvienCreate)
         {
             if (SinhvienCreate == null)
                 return BadRequest(ModelState);
 
-            bool Sinhviens = _sinhvienRepository.SinhvienExists(SinhvienCreate.mssv);
+            bool Sinhviens = await _sinhvienRepository.SinhvienExists(SinhvienCreate.mssv);
 
             if (Sinhviens == true)
             {
-                ModelState.AddModelError("", "Sinhvien already exists");
+                ModelState.AddModelError("", "Sinhvien đã tồn tại");
                 return StatusCode(422, ModelState);
             }
 
@@ -74,9 +75,9 @@ namespace Ueh.BackendApi.Controllers
             var SinhvienMap = _mapper.Map<Sinhvien>(SinhvienCreate);
 
 
-            if (!_sinhvienRepository.CreateSinhvien(madot, maloai, SinhvienMap))
+            if (!await _sinhvienRepository.CreateSinhvien(madot, makhoa, SinhvienMap))
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
+                ModelState.AddModelError("", "Xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
@@ -87,8 +88,8 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateSinhvien(string mssv,
-            [FromQuery] string madot, [FromQuery] string maloai,
+        public async Task<IActionResult> UpdateSinhvien(string mssv,
+            [FromQuery] string madot, [FromQuery] string makhoa,
             [FromBody] SinhvienDto updatedSinhvien)
         {
             if (updatedSinhvien == null)
@@ -97,7 +98,7 @@ namespace Ueh.BackendApi.Controllers
             if (mssv != updatedSinhvien.mssv)
                 return BadRequest(ModelState);
 
-            if (!_sinhvienRepository.SinhvienExists(mssv))
+            if (!await _sinhvienRepository.SinhvienExists(mssv))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -105,9 +106,9 @@ namespace Ueh.BackendApi.Controllers
 
             var SinhvienMap = _mapper.Map<Sinhvien>(updatedSinhvien);
 
-            if (!_sinhvienRepository.UpdateSinhvien(madot, maloai, SinhvienMap))
+            if (!await _sinhvienRepository.UpdateSinhvien(madot, makhoa, SinhvienMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating ");
+                ModelState.AddModelError("", "Xảy ra lỗi khi update ");
                 return StatusCode(500, ModelState);
             }
 
@@ -118,30 +119,58 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteSinhvien(string mssv)
+        public async Task<IActionResult> DeleteSinhvien(string mssv)
         {
-            if (!_sinhvienRepository.SinhvienExists(mssv))
+            if (!await _sinhvienRepository.SinhvienExists(mssv))
             {
                 return NotFound();
             }
 
             var reviewsToDelete = _reviewRepository.GetReviewsOfASinhvien(mssv);
-            var SinhvienToDelete = _sinhvienRepository.GetSinhvien(mssv);
+            var SinhvienToDelete = await _sinhvienRepository.GetSinhvien(mssv);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             if (!_reviewRepository.DeleteReviews(reviewsToDelete.ToList()))
             {
-                ModelState.AddModelError("", "Something went wrong when deleting reviews");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa bài đánh giá");
             }
 
-            if (!_sinhvienRepository.DeleteSinhvien(SinhvienToDelete))
+            if (!await _sinhvienRepository.DeleteSinhvien(SinhvienToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting ");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa ");
             }
 
             return NoContent();
         }
+
+        [HttpPost("formFile")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> ImportExcelFile([FromQuery] string madot, [FromQuery] string makhoa, IFormFile formFile)
+        {
+            try
+            {
+                bool success = await _sinhvienRepository.ImportExcelFile(madot, makhoa, formFile);
+                if (success)
+                {
+                    return Ok("Import successful");
+                }
+                else
+                {
+                    return BadRequest("Import failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Something went wrong: {ex.Message}");
+            }
+
+            // Trường hợp không xử lý được, trả về BadRequest
+            return BadRequest("Unknown error occurred");
+        }
+
+
     }
 }
