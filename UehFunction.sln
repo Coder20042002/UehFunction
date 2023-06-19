@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ueh.BackendApi", "Ueh.BackendApi\Ueh.BackendApi.csproj", "{6E7B0DB9-C8D7-4E88-98E5-D73FAFEF1B7C}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ueh.Admin", "Ueh.Admin\Ueh.Admin.csproj", "{558B2BFD-A8D3-4A88-97CC-66E9A620ED2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ueh.WebApp", "Ueh.WebApp\Ueh.WebApp.csproj", "{CBFAFB20-A35D-4FDD-8AD6-819B1D1A3EDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ueh.WebApp", "Ueh.WebApp\Ueh.WebApp.csproj", "{CBFAFB20-A35D-4FDD-8AD6-819B1D1A3EDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E7B0DB9-C8D7-4E88-98E5-D73FAFEF1B7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E7B0DB9-C8D7-4E88-98E5-D73FAFEF1B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E7B0DB9-C8D7-4E88-98E5-D73FAFEF1B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E7B0DB9-C8D7-4E88-98E5-D73FAFEF1B7C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{558B2BFD-A8D3-4A88-97CC-66E9A620ED2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{558B2BFD-A8D3-4A88-97CC-66E9A620ED2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{558B2BFD-A8D3-4A88-97CC-66E9A620ED2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
