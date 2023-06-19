@@ -93,11 +93,11 @@ namespace Ueh.BackendApi.Controllers
             bool createdot = await _dotRepository.CreateDot(dotMap);
             if (!createdot)
             {
-                ModelState.AddModelError("", "Something went wrong while savin");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok("Tạo thành công");
         }
 
         [HttpPut("{dotId}")]
@@ -124,7 +124,7 @@ namespace Ueh.BackendApi.Controllers
             bool update = await _dotRepository.UpdateDot(dotMap);
             if (!update)
             {
-                ModelState.AddModelError("", "Something went wrong updating ");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                 return StatusCode(500, ModelState);
             }
 
@@ -151,7 +151,7 @@ namespace Ueh.BackendApi.Controllers
             bool delete = await _dotRepository.DeleteDot(dotToDelete);
             if (!delete)
             {
-                ModelState.AddModelError("", "Something went wrong deleting ");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi xoá ");
             }
 
             return NoContent();
