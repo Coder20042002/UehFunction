@@ -81,7 +81,7 @@ namespace Ueh.BackendApi.Controllers
 
             if (dot != null)
             {
-                ModelState.AddModelError("", "Dot already exists");
+                ModelState.AddModelError("", "Đã tồn tại");
                 return StatusCode(422, ModelState);
             }
 
