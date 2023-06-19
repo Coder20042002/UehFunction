@@ -15,13 +15,13 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
+
         public async Task<bool> CreateDangky(Dangky Dangky)
         {
             var Dangkykhoa = await _context.Dangkys.Where(a => a.mssv == Dangky.mssv).FirstOrDefaultAsync();
 
             if (Dangkykhoa == null)
                 _context.Add(Dangky);
-
             return await Save();
         }
 
@@ -87,7 +87,7 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 2].Value?.ToString();
-                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true"); ;
+                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true"); 
 
                             if (existing != false)
                             {

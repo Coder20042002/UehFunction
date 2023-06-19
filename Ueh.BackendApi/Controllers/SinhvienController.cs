@@ -155,20 +155,20 @@ namespace Ueh.BackendApi.Controllers
                 bool success = await _sinhvienRepository.ImportExcelFile(madot, makhoa, formFile);
                 if (success)
                 {
-                    return Ok("Import successful");
+                    return Ok("Import thành công");
                 }
                 else
                 {
-                    return BadRequest("Import failed");
+                    return BadRequest("Import thất bại");
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest($"Something went wrong: {ex.Message}");
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
             }
 
             // Trường hợp không xử lý được, trả về BadRequest
-            return BadRequest("Unknown error occurred");
+            return BadRequest("Xảy ra lỗi không xác định được");
         }
 
 

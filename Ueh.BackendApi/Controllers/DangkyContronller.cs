@@ -59,20 +59,20 @@ namespace Ueh.BackendApi.Controllers
                 bool success = await _DangkyRepository.ImportExcelFile(formFile);
                 if (success)
                 {
-                    return Ok("Import successful"); // Trả về thông báo thành công
+                    return Ok("Import thành công"); // Trả về thông báo thành công
                 }
                 else
                 {
-                    return BadRequest("Import failed"); // Trả về thông báo lỗi
+                    return BadRequest("Import thất bại"); // Trả về thông báo lỗi
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest($"Something went wrong: {ex.Message}");
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
             }
 
             // Trường hợp không xử lý được, trả về BadRequest
-            return BadRequest("Unknown error occurred");
+            return BadRequest("Xảy ra lỗi không xác định được");
         }
 
         [HttpGet("generate")]
@@ -89,12 +89,12 @@ namespace Ueh.BackendApi.Controllers
                 }
                 else
                 {
-                    return BadRequest("No data available to export.");
+                    return BadRequest("Không có dữ liệu để xuất.");
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest($"Something went wrong: {ex.Message}");
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
             }
         }
 

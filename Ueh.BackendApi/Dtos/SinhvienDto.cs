@@ -9,7 +9,7 @@
         public string ngaysinh { get; set; }
         public string sdt { get; set; }
         public string HDT { get; set; }
-        public string status { get; set; }
+        public string status { get; set; } = "true";
 
     }
 }

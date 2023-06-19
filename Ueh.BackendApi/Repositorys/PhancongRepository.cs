@@ -58,7 +58,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<ICollection<Phancong>> GetPhancongs()
         {
-            return await _context.Phancongs.OrderBy(s => s.mssv).ToListAsync();
+            return await _context.Phancongs.Where(s=> s.status == "true").OrderBy(s => s.mssv).ToListAsync();
         }
 
         public async Task<bool> Save()
@@ -100,9 +100,9 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 2].Value?.ToString();
-                            bool existingPhancong = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true"); ;
+                            bool existing = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true");
 
-                            if (existingPhancong != false)
+                            if (existing != false)
                             {
                                 // Nếu MSSV đã tồn tại, bỏ qua sinh viên này và tiếp tục với dòng tiếp theo
                                 continue;
@@ -118,7 +118,21 @@ namespace Ueh.BackendApi.Repositorys
                                 madot = worksheet.Cells[row, 6].Value?.ToString(),
                             };
 
-                            await _context.Phancongs.AddRangeAsync(phanconglist);
+                            var ketqua = new Ketqua
+                            {
+                                mapc = phanconglist.Id,
+                                mssv = phanconglist.mssv,
+                            };
+                            var chitiet = new Chitiet
+                            {
+                                mapc = phanconglist.Id,
+                                mssv = phanconglist.mssv,
+                            };
+
+                            _context.Add(ketqua);
+                            _context.Add(chitiet);
+
+                            await _context.Phancongs.AddAsync(phanconglist);
                         }
 
                         return await Save();
@@ -190,6 +204,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<ICollection<Phancong>> GetPhanCongByMaGV(string magv)
         {
+
             var phanconglist = await _context.Phancongs
                 .Where(p => p.magv == magv)
                 .ToListAsync();

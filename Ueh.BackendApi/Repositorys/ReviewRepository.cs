@@ -18,7 +18,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public bool CreateReview(Review review)
         {
-            
+
             _context.Add(review);
             return Save();
         }
@@ -37,7 +37,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public Review GetReview(string reviewId)
         {
-            return _context.Reviews.Where(r => r.Id.ToString() == reviewId).FirstOrDefault();
+            return _context.Reviews.Where(r => r.Id == reviewId).FirstOrDefault();
         }
 
         public ICollection<Review> GetReviews()
@@ -52,7 +52,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public bool ReviewExists(string reviewId)
         {
-            return _context.Reviews.Any(r => r.Id.ToString() == reviewId);
+            return _context.Reviews.Any(r => r.Id == reviewId);
         }
 
         public bool Save()

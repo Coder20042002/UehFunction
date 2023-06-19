@@ -4,7 +4,7 @@ using ServiceStack.Host;
 
 namespace Ueh.WebApp.Controllers
 {
-    public class AccountController : Controller
+    public class UserController : Controller
     {
         public IActionResult Index()
         {
