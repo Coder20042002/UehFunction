@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Ueh.WebApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,9 +21,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-// app.UseAuthorization();
-// app.UseSession();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
