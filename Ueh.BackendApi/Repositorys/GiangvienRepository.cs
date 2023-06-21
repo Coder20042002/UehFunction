@@ -1,4 +1,6 @@
-﻿using Ueh.BackendApi.Data.EF;
+﻿using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
@@ -13,71 +15,103 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-        public bool CreateGiangvien(Giangvien Giangvien)
+        public async Task<bool> CreateGiangvien(string makhoa, Giangvien Giangvien)
         {
-            var giangvienkhoa = _context.Khoas.Where(a => a.makhoa == Giangvien.makhoa).FirstOrDefault();
-            var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
-            var giangvienreviewer = new Reviewer()
-            {
-                id = Giangvien.magv,
-                hoten = Giangvien.tengv
-            };
-            _context.Add(giangvienreviewer);
+            var giangvienkhoa = await _context.Khoas.Where(a => a.makhoa == Giangvien.makhoa).FirstOrDefaultAsync();
+            //var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
 
-            if (giangvienkhoa != null && giangvienchuyennganh != null)
+
+            if (giangvienkhoa != null)
                 _context.Add(Giangvien);
 
-            return Save();
+            return await Save();
         }
 
-        public bool DeleteGiangvien(Giangvien Giangvien)
+        public Task<bool> DeleteGiangvien(Giangvien Giangvien)
         {
             Giangvien.status = "false";
             _context.Update(Giangvien);
             return Save();
         }
 
-        public Giangvien GetGiangvienTrimToUpper(GiangvienDto GiangvienCreate)
+
+
+        public async Task<Giangvien> GetGiangvien(string magv)
         {
-            return GetGiangviens().Where(c => c.magv.Trim().ToUpper() == GiangvienCreate.tengv.TrimEnd().ToUpper())
-                .FirstOrDefault();
+            return await _context.Giangviens.Where(s => s.magv == magv).FirstOrDefaultAsync();
         }
 
-        public Giangvien GetGiangvien(string magv)
+        public async Task<Giangvien> GetGiangvienName(string name)
         {
-            return _context.Giangviens.Where(s => s.magv == magv).FirstOrDefault();
-        }
-
-        public Giangvien GetGiangvienName(string name)
-        {
-            return _context.Giangviens.Where(s => s.tengv == name).FirstOrDefault();
+            return await _context.Giangviens.Where(s => s.tengv == name).FirstOrDefaultAsync();
 
         }
 
-        public ICollection<Giangvien> GetGiangviens()
+        public async Task<ICollection<Giangvien>> GetGiangviens()
         {
-            return _context.Giangviens.OrderBy(s => s.magv).ToList();
+            return await _context.Giangviens.OrderBy(s => s.magv).ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
-        public bool GiangvienExists(string magv)
+        public async Task<bool> GiangvienExists(string magv)
         {
-            return _context.Giangviens.Any(s => s.magv == magv);
+            return await _context.Giangviens.AnyAsync(s => s.magv == magv);
         }
 
-        public bool UpdateGiangvien(Giangvien Giangvien)
+        public async Task<bool> UpdateGiangvien(Giangvien Giangvien)
         {
-            var giangvienkhoa = _context.Khoas.Where(a => a.makhoa == Giangvien.makhoa).FirstOrDefault();
-            var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
+            var giangvienkhoa = await _context.Khoas.Where(a => a.makhoa == Giangvien.makhoa).FirstOrDefaultAsync();
+            //var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
 
-            if (giangvienkhoa != null && giangvienchuyennganh != null)
+            if (giangvienkhoa != null)
                 _context.Update(Giangvien);
-            return Save();
+            return await Save();
+        }
+
+        public async Task<bool> ImportExcelFile(string khoa, IFormFile formFile)
+        {
+            if (formFile != null && formFile.Length > 0)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    formFile.CopyTo(stream);
+
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+                        var rowCount = worksheet.Dimension.Rows;
+
+                        for (int row = 2; row <= rowCount; row++)
+                        {
+                            var magv = worksheet.Cells[row, 2].Value?.ToString();
+                            bool existing = await _context.Giangviens.AnyAsync(g => g.magv == magv && g.status == "true");
+
+                            if (existing != false)
+                            {
+                                continue;
+                            }
+                            var giangvien = new Giangvien
+                            {
+                                magv = magv,
+                                tengv = worksheet.Cells[row, 3].Value?.ToString(),
+                                sdt = worksheet.Cells[row, 4].Value?.ToString(),
+                                email = worksheet.Cells[row, 5].Value?.ToString(),
+                            };
+
+                            await _context.Giangviens.AddAsync(giangvien);
+                        }
+
+                        return await Save();
+                    }
+                }
+
+            }
+            return false;
         }
     }
 }

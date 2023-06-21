@@ -30,12 +30,19 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Phancong>))]
         public async Task<IActionResult> GetPhancongs()
         {
-            var Phancongs = _mapper.Map<List<PhancongDto>>(await _PhancongRepository.GetPhancongs());
+            try
+            {
+                var Phancongs = _mapper.Map<List<PhancongDto>>(await _PhancongRepository.GetPhancongs());
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            return Ok(Phancongs);
+                return Ok(Phancongs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
         }
 
         [HttpGet("{mssv}")]
@@ -43,15 +50,23 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetPhancong(string mssv)
         {
-            if (!await _PhancongRepository.PhancongExists(mssv))
-                return NotFound();
+            try
+            {
+                if (!await _PhancongRepository.PhancongExists(mssv))
+                    return NotFound();
 
-            var Phancong = _mapper.Map<PhancongDto>(await _PhancongRepository.GetPhancong(mssv));
+                var Phancong = _mapper.Map<PhancongDto>(await _PhancongRepository.GetPhancong(mssv));
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            return Ok(Phancong);
+                return Ok(Phancong);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+
         }
 
         [HttpPost("formFile")]
@@ -110,30 +125,38 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreatePhancong([FromBody] PhancongDto PhancongCreate)
         {
-            if (PhancongCreate == null)
-                return BadRequest(ModelState);
-
-            bool Phancongs = await _PhancongRepository.PhancongExists(PhancongCreate.mssv);
-
-            if (Phancongs == true)
+            try
             {
-                ModelState.AddModelError("", " Sinh vien đã được đăng ký");
-                return StatusCode(422, ModelState);
+                if (PhancongCreate == null)
+                    return BadRequest(ModelState);
+
+                bool Phancongs = await _PhancongRepository.PhancongExists(PhancongCreate.mssv);
+
+                if (Phancongs == true)
+                {
+                    ModelState.AddModelError("", " Sinh vien đã được đăng ký");
+                    return StatusCode(422, ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var PhancongMap = _mapper.Map<Phancong>(PhancongCreate);
+
+
+                if (!await _PhancongRepository.CreatePhancong(PhancongMap))
+                {
+                    ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok(PhancongMap);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
             }
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var PhancongMap = _mapper.Map<Phancong>(PhancongCreate);
-
-
-            if (!await _PhancongRepository.CreatePhancong(PhancongMap))
-            {
-                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
-                return StatusCode(500, ModelState);
-            }
-
-            return Ok(PhancongMap);
         }
 
         [HttpPut("{mssv}")]
@@ -143,27 +166,35 @@ namespace Ueh.BackendApi.Controllers
         public async Task<IActionResult> UpdatePhancong(string mssv,
             [FromBody] PhancongDto updatedPhancong)
         {
-            if (updatedPhancong == null)
-                return BadRequest(ModelState);
-
-            if (mssv != updatedPhancong.mssv)
-                return BadRequest(ModelState);
-
-            if (!await _PhancongRepository.PhancongExists(mssv))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var PhancongMap = _mapper.Map<Phancong>(updatedPhancong);
-
-            if (!await _PhancongRepository.UpdatePhancong(PhancongMap))
+            try
             {
-                ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
-                return StatusCode(500, ModelState);
+                if (updatedPhancong == null)
+                    return BadRequest(ModelState);
+
+                if (mssv != updatedPhancong.mssv)
+                    return BadRequest(ModelState);
+
+                if (!await _PhancongRepository.PhancongExists(mssv))
+                    return NotFound();
+
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                var PhancongMap = _mapper.Map<Phancong>(updatedPhancong);
+
+                if (!await _PhancongRepository.UpdatePhancong(PhancongMap))
+                {
+                    ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
+                    return StatusCode(500, ModelState);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
             }
 
-            return NoContent();
         }
 
         [HttpDelete("{mssv}")]
@@ -172,34 +203,50 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeletePhancong(string mssv)
         {
-            if (!await _PhancongRepository.PhancongExists(mssv))
+            try
             {
-                return NotFound();
+                if (!await _PhancongRepository.PhancongExists(mssv))
+                {
+                    return NotFound();
+                }
+                var PhancongToDelete = await _PhancongRepository.GetPhancong(mssv);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+
+
+                if (!await _PhancongRepository.DeletePhancong(PhancongToDelete))
+                {
+                    ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa");
+                }
+
+                return NoContent();
             }
-            var PhancongToDelete = await _PhancongRepository.GetPhancong(mssv);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-
-
-            if (!await _PhancongRepository.DeletePhancong(PhancongToDelete))
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa");
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
             }
 
-            return NoContent();
         }
 
         [HttpGet("search")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Phancong>))]
         public async Task<ActionResult<List<Phancong>>> SearchByTenSinhVien([FromQuery(Name = "tensinhvien")] string tenSinhVien)
         {
-            var phanCongList = await _PhancongRepository.SearchByTenSinhVien(tenSinhVien);
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                var phanCongList = await _PhancongRepository.SearchByTenSinhVien(tenSinhVien);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            return Ok(phanCongList);
+                return Ok(phanCongList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+
         }
 
 
@@ -207,12 +254,20 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<PhancongDto>))]
         public async Task<ActionResult<ICollection<PhancongDto>>> GetPhanCongByMaGV(string magv)
         {
-            var phanCongList = await _PhancongRepository.GetPhanCongByMaGV(magv);
-            var phanCongDtoList = _mapper.Map<List<PhancongDto>>(phanCongList);
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                var phanCongList = await _PhancongRepository.GetPhanCongByMaGV(magv);
+                var phanCongDtoList = _mapper.Map<List<PhancongDto>>(phanCongList);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            return Ok(phanCongDtoList);
+                return Ok(phanCongDtoList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+
         }
 
     }

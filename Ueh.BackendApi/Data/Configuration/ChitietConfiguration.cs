@@ -9,9 +9,8 @@ namespace Ueh.BackendApi.Data.Configuration
         public void Configure(EntityTypeBuilder<Chitiet> builder)
         {
             builder.ToTable("Chitiets");
-            builder.HasKey(ct => new { ct.mapc, ct.mssv });
+            builder.HasKey(ct => new { ct.mapc });
 
-            builder.HasOne(ct => ct.sinhvien).WithMany(sv => sv.chitiets).HasForeignKey(ct => ct.mssv);
             builder.HasOne(ct => ct.phancong).WithMany(pc => pc.chitiets).HasForeignKey(ct => ct.mapc);
 
         }

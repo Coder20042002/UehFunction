@@ -20,13 +20,12 @@ namespace Ueh.BackendApi.Repositorys
             var ketqua = new Ketqua
             {
                 mapc = phancong.Id,
-                mssv = phancong.mssv,
             };
             var chitiet = new Chitiet
             {
                 mapc = phancong.Id,
-                mssv = phancong.mssv,
             };
+
 
             if (Phancongkhoa == null)
             {
@@ -58,7 +57,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<ICollection<Phancong>> GetPhancongs()
         {
-            return await _context.Phancongs.Where(s=> s.status == "true").OrderBy(s => s.mssv).ToListAsync();
+            return await _context.Phancongs.Where(s => s.status == "true").OrderBy(s => s.mssv).ToListAsync();
         }
 
         public async Task<bool> Save()
@@ -121,12 +120,10 @@ namespace Ueh.BackendApi.Repositorys
                             var ketqua = new Ketqua
                             {
                                 mapc = phanconglist.Id,
-                                mssv = phanconglist.mssv,
                             };
                             var chitiet = new Chitiet
                             {
                                 mapc = phanconglist.Id,
-                                mssv = phanconglist.mssv,
                             };
 
                             _context.Add(ketqua);
@@ -146,8 +143,9 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<byte[]> ExportToExcel()
         {
             var Phancongs = await _context.Phancongs
-                .Include(d => d.Sinhvien)
-                .Include(d => d.Giangvien)
+                .Include(d => d.sinhvien)
+                .Include(d => d.giangvien)
+                .OrderBy(d => d.giangvien.tengv)
                 .ToListAsync();
 
             // Tạo một package Excel
@@ -160,8 +158,8 @@ namespace Ueh.BackendApi.Repositorys
                 worksheet.Cells["A1"].Value = "STT";
                 worksheet.Cells["B1"].Value = "MSSV";
                 worksheet.Cells["C1"].Value = "Lớp Sinh Viên";
-                worksheet.Cells["D1"].Value = "Họ Tên Sinh Viên";
-                worksheet.Cells["E1"].Value = "Ngày Sinh";
+                worksheet.Cells["D1"].Value = "Họ";
+                worksheet.Cells["E1"].Value = "Tên";
                 worksheet.Cells["F1"].Value = "Giáo Viên Hướng Dẫn";
 
                 // Ghi dữ liệu vào worksheet
@@ -175,10 +173,10 @@ namespace Ueh.BackendApi.Repositorys
                     }
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
                     worksheet.Cells[$"B{rowIndex}"].Value = Phancong.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = Phancong.Sinhvien?.tenlop;
-                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.Sinhvien?.hoten;
-                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.Sinhvien?.ngaysinh;
-                    worksheet.Cells[$"F{rowIndex}"].Value = Phancong.Giangvien?.tengv;
+                    worksheet.Cells[$"C{rowIndex}"].Value = Phancong.sinhvien?.thuoclop;
+                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.sinhvien?.firstName;
+                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.sinhvien?.lastName;
+                    worksheet.Cells[$"F{rowIndex}"].Value = Phancong.giangvien?.tengv;
 
                     rowIndex++;
                 }
@@ -195,8 +193,8 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<ICollection<Phancong>> SearchByTenSinhVien(string tenSinhVien)
         {
             var result = await _context.Phancongs
-                        .Include(p => p.Sinhvien)
-                        .Where(p => p.Sinhvien.hoten.Contains(tenSinhVien))
+                        .Include(p => p.sinhvien)
+                        .Where(p => p.sinhvien.lastName.Contains(tenSinhVien))
                         .ToListAsync();
 
             return result;
@@ -210,5 +208,7 @@ namespace Ueh.BackendApi.Repositorys
                 .ToListAsync();
             return phanconglist;
         }
+
+
     }
 }

@@ -23,16 +23,16 @@ namespace Ueh.BackendApi.Repositorys
             return ketQuaList;
         }
 
-        public async Task<ICollection<Chitiet>> GetChitiet()
+        public async Task<ICollection<Chitiet>> GetChitiets()
         {
             var phanCongIds = await _context.Phancongs.Where(ct => ct.status == "true").Select(ct => ct.Id).ToListAsync();
-            return await _context.Chitiets.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mssv).ToListAsync();
+            return await _context.Chitiets.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mapc).ToListAsync();
         }
 
-        public async Task<Chitiet> GetChitiet(string mssv)
+        public async Task<Chitiet> GetChitiet(Guid mapc)
         {
             var phanCongIds = await _context.Phancongs.Where(ct => ct.status == "true").Select(ct => ct.Id).ToListAsync();
-            return await _context.Chitiets.Where(kq => kq.mssv == mssv && phanCongIds.Contains(kq.mapc)).FirstOrDefaultAsync();
+            return await _context.Chitiets.Where(kq => kq.mapc == mapc && phanCongIds.Contains(kq.mapc)).FirstOrDefaultAsync();
         }
 
         public async Task<bool> Save()
@@ -41,10 +41,10 @@ namespace Ueh.BackendApi.Repositorys
             return await saved > 0 ? true : false;
         }
 
-        public async Task<bool> ChitietExists(string mssv)
+        public async Task<bool> ChitietExists(Guid mapc)
         {
             var phanCongIds = await _context.Phancongs.Where(ct => ct.status == "true").Select(ct => ct.Id).ToListAsync();
-            return await _context.Chitiets.AnyAsync(s => s.mssv == mssv && phanCongIds.Contains(s.mapc));
+            return await _context.Chitiets.AnyAsync(s => s.mapc == mapc && phanCongIds.Contains(s.mapc));
         }
 
         public Task<bool> UpdateChitiet(Chitiet ketqua)

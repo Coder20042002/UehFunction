@@ -24,7 +24,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Chitiet>))]
         public async Task<IActionResult> GetChitiets()
         {
-            var Chitiets = _mapper.Map<List<ChitietDto>>(await _ChitietRepository.GetChitiet());
+            var Chitiets = _mapper.Map<List<ChitietDto>>(await _ChitietRepository.GetChitiets());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -32,15 +32,15 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Chitiets);
         }
 
-        [HttpGet("{mssv}")]
+        [HttpGet("{mapc}")]
         [ProducesResponseType(200, Type = typeof(Chitiet))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetChitiet(string mssv)
+        public async Task<IActionResult> GetChitiet(Guid mapc)
         {
-            if (!await _ChitietRepository.ChitietExists(mssv))
+            if (!await _ChitietRepository.ChitietExists(mapc))
                 return NotFound();
 
-            var Chitiet = _mapper.Map<ChitietDto>(await _ChitietRepository.GetChitiet(mssv));
+            var Chitiet = _mapper.Map<ChitietDto>(await _ChitietRepository.GetChitiet(mapc));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -53,20 +53,20 @@ namespace Ueh.BackendApi.Controllers
 
 
 
-        [HttpPut("{mssv}")]
+        [HttpPut("{mapc}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateChitiet(string mssv,
+        public async Task<IActionResult> UpdateChitiet(Guid mapc,
             [FromBody] ChitietDto updatedChitiet)
         {
             if (updatedChitiet == null)
                 return BadRequest(ModelState);
 
-            if (mssv != updatedChitiet.mssv)
+            if (mapc != updatedChitiet.mapc)
                 return BadRequest(ModelState);
 
-            if (!await _ChitietRepository.ChitietExists(mssv))
+            if (!await _ChitietRepository.ChitietExists(mapc))
                 return NotFound();
 
             if (!ModelState.IsValid)

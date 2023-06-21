@@ -7,6 +7,5 @@
         public string magv { get; set; }
         public string madot { get; set; }
         public string maloai { get; set; }
-        public string macn { get; set; }
     }
 }

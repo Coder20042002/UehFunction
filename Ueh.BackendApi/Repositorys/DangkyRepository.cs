@@ -82,16 +82,14 @@ namespace Ueh.BackendApi.Repositorys
                         var worksheet = package.Workbook.Worksheets[0];
                         var rowCount = worksheet.Dimension.Rows;
 
-                        // Lặp qua các dòng trong tệp Excel và xử lý dữ liệu
-                        // Bắt đầu từ dòng thứ 2 (loại bỏ header)
+
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 2].Value?.ToString();
-                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true"); 
+                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true");
 
                             if (existing != false)
                             {
-                                // Nếu MSSV đã tồn tại, bỏ qua sinh viên này và tiếp tục với dòng tiếp theo
                                 continue;
                             }
                             var dangky = new Dangky

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Repositorys;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -22,9 +23,9 @@ namespace Ueh.BackendApi.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Giangvien>))]
-        public IActionResult GetGiangviens()
+        public async Task<IActionResult> GetGiangviens()
         {
-            var Giangviens = _mapper.Map<List<GiangvienDto>>(_giangvienRepository.GetGiangviens());
+            var Giangviens = _mapper.Map<List<GiangvienDto>>(await _giangvienRepository.GetGiangviens());
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,12 +36,12 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("{magv}")]
         [ProducesResponseType(200, Type = typeof(Giangvien))]
         [ProducesResponseType(400)]
-        public IActionResult GetGiangvien(string magv)
+        public async Task<IActionResult> GetGiangvien(string magv)
         {
-            if (!_giangvienRepository.GiangvienExists(magv))
+            if (!await _giangvienRepository.GiangvienExists(magv))
                 return NotFound();
 
-            var Giangvien = _mapper.Map<GiangvienDto>(_giangvienRepository.GetGiangvien(magv));
+            var Giangvien = _mapper.Map<GiangvienDto>(await _giangvienRepository.GetGiangvien(magv));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -53,16 +54,16 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateGiangvien([FromBody] GiangvienDto GiangvienCreate)
+        public async Task<IActionResult> CreateGiangvien([FromQuery] string makhoa, [FromBody] GiangvienDto GiangvienCreate)
         {
             if (GiangvienCreate == null)
                 return BadRequest(ModelState);
 
-            bool Giangviens = _giangvienRepository.GiangvienExists(GiangvienCreate.magv);
+            bool Giangviens = await _giangvienRepository.GiangvienExists(GiangvienCreate.magv);
 
             if (Giangviens == true)
             {
-                ModelState.AddModelError("", "Giangvien already exists");
+                ModelState.AddModelError("", "Giangvien đã tồn tại");
                 return StatusCode(422, ModelState);
             }
 
@@ -72,9 +73,9 @@ namespace Ueh.BackendApi.Controllers
             var GiangvienMap = _mapper.Map<Giangvien>(GiangvienCreate);
 
 
-            if (!_giangvienRepository.CreateGiangvien(GiangvienMap))
+            if (!await _giangvienRepository.CreateGiangvien(makhoa, GiangvienMap))
             {
-                ModelState.AddModelError("", "Something went wrong while saving");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
@@ -85,7 +86,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateGiangvien(string magv,
+        public async Task<IActionResult> UpdateGiangvien(string magv,
             [FromBody] GiangvienDto updatedGiangvien)
         {
             if (updatedGiangvien == null)
@@ -94,7 +95,7 @@ namespace Ueh.BackendApi.Controllers
             if (magv != updatedGiangvien.magv)
                 return BadRequest(ModelState);
 
-            if (!_giangvienRepository.GiangvienExists(magv))
+            if (!await _giangvienRepository.GiangvienExists(magv))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -102,9 +103,9 @@ namespace Ueh.BackendApi.Controllers
 
             var GiangvienMap = _mapper.Map<Giangvien>(updatedGiangvien);
 
-            if (!_giangvienRepository.UpdateGiangvien(GiangvienMap))
+            if (!await _giangvienRepository.UpdateGiangvien(GiangvienMap))
             {
-                ModelState.AddModelError("", "Something went wrong updating ");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật");
                 return StatusCode(500, ModelState);
             }
 
@@ -115,25 +116,52 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult DeleteGiangvien(string magv)
+        public async Task<IActionResult> DeleteGiangvien(string magv)
         {
-            if (!_giangvienRepository.GiangvienExists(magv))
+            if (!await _giangvienRepository.GiangvienExists(magv))
             {
                 return NotFound();
             }
-            var GiangvienToDelete = _giangvienRepository.GetGiangvien(magv);
+            var GiangvienToDelete = await _giangvienRepository.GetGiangvien(magv);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
 
 
-            if (!_giangvienRepository.DeleteGiangvien(GiangvienToDelete))
+            if (!await _giangvienRepository.DeleteGiangvien(GiangvienToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting ");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa ");
             }
 
             return NoContent();
+        }
+
+        [HttpPost("formFile")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> ImportExcelFile([FromQuery] string makhoa, IFormFile formFile)
+        {
+            try
+            {
+
+                bool success = await _giangvienRepository.ImportExcelFile(makhoa, formFile);
+                if (success)
+                {
+                    return Ok("Import thành công"); // Trả về thông báo thành công
+                }
+                else
+                {
+                    return BadRequest("Import thất bại"); // Trả về thông báo lỗi
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+
+            // Trường hợp không xử lý được, trả về BadRequest
+            return BadRequest("Xảy ra lỗi không xác định được");
         }
     }
 }

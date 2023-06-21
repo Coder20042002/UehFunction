@@ -10,20 +10,26 @@ namespace Ueh.BackendApi.Data.Entities
     {
         public string mssv { get; set; }
         public string email { get; set; }
-        public string hoten { get; set; }
-        public string tenlop { get; set; }
-        public string ngaysinh { get; set; }
-        public string sdt { get; set; }
-        public string HDT { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string thuoclop { get; set; }
+        public string khoagoc { get; set; }
+        public string khoahoc { get; set; }
+        public string mahp { get; set; }
+        public string malhp { get; set; }
+        public string tenhp { get; set; }
+        public string soct { get; set; }
+        public string malop { get; set; }
+        public string bacdt { get; set; }
+        public string loaihinh { get; set; }
+        public string? macn { get; set; }
         public string status { get; set; }
 
-        public ICollection<Review> reviews { get; set; }
+
+        public Chuyennganh chuyennganh { get; set; }
         public ICollection<SinhvienDot> sinhviendots { get; set; }
         public ICollection<Phancong> phancongs { get; set; }
         public ICollection<SinhvienKhoa> sinhvienkhoas { get; set; }
-        public ICollection<SinhvienChuyenNganh> sinhvienchuyennganhs { get; set; }
-        public ICollection<Chitiet> chitiets { get; set; }
-        public ICollection<Ketqua> ketquas { get; set; }
 
 
     }

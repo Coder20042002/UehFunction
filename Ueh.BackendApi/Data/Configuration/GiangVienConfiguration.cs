@@ -17,15 +17,7 @@ namespace Ueh.BackendApi.Data.Configuration
             builder.ToTable("Giangviens");
             builder.HasKey(x => x.magv);
 
-            builder.HasOne(x => x.khoa)
-                .WithMany(x => x.giangviens)
-                .HasForeignKey(x => x.makhoa)
-                .HasConstraintName("FK_GangVien_Khoa");
 
-            builder.HasOne(x => x.chuyennganh)
-                .WithMany(x => x.giangviens)
-                .HasForeignKey(x => x.macn)
-                .HasConstraintName("FK_GangVien_ChuyenNganh");
         }
     }
 }

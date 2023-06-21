@@ -5,14 +5,15 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IGiangvienRepository
     {
-        ICollection<Giangvien> GetGiangviens();
-        Giangvien GetGiangvien(string magv);
-        Giangvien GetGiangvienName(string name);
-        Giangvien GetGiangvienTrimToUpper(GiangvienDto GiangvienCreate);
-        bool GiangvienExists(string magv);
-        bool CreateGiangvien(Giangvien Giangvien);
-        bool UpdateGiangvien(Giangvien Giangvien);
-        bool DeleteGiangvien(Giangvien Giangvien);
-        bool Save();
+        Task<ICollection<Giangvien>> GetGiangviens();
+        Task<Giangvien> GetGiangvien(string magv);
+        Task<Giangvien> GetGiangvienName(string name);
+        Task<bool> GiangvienExists(string magv);
+        Task<bool> CreateGiangvien(string makhoa, Giangvien Giangvien);
+        Task<bool> UpdateGiangvien(Giangvien Giangvien);
+        Task<bool> DeleteGiangvien(Giangvien Giangvien);
+        Task<bool> ImportExcelFile(string makhoa, IFormFile formFile);
+
+        Task<bool> Save();
     }
 }

@@ -6,7 +6,7 @@ namespace Ueh.BackendApi.IRepositorys
     {
         Task<ICollection<Phancong>> GetPhancongs();
         Task<Phancong> GetPhancong(string magv);
-        Task<bool> PhancongExists(string magv);
+        Task<bool> PhancongExists(string mssv);
         Task<bool> CreatePhancong(Phancong Phancong);
         Task<bool> UpdatePhancong(Phancong Phancong);
         Task<bool> DeletePhancong(Phancong Phancong);

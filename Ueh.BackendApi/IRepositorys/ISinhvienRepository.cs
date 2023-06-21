@@ -8,12 +8,11 @@ namespace Ueh.BackendApi.IRepositorys
         Task<ICollection<Sinhvien>> GetSinhviens();
         Task<Sinhvien> GetSinhvien(string mssv);
         Task<Sinhvien> GetSinhvienName(string name);
-        Task<Sinhvien> GetSinhvienTrimToUpper(SinhvienDto sinhvienCreate);
         Task<bool> SinhvienExists(string mssv);
-        Task<bool> CreateSinhvien(string madot, string makhoa, Sinhvien sinhvien);
-        Task<bool> UpdateSinhvien(string madot, string makhoa, Sinhvien sinhvien);
+        Task<bool> CreateSinhvien(string makhoa, Sinhvien sinhvien);
+        Task<bool> UpdateSinhvien(Sinhvien sinhvien);
         Task<bool> DeleteSinhvien(Sinhvien sinhvien);
-        Task<bool> ImportExcelFile(string madot, string makhoa, IFormFile formFile);
+        Task<bool> ImportExcelFile(string makhoa, IFormFile formFile);
         Task<bool> Save();
     }
 }

@@ -11,12 +11,12 @@ using Ueh.BackendApi.Data.Entities;
 
 namespace Ueh.BackendApi.Data.Configuration
 {
-    public class ReviewConfiguration : IEntityTypeConfiguration<Review>
+    public class LichsuConfiguration : IEntityTypeConfiguration<Lichsu>
     {
-        public void Configure(EntityTypeBuilder<Review> builder)
+        public void Configure(EntityTypeBuilder<Lichsu> builder)
         {
-            builder.ToTable("Reviews");
-            builder.HasKey(ls => ls.Id);
+            builder.ToTable("Lichsus");
+            builder.HasKey(ls => new { ls.mapc, ls.ngay });
 
 
         }

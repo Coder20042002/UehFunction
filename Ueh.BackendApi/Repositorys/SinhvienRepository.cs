@@ -17,16 +17,9 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-        public async Task<bool> CreateSinhvien(string madot, string makhoa, Sinhvien sinhvien)
+        public async Task<bool> CreateSinhvien(string makhoa, Sinhvien sinhvien)
         {
-            var sinhviendotEntity = await _context.Dots.Where(a => a.madot == madot).FirstOrDefaultAsync();
             var sinhvienkhoaEntity = await _context.Khoas.Where(a => a.makhoa == makhoa).FirstOrDefaultAsync();
-
-            var sinhviendot = new SinhvienDot()
-            {
-                dot = sinhviendotEntity,
-                sinhvien = sinhvien,
-            };
 
             var sinhvienkhoa = new SinhvienKhoa()
             {
@@ -34,9 +27,7 @@ namespace Ueh.BackendApi.Repositorys
                 sinhvien = sinhvien,
             };
 
-            _context.Add(sinhviendot);
             _context.Add(sinhvienkhoa);
-
             _context.Add(sinhvien);
 
             return await Save();
@@ -49,12 +40,7 @@ namespace Ueh.BackendApi.Repositorys
             return Save();
         }
 
-        public async Task<Sinhvien> GetSinhvienTrimToUpper(SinhvienDto sinhvienCreate)
-        {
-            var getsv = await GetSinhviens();
-            return getsv.Where(c => c.mssv.Trim().ToUpper() == sinhvienCreate.hoten.TrimEnd().ToUpper())
-                .FirstOrDefault();
-        }
+
 
         public async Task<Sinhvien> GetSinhvien(string mssv)
         {
@@ -63,7 +49,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<Sinhvien> GetSinhvienName(string name)
         {
-            return await _context.Sinhviens.Where(s => s.hoten == name && s.status == "true").FirstOrDefaultAsync();
+            return await _context.Sinhviens.Where(s => s.lastName == name && s.status == "true").FirstOrDefaultAsync();
 
         }
 
@@ -83,14 +69,13 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true");
         }
 
-        public Task<bool> UpdateSinhvien(string madot, string makhoa, Sinhvien sinhvien)
+        public Task<bool> UpdateSinhvien(Sinhvien sinhvien)
         {
             _context.Update(sinhvien);
             return Save();
         }
-        public async Task<bool> ImportExcelFile(string madot, string makhoa, IFormFile formFile)
+        public async Task<bool> ImportExcelFile(string makhoa, IFormFile formFile)
         {
-            var sinhviendotEntity = await _context.Dots.Where(a => a.madot == madot).FirstOrDefaultAsync();
             var sinhvienkhoaEntity = await _context.Khoas.Where(a => a.makhoa == makhoa).FirstOrDefaultAsync();
 
             if (formFile != null && formFile.Length > 0)
@@ -106,7 +91,13 @@ namespace Ueh.BackendApi.Repositorys
 
                         for (int row = 2; row <= rowCount; row++)
                         {
-                            var mssv = worksheet.Cells[row, 2].Value?.ToString();
+                            var mssv = worksheet.Cells[row, 1].Value?.ToString();
+                            var macn = worksheet.Cells[row, 4].Value?.ToString();
+                            if (macn != null)
+                            {
+                                macn = macn.Substring(5, 2);
+                            }
+
                             bool existing = await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true"); ;
 
                             if (existing != false)
@@ -118,20 +109,22 @@ namespace Ueh.BackendApi.Repositorys
                             var sinhvien = new Sinhvien
                             {
                                 mssv = mssv,
-                                hoten = worksheet.Cells[row, 3].Value?.ToString(),
-                                email = worksheet.Cells[row, 4].Value?.ToString(),
-                                tenlop = worksheet.Cells[row, 5].Value?.ToString(),
-                                ngaysinh = worksheet.Cells[row, 6].Value?.ToString(),
-                                sdt = worksheet.Cells[row, 7].Value?.ToString(),
-                                HDT = worksheet.Cells[row, 8].Value?.ToString(),
+                                firstName = worksheet.Cells[row, 2].Value?.ToString(),
+                                lastName = worksheet.Cells[row, 3].Value?.ToString(),
+                                thuoclop = worksheet.Cells[row, 4].Value?.ToString(),
+                                khoagoc = worksheet.Cells[row, 5].Value?.ToString(),
+                                khoahoc = worksheet.Cells[row, 6].Value?.ToString(),
+                                mahp = worksheet.Cells[row, 7].Value?.ToString(),
+                                malhp = worksheet.Cells[row, 8].Value?.ToString(),
+                                tenhp = worksheet.Cells[row, 9].Value?.ToString(),
+                                soct = worksheet.Cells[row, 10].Value?.ToString(),
+                                bacdt = worksheet.Cells[row, 11].Value?.ToString(),
+                                loaihinh = worksheet.Cells[row, 12].Value?.ToString(),
+                                macn = macn,
                                 status = "true"
                             };
 
-                            var sinhviendot = new SinhvienDot
-                            {
-                                dot = sinhviendotEntity,
-                                sinhvien = sinhvien
-                            };
+
 
                             var sinhvienkhoa = new SinhvienKhoa()
                             {
@@ -139,7 +132,6 @@ namespace Ueh.BackendApi.Repositorys
                                 sinhvien = sinhvien,
                             };
 
-                            await _context.SinhvienDots.AddAsync(sinhviendot);
                             await _context.SinhvienKhoas.AddAsync(sinhvienkhoa);
                             await _context.Sinhviens.AddAsync(sinhvien);
 
@@ -151,8 +143,6 @@ namespace Ueh.BackendApi.Repositorys
 
             return false;
         }
-
-
 
     }
 }

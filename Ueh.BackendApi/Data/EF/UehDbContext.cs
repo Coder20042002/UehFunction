@@ -22,14 +22,11 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new LoaiConfiguration());
             modelBuilder.ApplyConfiguration(new KhoaConfiguration());
             modelBuilder.ApplyConfiguration(new DangKyConfiguration());
-            modelBuilder.ApplyConfiguration(new ReviewConfiguration());
-            modelBuilder.ApplyConfiguration(new ReviewerConfiguration());
-            modelBuilder.ApplyConfiguration(new SinhVienLoaiConfiguration());
+            modelBuilder.ApplyConfiguration(new LichsuConfiguration());
             modelBuilder.ApplyConfiguration(new SinhvienDotConfiguration());
             modelBuilder.ApplyConfiguration(new ChuyenNganhConfiguration());
             modelBuilder.ApplyConfiguration(new PhancongConfiguration());
             modelBuilder.ApplyConfiguration(new SinhvienKhoaConfiguration());
-            modelBuilder.ApplyConfiguration(new SinhvienChuyenNganhConfiguration());
             modelBuilder.ApplyConfiguration(new ChitietConfiguration());
             modelBuilder.ApplyConfiguration(new KetquaConfiguration());
 
@@ -52,14 +49,11 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<Loai> Loais { get; set; }
         public DbSet<Khoa> Khoas { get; set; }
         public DbSet<Dangky> Dangkys { get; set; }
-        public DbSet<Review> Reviews { get; set; }
-        public DbSet<Reviewer> Reviewers { get; set; }
-        public DbSet<SinhvienLoai> SinhvienLoais { get; set; }
+        public DbSet<Lichsu> Lichsus { get; set; }
         public DbSet<SinhvienDot> SinhvienDots { get; set; }
         public DbSet<Chuyennganh> Chuyennganhs { get; set; }
         public DbSet<Phancong> Phancongs { get; set; }
         public DbSet<SinhvienKhoa> SinhvienKhoas { get; set; }
-        public DbSet<SinhvienChuyenNganh> SinhvienChuyennganhs { get; set; }
         public DbSet<Chitiet> Chitiets { get; set; }
         public DbSet<Ketqua> Ketquas { get; set; }
 

@@ -9,13 +9,15 @@
         public string maloai { get; set; }
         public string macn { get; set; }
         public string status { get; set; } = "true";
-        public Giangvien Giangvien { get; set; }
-        public Sinhvien Sinhvien { get; set; }
+        public Giangvien giangvien { get; set; }
+        public Sinhvien sinhvien { get; set; }
         public Dot dot { get; set; }
         public Loai loai { get; set; }
-        public Chuyennganh chuyennganh { get; set; }
         public ICollection<Chitiet> chitiets { get; set; }
         public ICollection<Ketqua> ketquas { get; set; }
+        public ICollection<Lichsu> lichsus { get; set; }
+        //public Chuyennganh chuyennganh { get; set; }
+
 
     }
 }
