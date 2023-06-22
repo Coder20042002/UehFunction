@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ueh.BackendApi.Data.EF;
 
@@ -11,9 +12,10 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    partial class UehDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230622104900_update_Phancongs")]
+    partial class update_Phancongs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +156,7 @@ namespace Ueh.BackendApi.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "33e8ccb3-c56e-4f4b-9c1e-b125632bc4c4",
+                            ConcurrencyStamp = "e4e19357-56aa-425f-b25d-6e7cad8ff7bb",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -162,7 +164,7 @@ namespace Ueh.BackendApi.Migrations
                         new
                         {
                             Id = new Guid("63e7e1bd-88ea-498e-be49-823ea3952484"),
-                            ConcurrencyStamp = "8fd6e7b2-374e-4447-aa32-bba2290a0403",
+                            ConcurrencyStamp = "7f45c5bd-2d83-4094-b832-bd4a4b24d23d",
                             Description = "Studentistrator role",
                             Name = "student",
                             NormalizedName = "student"
@@ -170,7 +172,7 @@ namespace Ueh.BackendApi.Migrations
                         new
                         {
                             Id = new Guid("3686da9d-db16-48ab-a9b2-aafb842a9fcc"),
-                            ConcurrencyStamp = "a8aa6082-1379-4e55-8595-bdc3f1a9c103",
+                            ConcurrencyStamp = "890fbfe4-7424-45ec-b2fd-b480252c67f6",
                             Description = "Tearchistrator role",
                             Name = "teacher",
                             NormalizedName = "teacher"
@@ -244,7 +246,7 @@ namespace Ueh.BackendApi.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "36e64470-3d7a-41c4-b1e2-c468d1c76911",
+                            ConcurrencyStamp = "5a3aef7b-2ac9-4036-bcd7-fb24adf39d18",
                             Email = "phuong123@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Phương",
@@ -252,7 +254,7 @@ namespace Ueh.BackendApi.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "phuong123@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAED+zd9HZZUuPDgGnyKyMEpKmUGWY8DtTsgJXWiw9D13fSOj989ini0KT3iIMXbcuxw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECauWcoL+jEp6aAHzkSLNQpZ2MvKn6V+OYmzbDXFZdOcQrG5JVN5TqLn+oGSOEHm3A==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -414,6 +416,9 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<float?>("diemDN")
                         .HasColumnType("real");
 
+                    b.Property<float?>("diemGV")
+                        .HasColumnType("real");
+
                     b.Property<float?>("tieuchi1")
                         .HasColumnType("real");
 
@@ -496,6 +501,9 @@ namespace Ueh.BackendApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Chuyennganhmacn")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("madot")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -517,6 +525,8 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Chuyennganhmacn");
 
                     b.HasIndex("madot");
 
@@ -699,6 +709,10 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Phancong", b =>
                 {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Chuyennganh", null)
+                        .WithMany("phancongs")
+                        .HasForeignKey("Chuyennganhmacn");
+
                     b.HasOne("Ueh.BackendApi.Data.Entities.Dot", "dot")
                         .WithMany("phanCongs")
                         .HasForeignKey("madot")
@@ -781,6 +795,8 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chuyennganh", b =>
                 {
+                    b.Navigation("phancongs");
+
                     b.Navigation("sinhviens");
                 });
 

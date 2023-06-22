@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ueh.BackendApi.Data.EF;
 
@@ -11,9 +12,10 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    partial class UehDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230622105134_update_Phancongs_tt")]
+    partial class update_Phancongs_tt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +156,7 @@ namespace Ueh.BackendApi.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "33e8ccb3-c56e-4f4b-9c1e-b125632bc4c4",
+                            ConcurrencyStamp = "fb79cc70-beb4-4793-9ca7-84146fb0999a",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -162,7 +164,7 @@ namespace Ueh.BackendApi.Migrations
                         new
                         {
                             Id = new Guid("63e7e1bd-88ea-498e-be49-823ea3952484"),
-                            ConcurrencyStamp = "8fd6e7b2-374e-4447-aa32-bba2290a0403",
+                            ConcurrencyStamp = "c7a00e59-ba19-4042-9b9f-d78505ccd407",
                             Description = "Studentistrator role",
                             Name = "student",
                             NormalizedName = "student"
@@ -170,7 +172,7 @@ namespace Ueh.BackendApi.Migrations
                         new
                         {
                             Id = new Guid("3686da9d-db16-48ab-a9b2-aafb842a9fcc"),
-                            ConcurrencyStamp = "a8aa6082-1379-4e55-8595-bdc3f1a9c103",
+                            ConcurrencyStamp = "3eba4d44-ff9b-4d78-b7ef-dddf21fd5321",
                             Description = "Tearchistrator role",
                             Name = "teacher",
                             NormalizedName = "teacher"
@@ -244,7 +246,7 @@ namespace Ueh.BackendApi.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "36e64470-3d7a-41c4-b1e2-c468d1c76911",
+                            ConcurrencyStamp = "252ea60f-b63b-4235-9bc7-bcaf4bd41b1a",
                             Email = "phuong123@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Phương",
@@ -252,7 +254,7 @@ namespace Ueh.BackendApi.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "phuong123@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAED+zd9HZZUuPDgGnyKyMEpKmUGWY8DtTsgJXWiw9D13fSOj989ini0KT3iIMXbcuxw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECF2Xd67K2An6FG0j3y+/n7PJo3aa/ziDVtXEdOqRPQUObfg2+x/GfSWvHVu5aMn4w==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -412,6 +414,9 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<float?>("diemDN")
+                        .HasColumnType("real");
+
+                    b.Property<float?>("diemGV")
                         .HasColumnType("real");
 
                     b.Property<float?>("tieuchi1")

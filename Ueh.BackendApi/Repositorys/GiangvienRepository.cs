@@ -17,11 +17,16 @@ namespace Ueh.BackendApi.Repositorys
         }
         public async Task<bool> CreateGiangvien(string makhoa, Giangvien Giangvien)
         {
-            var giangvienkhoa = await _context.Khoas.Where(a => a.makhoa == Giangvien.makhoa).FirstOrDefaultAsync();
+            bool giangvienkhoa = await _context.Khoas.AnyAsync(a => a.makhoa == makhoa);
             //var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
+            var gvkhoa = new GiangvienKhoa
+            {
+                makhoa = makhoa,
+                magv = Giangvien.magv,
+            };
 
-
-            if (giangvienkhoa != null)
+            if (giangvienkhoa)
+                _context.Add(gvkhoa);
                 _context.Add(Giangvien);
 
             return await Save();
@@ -65,15 +70,11 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> UpdateGiangvien(Giangvien Giangvien)
         {
-            var giangvienkhoa = await _context.Khoas.Where(a => a.makhoa == Giangvien.makhoa).FirstOrDefaultAsync();
-            //var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
-
-            if (giangvienkhoa != null)
-                _context.Update(Giangvien);
+            _context.Update(Giangvien);
             return await Save();
         }
 
-        public async Task<bool> ImportExcelFile(string khoa, IFormFile formFile)
+        public async Task<bool> ImportExcelFile(string makhoa, IFormFile formFile)
         {
             if (formFile != null && formFile.Length > 0)
             {
@@ -86,23 +87,32 @@ namespace Ueh.BackendApi.Repositorys
                         var worksheet = package.Workbook.Worksheets[0];
                         var rowCount = worksheet.Dimension.Rows;
 
-                        for (int row = 2; row <= rowCount; row++)
+                        for (int row = 1; row <= rowCount; row++)
                         {
-                            var magv = worksheet.Cells[row, 2].Value?.ToString();
+
+                            var magv = worksheet.Cells[row, 1].Value?.ToString();
                             bool existing = await _context.Giangviens.AnyAsync(g => g.magv == magv && g.status == "true");
 
-                            if (existing != false)
+                            if (existing == true)
                             {
                                 continue;
                             }
                             var giangvien = new Giangvien
                             {
                                 magv = magv,
-                                tengv = worksheet.Cells[row, 3].Value?.ToString(),
-                                sdt = worksheet.Cells[row, 4].Value?.ToString(),
-                                email = worksheet.Cells[row, 5].Value?.ToString(),
+                                tengv = worksheet.Cells[row, 2].Value?.ToString(),
+                                sdt = worksheet.Cells[row, 3].Value?.ToString(),
+                                email = worksheet.Cells[row, 4].Value?.ToString(),
+
                             };
 
+                            var khoagv = new GiangvienKhoa
+                            {
+                                magv = magv,
+                                makhoa = makhoa
+                            };
+
+                            _context.Add(khoagv);
                             await _context.Giangviens.AddAsync(giangvien);
                         }
 

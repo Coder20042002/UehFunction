@@ -19,15 +19,16 @@ namespace Ueh.BackendApi.Repositorys
         }
         public async Task<bool> CreateSinhvien(string makhoa, Sinhvien sinhvien)
         {
-            var sinhvienkhoaEntity = await _context.Khoas.Where(a => a.makhoa == makhoa).FirstOrDefaultAsync();
-
-            var sinhvienkhoa = new SinhvienKhoa()
+            bool sinhvienkhoa = await _context.Khoas.AnyAsync(a => a.makhoa == makhoa);
+            //var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
+            var gvkhoa = new SinhvienKhoa
             {
-                khoa = sinhvienkhoaEntity,
-                sinhvien = sinhvien,
+                makhoa = makhoa,
+                mssv = sinhvien.mssv
             };
 
-            _context.Add(sinhvienkhoa);
+            if (sinhvienkhoa)
+                _context.Add(gvkhoa);
             _context.Add(sinhvien);
 
             return await Save();
@@ -76,8 +77,11 @@ namespace Ueh.BackendApi.Repositorys
         }
         public async Task<bool> ImportExcelFile(string makhoa, IFormFile formFile)
         {
-            var sinhvienkhoaEntity = await _context.Khoas.Where(a => a.makhoa == makhoa).FirstOrDefaultAsync();
-
+            bool sinhvienkhoa = await _context.Khoas.AnyAsync(a => a.makhoa == makhoa);
+            if (!sinhvienkhoa)
+            {
+                return false;
+            }
             if (formFile != null && formFile.Length > 0)
             {
                 using (var stream = new MemoryStream())
@@ -88,22 +92,27 @@ namespace Ueh.BackendApi.Repositorys
                     {
                         var worksheet = package.Workbook.Worksheets[0];
                         var rowCount = worksheet.Dimension.Rows;
+                        // Danh sách tạm thời để lưu trữ các giá trị mssv đã đọc từ file Excel
+                        List<string> existingMssv = new List<string>();
 
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
-                            var macn = worksheet.Cells[row, 4].Value?.ToString();
-                            if (macn != null)
+                            bool existing = await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true");
+
+                            // Kiểm tra sự trùng lặp trong danh sách tạm thời
+                            if (existingMssv.Contains(mssv) || existing)
                             {
-                                macn = macn.Substring(5, 2);
+                                continue;
                             }
 
-                            bool existing = await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true"); ;
+                            // Thêm mssv vào danh sách tạm thời
+                            existingMssv.Add(mssv);
 
-                            if (existing != false)
+                            var macn = worksheet.Cells[row, 9].Value?.ToString();
+                            if (macn != null)
                             {
-                                // Nếu MSSV đã tồn tại, bỏ qua sinh viên này và tiếp tục với dòng tiếp theo
-                                continue;
+                                macn = macn.Substring(macn.Length-2).Trim();
                             }
 
                             var sinhvien = new Sinhvien
@@ -118,21 +127,22 @@ namespace Ueh.BackendApi.Repositorys
                                 malhp = worksheet.Cells[row, 8].Value?.ToString(),
                                 tenhp = worksheet.Cells[row, 9].Value?.ToString(),
                                 soct = worksheet.Cells[row, 10].Value?.ToString(),
-                                bacdt = worksheet.Cells[row, 11].Value?.ToString(),
-                                loaihinh = worksheet.Cells[row, 12].Value?.ToString(),
+                                malop = worksheet.Cells[row, 11].Value?.ToString(),
+                                bacdt = worksheet.Cells[row, 12].Value?.ToString(),
+                                loaihinh = worksheet.Cells[row, 13].Value?.ToString(),
                                 macn = macn,
                                 status = "true"
                             };
 
 
 
-                            var sinhvienkhoa = new SinhvienKhoa()
+                            var svkhoa = new SinhvienKhoa()
                             {
-                                khoa = sinhvienkhoaEntity,
-                                sinhvien = sinhvien,
+                                makhoa = makhoa,
+                                mssv = mssv,
                             };
 
-                            await _context.SinhvienKhoas.AddAsync(sinhvienkhoa);
+                            _context.Add(svkhoa);
                             await _context.Sinhviens.AddAsync(sinhvien);
 
                         }

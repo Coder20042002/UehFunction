@@ -15,7 +15,6 @@ namespace Ueh.BackendApi.Data.Configuration
             builder.HasOne(pc => pc.loai).WithMany(l => l.phanCongs).HasForeignKey(pc => pc.maloai).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(pc => pc.giangvien).WithMany(gv => gv.phancongs).HasForeignKey(pc => pc.magv).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(pc => pc.dot).WithMany(d => d.phanCongs).HasForeignKey(pc => pc.madot).OnDelete(DeleteBehavior.NoAction);
-            //builder.HasOne(pc => pc.chuyennganh).WithMany(cn => cn.phancongs).HasForeignKey(pc => pc.macn).OnDelete(DeleteBehavior.NoAction);
 
 
 

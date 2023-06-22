@@ -9,7 +9,6 @@ namespace Ueh.BackendApi.Data.Entities
     public class Sinhvien
     {
         public string mssv { get; set; }
-        public string email { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string thuoclop { get; set; }
