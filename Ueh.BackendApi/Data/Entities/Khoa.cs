@@ -12,6 +12,7 @@ namespace Ueh.BackendApi.Data.Entities
         public string tenkhoa { get; set; }
         public ICollection<SinhvienKhoa> sinhvienkhoas { get; set; }
         public ICollection<GiangvienKhoa> giangvienkhoas { get; set; }
+        public ICollection<Dangky> dangkis { get; set; }
 
     }
 }

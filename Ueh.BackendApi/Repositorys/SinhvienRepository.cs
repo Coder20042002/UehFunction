@@ -50,7 +50,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<Sinhvien> GetSinhvienName(string name)
         {
-            return await _context.Sinhviens.Where(s => s.lastName == name && s.status == "true").FirstOrDefaultAsync();
+            return await _context.Sinhviens.Where(s => s.ten == name && s.status == "true").FirstOrDefaultAsync();
 
         }
 
@@ -112,14 +112,14 @@ namespace Ueh.BackendApi.Repositorys
                             var macn = worksheet.Cells[row, 9].Value?.ToString();
                             if (macn != null)
                             {
-                                macn = macn.Substring(macn.Length-2).Trim();
+                                macn = macn.Substring(macn.Length - 2).Trim();
                             }
 
                             var sinhvien = new Sinhvien
                             {
                                 mssv = mssv,
-                                firstName = worksheet.Cells[row, 2].Value?.ToString(),
-                                lastName = worksheet.Cells[row, 3].Value?.ToString(),
+                                ho = worksheet.Cells[row, 2].Value?.ToString(),
+                                ten = worksheet.Cells[row, 3].Value?.ToString(),
                                 thuoclop = worksheet.Cells[row, 4].Value?.ToString(),
                                 khoagoc = worksheet.Cells[row, 5].Value?.ToString(),
                                 khoahoc = worksheet.Cells[row, 6].Value?.ToString(),

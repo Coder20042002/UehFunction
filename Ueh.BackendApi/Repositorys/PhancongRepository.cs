@@ -175,8 +175,8 @@ namespace Ueh.BackendApi.Repositorys
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
                     worksheet.Cells[$"B{rowIndex}"].Value = Phancong.mssv;
                     worksheet.Cells[$"C{rowIndex}"].Value = Phancong.sinhvien?.thuoclop;
-                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.sinhvien?.firstName;
-                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.sinhvien?.lastName;
+                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.sinhvien?.ho;
+                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.sinhvien?.ten;
                     worksheet.Cells[$"F{rowIndex}"].Value = Phancong.giangvien?.tengv;
 
                     rowIndex++;
@@ -195,7 +195,7 @@ namespace Ueh.BackendApi.Repositorys
         {
             var result = await _context.Phancongs
                         .Include(p => p.sinhvien)
-                        .Where(p => p.sinhvien.lastName.Contains(tenSinhVien))
+                        .Where(p => p.sinhvien.ten.Contains(tenSinhVien))
                         .ToListAsync();
 
             return result;
