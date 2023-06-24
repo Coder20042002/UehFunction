@@ -30,6 +30,7 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new ChitietConfiguration());
             modelBuilder.ApplyConfiguration(new KetquaConfiguration());
             modelBuilder.ApplyConfiguration(new GiangvienKhoaConfiguration());
+            modelBuilder.ApplyConfiguration(new UploadResultConfiguration());
 
 
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
@@ -59,7 +60,7 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<Chitiet> Chitiets { get; set; }
         public DbSet<Ketqua> Ketquas { get; set; }
         public DbSet<GiangvienKhoa> GiangvienKhoas { get; set; }
-
+        public DbSet<UploadResult> UploadResults { get; set; }
 
     }
 }

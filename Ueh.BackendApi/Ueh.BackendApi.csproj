@@ -7,6 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="ReportUI\**" />
+	  <Content Remove="ReportUI\**" />
+	  <EmbeddedResource Remove="ReportUI\**" />
+	  <None Remove="ReportUI\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="12.0.1" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 		<PackageReference Include="EPPlus" Version="6.2.4" />
@@ -33,7 +40,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ReportUI\" />
+	  <Folder Include="SaveUploadFiles\" />
 	</ItemGroup>
 
 </Project>
