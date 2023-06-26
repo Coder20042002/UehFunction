@@ -1,0 +1,21 @@
+﻿@page "/phancong/gvhdsv"
+@using Ueh.WebApp.Components
+
+<PageTitle>Phân công GVHD - SV</PageTitle>
+
+<CheckUserComponent CheckRole="admin">
+<ItemContent>
+
+    <h1>Nút import, bảng các giáo viên, dẫn đến chi tiết các sv được gv đó hướng dẫn</h1>
+
+</ItemContent>
+</CheckUserComponent>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

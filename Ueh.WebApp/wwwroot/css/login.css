@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap");
-
 * {
     margin: 0px;
     padding: 0px;
@@ -9,8 +8,8 @@
 body,
 html {
     font-family: "Montserrat", sans-serif;
-    height: 100%;
     overflow: hidden;
+    height: 100%;
 }
 
 /*---------------------------------------------*/
@@ -411,6 +410,7 @@ input.input100 {
 
 .label-checkbox100::before {
     content: "\f00c";
+    font-family: FontAwesome;
     font-size: 13px;
     color: transparent;
 
@@ -580,6 +580,7 @@ input.input100 {
 
 .alert-validate::after {
     content: "\f12a";
+    font-family: FontAwesome;
     display: block;
     position: absolute;
     z-index: 110;
@@ -655,4 +656,8 @@ li {
 
 .google-icon {
     margin-right: 5px;
+}
+
+.uselocalaccount {
+    /*display:none;*/
 }

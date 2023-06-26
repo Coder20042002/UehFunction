@@ -1,0 +1,21 @@
+﻿@page "/lichsugap/them"
+@using Ueh.WebApp.Components
+
+<PageTitle>Thêm lịch sử gặp</PageTitle>
+
+<CheckUserComponent CheckRole="giangvien">
+<ItemContent>
+
+    <h1>thêm lịch sử gặp: select sinh viên, ghi nhận ngày gặp, nội dung gặp </h1>
+
+</ItemContent>
+</CheckUserComponent>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

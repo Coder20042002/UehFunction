@@ -98,6 +98,12 @@ function executeScript() {
     navLinksClick();
 }
 
+function resetCSSLogin() {
+    removeAllStylesheets();
+    loadCss("/css/site.css");
+    loadCss("/css/flowbite.css");
+}
+
 function executeLoginScript() {
     login();
     removeAllStylesheets();
@@ -142,6 +148,9 @@ function navLinksClick() {
     if (!button.isNull() && button.next().tagName() === "ul") {
         button.on("click-single", navLinkClickHandler);
     }
+
+    toggleNavClick("apps-dropdown");
+    toggleNavClick("notification-dropdown");
 }
 
 function navLinkClickHandler(element) {
@@ -177,7 +186,7 @@ function login() {
         var i = t.parentElement;
         i.classList.remove("alert-validate");
     }
-    document.querySelectorAll(".input100").forEach(function (element) {
+    document.querySelectorAll("input.input100").forEach(function (element) {
         element.addEventListener("blur", function () {
             element.value.trim() !== ""
                 ? element.classList.add("has-val")
@@ -230,5 +239,86 @@ function removeAllStylesheets() {
     var links = document.querySelectorAll('link[rel="stylesheet"]');
     for (var i = 0; i < links.length; i++) {
         links[i].parentNode.removeChild(links[i]);
+    }
+}
+
+function toggleNavClick(id) {
+    const selector = 'button[type="button"][data-dropdown-toggle="' + id + '"]';
+    const button = $(selector);
+
+    if (!button.isNull()) {
+        button.on("click", () => $("#" + id).toggleClass("hidden"));
+    }
+}
+
+function checkRole(role) {
+    let result = getUserData("Role") === role;
+    if (result === true) {
+        return "true";
+    } else {
+        if (getCookie("data-user") !== null) return "false";
+        else return "null";
+    }
+}
+
+function userLogin(json) {
+    json = encodeMessage(json);
+    createCookie("data-user", json, 2);
+}
+
+function userLogout() {
+    deleteCookie("data-user");
+}
+
+function getUserData(value) {
+    json = getCookie("data-user");
+    if (json !== null) {
+        json = decodeMessage(json);
+        json = JSON.parse(json);
+        return json[value];
+    } else return null;
+}
+
+function getCookie(name) {
+    const cookieName = name + "=";
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.indexOf(cookieName) == 0) {
+            return cookie.substring(cookieName.length);
+        }
+    }
+    return null;
+}
+
+function createCookie(name, value, hours) {
+    var expires;
+    if (hours) {
+        var date = new Date();
+        date.setTime(date.getTime() + hours * 60 * 60 * 1000);
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+}
+
+function encodeMessage(message) {
+    return btoa(message);
+}
+
+function decodeMessage(encodedMessage) {
+    return atob(encodedMessage);
+}
+
+function showElement(selector) {
+    const element = $(selector);
+
+    if (!element.isNull()) {
+        element.removeClass("hidden");
     }
 }

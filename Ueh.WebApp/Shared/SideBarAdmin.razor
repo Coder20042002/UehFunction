@@ -22,7 +22,7 @@
 
         @* Tổng quan *@
         <li>
-            <NavLink href="/trangchu"
+            <NavLink href="/tongquan"
                 class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                 <svg aria-hidden="true" class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -79,11 +79,12 @@
                 <svg aria-hidden="true"
                     class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clip-rule="evenodd"></path>
+                    <path
+                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                    </path>
                 </svg>
                 <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>
-                    Sinh viên
+                    Phân công
                 </span>
                 <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
@@ -94,25 +95,23 @@
             </button>
             <ul id="dropdown-sv" class="hidden py-2 space-y-2">
                 <li>
-                    <NavLink href="sinhvien/them"
+                    <NavLink href="phancong/gvhdsv"
                         class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Thêm
+                        GVHD - SV
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink href="sinhvien/danhsach"
+                    <NavLink href="phancong/chamcheo"
                         class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Danh sách
+                        Chấm chéo
                     </NavLink>
                 </li>
             </ul>
         </li>
 
-        @* Khoa *@
+        @* Chuyên ngành *@
         <li>
-            <button type="button"
-                class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100"
-                aria-controls="dropdown-khoa" data-collapse-toggle="dropdown-khoa">
+            <NavLink href="chuyennganh" class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                 <svg aria-hidden="true"
                     class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
                     fill="currentColor" viewBox="-2 -2 28 28" xmlns="http://www.w3.org/2000/svg">
@@ -126,37 +125,13 @@
                         </g>
                     </g>
                 </svg>
-                <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>
-                    Khoa
-                </span>
-                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <ul id="dropdown-khoa" class="hidden py-2 space-y-2">
-                <li>
-                    <NavLink href="khoa/them"
-                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Thêm
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink href="khoa/danhsach"
-                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Danh sách
-                    </NavLink>
-                </li>
-            </ul>
+                <span class="flex-1 ml-3 whitespace-nowrap">Chuyên ngành</span>
+            </NavLink>
         </li>
 
         @* Đợt *@
         <li>
-            <button type="button"
-                class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100"
-                aria-controls="dropdown-dot" data-collapse-toggle="dropdown-dot">
+            <NavLink href="dot" class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                 <svg aria-hidden="true"
                     class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
                     fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -169,75 +144,26 @@
                             fill="currentColor"></path>
                     </g>
                 </svg>
-                <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>
-                    Đợt
-                </span>
-                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <ul id="dropdown-dot" class="hidden py-2 space-y-2">
-                <li>
-                    <NavLink href="dot/them"
-                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Thêm
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink href="dot/danhsach"
-                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Danh sách
-                    </NavLink>
-                </li>
-            </ul>
+                <span class="flex-1 ml-3 whitespace-nowrap">Đợt</span>
+            </NavLink>
         </li>
 
-        @* Đăng ký trước *@
+        @* Phân công *@
         <li>
-            <button type="button"
-                class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100"
-                aria-controls="dropdown-dk" data-collapse-toggle="dropdown-dk">
+            <NavLink href="sinhvien/danhsach" class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                 <svg aria-hidden="true"
                     class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                    </path>
-                </svg>
-                <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>
-                    Đăng ký trước
-                </span>
-                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
                         clip-rule="evenodd"></path>
                 </svg>
-            </button>
-            <ul id="dropdown-dk" class="hidden py-2 space-y-2">
-                <li>
-                    <NavLink href="dangkytruoc/them"
-                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Thêm
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink href="dangkytruoc/danhsach"
-                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
-                        Danh sách
-                    </NavLink>
-                </li>
-            </ul>
+                <span class="flex-1 ml-3 whitespace-nowrap">Sinh viên</span>
+            </NavLink>
         </li>
-    </ul>
 
-    <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200">
-
+        @* Bảng điểm *@
         <li>
-            <NavLink href="help" class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+            <NavLink href="bangdiem" class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
                 <svg aria-hidden="true"
                     class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -245,16 +171,8 @@
                         d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z">
                     </path>
                 </svg>
-                <span class="flex-1 ml-3 whitespace-nowrap">Trợ giúp</span>
-                <span
-                    class="inline-flex items-center justify-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-200 rounded-full">
-                    Pro
-                </span>
+                <span class="flex-1 ml-3 whitespace-nowrap">Xuất bảng điểm</span>
             </NavLink>
         </li>
     </ul>
 </div>
-
-@code {
-
-}

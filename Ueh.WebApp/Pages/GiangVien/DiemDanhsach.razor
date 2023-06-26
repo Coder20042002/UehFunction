@@ -1,0 +1,21 @@
+﻿@page "/diem/danhsach"
+@using Ueh.WebApp.Components
+
+<PageTitle>Danh sách điểm</PageTitle>
+
+<CheckUserComponent CheckRole="giangvien">
+<ItemContent>
+
+    <h1>Danh sách sinh viên kèm điểm</h1>
+
+</ItemContent>
+</CheckUserComponent>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

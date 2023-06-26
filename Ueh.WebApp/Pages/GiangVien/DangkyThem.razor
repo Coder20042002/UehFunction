@@ -1,0 +1,23 @@
+﻿@page "/dangky/them"
+@using Ueh.WebApp.Components
+
+<PageTitle>Đăng ký sớm</PageTitle>
+
+<CheckUserComponent CheckRole="giangvien">
+<ItemContent>
+
+    <h1>Thêm sinh viên đăng ký sớm: hiển thị ô input, nhập mssv rồi search, 
+        hiển thị thông tin sinh viên giống payment, nút đăng ký, nhảy qua danh sách
+    </h1>
+
+</ItemContent>
+</CheckUserComponent>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

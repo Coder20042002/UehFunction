@@ -1,0 +1,108 @@
+﻿<div class="h-full px-3 py-3 overflow-y-auto">
+    <ul class="space-y-2 font-medium">
+        @* Mobile search *@
+        <li>
+            <form action="#" method="GET" class="lg:hidden">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <input type="text" name="email" id="mobile-search"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5"
+                        placeholder="Search">
+                </div>
+            </form>
+        </li>
+
+        @* Thông tin *@
+        <li>
+            <NavLink href="/thongtin"
+                class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                <svg aria-hidden="true" class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                </svg>
+                <span class="ml-3">Thông tin</span>
+            </NavLink>
+        </li>
+
+        @* File *@
+        <li>
+            <button type="button"
+                class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100"
+                aria-controls="dropdown-gv" data-collapse-toggle="dropdown-gv">
+                <svg aria-hidden="true"
+                    class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>
+                    File
+                </span>
+                <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </button>
+            <ul id="dropdown-gv" class="hidden py-2 space-y-2">
+                <li>
+                    <NavLink href="file/hkdn"
+                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
+                        HKDN
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="file/baocao"
+                        class="nav-link flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100">
+                        Báo cáo
+                    </NavLink>
+                </li>
+            </ul>
+        </li>
+
+        @* Hồ sơ *@
+        <li>
+            <NavLink href="hoso" class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                <svg aria-hidden="true"
+                    class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="flex-1 ml-3 whitespace-nowrap">Hồ sơ</span>
+            </NavLink>
+        </li>
+
+        @* Đề tài *@
+        <li>
+            <NavLink href="detai" class="nav-link flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
+                <svg aria-hidden="true"
+                    class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                    fill="currentColor" viewBox="-2 -2 28 28" xmlns="http://www.w3.org/2000/svg">
+                    <g id="SVGRepo_iconCarrier">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g id="ic_fluent_class_24_filled" fill="currentColor" fill-rule="nonzero">
+                                <path
+                                    d="M17.25,2.00051727 C18.7687831,2.00051727 20,3.2317342 20,4.75051727 L20,19.2487649 C20,20.767548 18.7687831,21.9987649 17.25,21.9987649 L6.74990198,21.9987649 C5.23111892,21.9987649 3.99990198,20.767548 3.99990198,19.2487649 L3.99990198,4.75051727 C3.99990198,3.2317342 5.23111892,2.00051727 6.74990198,2.00051727 L7.04132159,2 L7.04132159,10.1671486 C7.04132159,10.9151997 7.83169503,11.1811926 8.35990618,10.9064659 L8.45018427,10.8523597 L10.5431597,9.65511263 L12.6836301,10.8844881 C13.129045,11.192691 13.9441479,10.9853672 14.0333402,10.2941456 L14.0413216,10.1671486 L14.0413216,2 L17.25,2.00051727 Z M12.5413216,2 L12.5413216,9.07569648 L10.9197216,8.14379282 C10.6929803,8.03527051 10.3846103,8.03773853 10.1269219,8.16631351 L10.0199727,8.22918197 L8.54132159,9.07501642 L8.54132159,2 L12.5413216,2 Z">
+                                </path>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+                <span class="flex-1 ml-3 whitespace-nowrap">Đề tài</span>
+            </NavLink>
+        </li>
+    </ul>
+
+</div>

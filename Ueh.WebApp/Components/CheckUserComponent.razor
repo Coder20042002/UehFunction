@@ -1,0 +1,25 @@
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+@if (role == "load"){      }
+else if (role == "null"){
+    NavigationManager.NavigateTo("/loginsessionexpired");
+}
+else if (role != CheckRole){
+    <Error Type="NoRole" />
+}    
+else {
+    @* <h1>@role Page</h1> *@
+    @ItemContent
+}
+
+@code {
+    [CascadingParameter]
+    public string? role { get; set; }
+
+    [Parameter]
+    public string? CheckRole { get; set; }
+
+    [Parameter, EditorRequired]
+    public required RenderFragment ItemContent { get; set; }
+}
