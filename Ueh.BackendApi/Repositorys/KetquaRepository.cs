@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper.Execution;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using SelectPdf;
@@ -146,21 +147,21 @@ namespace Ueh.BackendApi.Repositorys
                 Ketqua ketqua = listketqua[i];
                 string? tendetai = ketqua.phancong.chitiets.FirstOrDefault()?.tendetai;
 
-                float count = (float)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+                double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
                 if (ketqua.phancong.maloai == "HKDN")
                 {
-                    count = (count * 10 / 6 + ((ketqua.diemDN ?? 0)) * 10 / 4) / 2;
+                    sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
                 }
-                if (count >= 10)
+                if (sum >= 10)
                 {
-                    count = 10;
+                    sum = 10;
                 }
                 htmlBuilder.AppendLine("<tr>");
                 htmlBuilder.AppendLine($"<td>{i + 1}</td>");
                 htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.mssv + "|" + ketqua.phancong.sinhvien.malop + "|" + ketqua.phancong.maloai}</td>");
                 htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.ho + " " + ketqua.phancong.sinhvien.ten}</td>");
                 htmlBuilder.AppendLine($"<td>{tendetai}</td>");
-                htmlBuilder.AppendLine($"<td>{count}</td>");
+                htmlBuilder.AppendLine($"<td>{sum}</td>");
                 htmlBuilder.AppendLine("</tr>");
             }
             htmlBuilder.AppendLine(@"</table></div>");
@@ -233,10 +234,10 @@ namespace Ueh.BackendApi.Repositorys
                 return null;
             }
 
-            float count = (float)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
-            if (count >= 10)
+            double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+            if (sum >= 10)
             {
-                count = 10;
+                sum = 10;
             }
 
             // Append the HTML content before the table
@@ -292,7 +293,7 @@ namespace Ueh.BackendApi.Repositorys
 
     .footer {
         margin: 0px 50px;
-        float: right;
+        double: right;
         text-align: center;
     }
 </style>");
@@ -421,7 +422,7 @@ namespace Ueh.BackendApi.Repositorys
             <tr class=""lable "">
                 <td></td>
                 <td>Điểm tổng cộng :</td>
-                <td>{count}/10</td>
+                <td>{sum}/10</td>
 
             </tr>
 
@@ -470,6 +471,8 @@ namespace Ueh.BackendApi.Repositorys
             var ketquas = await _context.Ketquas
                 .Include(k => k.phancong)
                     .ThenInclude(p => p.sinhvien)
+                 .Include(k => k.phancong)
+                    .ThenInclude(p => p.giangvien)
                 .OrderBy(k => k.phancong.sinhvien.ten)
                 .ToListAsync();
 
@@ -484,6 +487,7 @@ namespace Ueh.BackendApi.Repositorys
                 worksheet.Cells["B1"].Value = "Họ";
                 worksheet.Cells["C1"].Value = "Tên";
                 worksheet.Cells["D1"].Value = "Điểm";
+                worksheet.Cells["E1"].Value = "Giáo viên hướng dẫn";
 
 
                 // Ghi dữ liệu vào worksheet
@@ -495,19 +499,22 @@ namespace Ueh.BackendApi.Repositorys
                         continue; // Bỏ qua bản ghi không có status bằng "true"
                     }
 
-                    float count = (float)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+                    double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
                     if (ketqua.phancong.maloai == "HKDN")
                     {
-                        count = (count * 10 / 6 + ((ketqua.diemDN ?? 0)) * 10 / 4) / 2;
+                        sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
+
                     }
-                    if (count >= 10)
+                    if (sum >= 10)
                     {
-                        count = 10;
+                        sum = 10;
                     }
+
                     worksheet.Cells[$"A{rowIndex}"].Value = ketqua.phancong.mssv;
                     worksheet.Cells[$"B{rowIndex}"].Value = ketqua.phancong.sinhvien.ho;
                     worksheet.Cells[$"C{rowIndex}"].Value = ketqua.phancong.sinhvien.ten;
-                    worksheet.Cells[$"D{rowIndex}"].Value = count;
+                    worksheet.Cells[$"D{rowIndex}"].Value = sum;
+                    worksheet.Cells[$"E{rowIndex}"].Value = ketqua.phancong.giangvien.tengv;
 
 
                     rowIndex++;

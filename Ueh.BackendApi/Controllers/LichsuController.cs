@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Repositorys;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -65,34 +66,26 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateLichsu([FromBody] LichsuDto lichsuCreate)
+        public async Task<IActionResult> CreateLichsu([FromBody] LichsuDto lichsuDto)
         {
-            if (lichsuCreate == null)
+
+            if (_lichsuRepository == null)
                 return BadRequest(ModelState);
 
-            var lichsus = await _lichsuRepository.GetLichsus();
-
-            var lichsuexiss = lichsus.Where(c => c.mapc == lichsuCreate.mapc && c.ngay == lichsuCreate.ngay).FirstOrDefault();
-
-            if (lichsuexiss != null)
-            {
-                ModelState.AddModelError("", "Đánh giá đã tồn tại");
-                return StatusCode(422, ModelState);
-            }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var lichsuMap = _mapper.Map<Lichsu>(lichsuCreate);
+            var LichsuMap = _mapper.Map<Lichsu>(lichsuDto);
 
 
-            if (!await _lichsuRepository.CreateLichsu(lichsuMap))
+            if (!await _lichsuRepository.CreateLichsu(LichsuMap))
             {
-                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
+                ModelState.AddModelError("", "Xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Thêm thành công");
+            return Ok(LichsuMap);
         }
 
         [HttpPut("{mapc}")]
@@ -104,7 +97,7 @@ namespace Ueh.BackendApi.Controllers
             if (updatedLichsu == null)
                 return BadRequest(ModelState);
 
-            if (mapc != updatedLichsu.mapc)
+            if (mapc != updatedLichsu.Id)
                 return BadRequest(ModelState);
 
             if (!await _lichsuRepository.LichsuExists(mapc, dateTime))

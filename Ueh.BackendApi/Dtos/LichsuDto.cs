@@ -2,7 +2,7 @@
 {
     public class LichsuDto
     {
-        public Guid mapc { get; set; }
+        public Guid Id { get; set; }
         public string noidung { get; set; }
         public DateTime ngay { get; set; }
     }
