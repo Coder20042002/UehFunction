@@ -1,0 +1,21 @@
+﻿@page "/file/hkdn"
+@using Ueh.WebApp.Components
+
+<PageTitle>File HKDN</PageTitle>
+
+<CheckUserComponent CheckRole="sinhvien">
+    <ItemContent>
+
+        <h1>Giấy xác nhận, ô để gửi báo cáo hằng tuần</h1>
+
+    </ItemContent>
+</CheckUserComponent>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

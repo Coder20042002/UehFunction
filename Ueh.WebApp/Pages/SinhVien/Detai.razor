@@ -1,0 +1,60 @@
+﻿@page "/detai"
+@using Ueh.WebApp.Components
+
+<PageTitle>Đề tài</PageTitle>
+
+<CheckUserComponent CheckRole="sinhvien">
+    <ItemContent>
+
+
+    <div class="col-span-2">
+        <div class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2  sm:p-6">
+
+            <h3 class="mb-4 text-xl font-semibold">Đề tài đã đăng ký</h3>
+            <div class="grid grid-cols-1 gap-6">
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900">
+                        Đề tài
+                    </label>
+                    <p class="text-gray-900 sm:text-sm rounded-lg block w-full p-2.5">
+                        Xây dựng phần mềm hỗ trợ quản lý thực tập cho trường Đại học UEH.
+                        <span class="inline-flex justify-center items-center bg-green-100 text-teal-800 text-sm font-medium ml-5 px-4 py-0.5 rounded-full">
+                            Đã duyệt
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 sm:p-6">
+            <h3 class="mb-4 text-xl font-semibold">Thay đổi đề tài</h3>
+            <form action="#">
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="col-span-6 sm:col-span-3">
+                        <label for="phone" class="block mb-2 text-sm font-medium text-gray-900">
+                            Đề tài
+                        </label>
+                        <input type="text" name="phone" id="phone" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                    </div>
+
+                    <div class="col-span-6 sm:col-full">
+                        <button class="text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </ItemContent>
+</CheckUserComponent>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

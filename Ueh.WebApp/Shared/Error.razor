@@ -1,0 +1,62 @@
+﻿<div class="flex flex-col justify-center items-center px-6 mx-auto h-full xl:px-0">
+    <div class="block md:max-w-lg">
+        <img src="@img" width="500px" height="500px" alt="">
+    </div>
+    <div class="text-center xl:max-w-4xl">
+        <h1 class="mb-3 text-2xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">
+            @title
+        </h1>
+        <p class="mb-5 text-base font-normal text-gray-500">
+            @desc
+        </p>
+        <a href=@btnlink class="text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-3">
+            @btn
+        </a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? Type { get; set; }
+
+    @* Default *@
+    private string img = "images/error/error.png";
+    private string title = "Đã xảy ra lỗi";
+    private string desc = "Có lỗi xảy ra, vui lòng liên hệ phòng CNTT UEH";
+    private string btn = "Về trang chủ";
+    private string btnlink = "/";
+
+    protected override void OnInitialized()
+    {   
+        switch (Type) {
+            case "NotFound":
+                title = "Không tìm thấy trang";
+                desc = "Không tìm thấy trang web bạn yêu cầu, về trang chủ thôi";
+                break;
+            case "NoRole":
+                img = "images/error/no-role.png";
+                title = "Không có quyền truy cập";
+                desc = "Bạn không có quyền truy cập trang web này";
+                break;
+            case "PeriodNotOpen":
+                img = "images/error/not-found.png";
+                title = "Đợt thực tập chưa mở";
+                desc = "Đợt thực tập chưa mở, vui lòng quay lại sau";
+                break;
+            case "Maintenance":
+                img = "images/error/maintenance.png";
+                title = "Đang bảo trì";
+                desc = "Chức năng đang bảo trì, vui lòng quay lại sau";
+                break;
+            case "LoginSessionExpired":
+                img = "images/error/no-role.png";
+                title = "Phiên đăng nhập hết hạn";
+                desc = "Phiên đăng nhập hết hạn hoặc bạn chưa đăng nhập, vui lòng đăng nhập để tiếp tục";
+                btn = "Đăng nhập";
+                btnlink = "/uehlogin";
+                break;
+            case "Error":
+                break;
+        }
+    }
+}

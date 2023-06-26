@@ -1,0 +1,21 @@
+﻿@page "/dot"
+@using Ueh.WebApp.Components
+
+<PageTitle>Đợt</PageTitle>
+
+<CheckUserComponent CheckRole="admin">
+<ItemContent>
+
+    <h1>nút bắt đầu đợt, ô nhập thông tin đợt, nút chỉnh sửa đợt, kết thúc đợt</h1>
+
+</ItemContent>
+</CheckUserComponent>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
