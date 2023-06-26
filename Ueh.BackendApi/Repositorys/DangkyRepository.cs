@@ -40,7 +40,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<Dangky> GetDangkyName(string name)
         {
-            return await _context.Dangkys.Where(s => s.hotensv == name && s.status == "true").FirstOrDefaultAsync();
+            return await _context.Dangkys.Where(s => s.lastName == name && s.status == "true").FirstOrDefaultAsync();
 
         }
 
@@ -95,9 +95,9 @@ namespace Ueh.BackendApi.Repositorys
                             var dangky = new Dangky
                             {
                                 mssv = mssv,
-                                hotensv = worksheet.Cells[row, 3].Value?.ToString(),
-                                magv = worksheet.Cells[row, 4].Value?.ToString(),
-                                maloai = worksheet.Cells[row, 5].Value?.ToString(),
+                                firstName = worksheet.Cells[row, 3].Value?.ToString(),
+                                lastName = worksheet.Cells[row, 4].Value?.ToString(),
+                                magv = worksheet.Cells[row, 5].Value?.ToString(),
                             };
 
                             await _context.Dangkys.AddAsync(dangky);
@@ -115,7 +115,6 @@ namespace Ueh.BackendApi.Repositorys
         {
             var dangkys = await _context.Dangkys
                 .Include(d => d.giangvien)
-                .Include(d => d.loai)
                 .ToListAsync();
 
             // Tạo một package Excel
@@ -144,11 +143,9 @@ namespace Ueh.BackendApi.Repositorys
                     }
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
                     worksheet.Cells[$"B{rowIndex}"].Value = dangky.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = dangky.hotensv;
+                    worksheet.Cells[$"C{rowIndex}"].Value = dangky.firstName + " " + dangky.lastName;
                     worksheet.Cells[$"D{rowIndex}"].Value = dangky.magv;
                     worksheet.Cells[$"E{rowIndex}"].Value = dangky.giangvien?.tengv;
-                    worksheet.Cells[$"F{rowIndex}"].Value = dangky.maloai;
-                    worksheet.Cells[$"G{rowIndex}"].Value = dangky.loai?.name;
 
                     rowIndex++;
                 }

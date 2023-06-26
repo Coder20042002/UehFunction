@@ -98,7 +98,7 @@ namespace Ueh.BackendApi.Repositorys
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
                         for (int row = 2; row <= rowCount; row++)
                         {
-                            var mssv = worksheet.Cells[row, 2].Value?.ToString();
+                            var mssv = worksheet.Cells[row, 1].Value?.ToString();
                             bool existing = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true");
 
                             if (existing != false)
@@ -111,11 +111,12 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 Id = Guid.NewGuid(),
                                 mssv = mssv,
-                                magv = worksheet.Cells[row, 3].Value?.ToString(),
-                                macn = worksheet.Cells[row, 4].Value?.ToString(),
-                                maloai = worksheet.Cells[row, 5].Value?.ToString(),
-                                madot = worksheet.Cells[row, 6].Value?.ToString(),
+                                magv = worksheet.Cells[row, 2].Value?.ToString(),
+                                maloai = worksheet.Cells[row, 3].Value?.ToString(),
+                                madot = worksheet.Cells[row, 4].Value?.ToString(),
                             };
+
+
 
                             var ketqua = new Ketqua
                             {
@@ -174,8 +175,8 @@ namespace Ueh.BackendApi.Repositorys
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
                     worksheet.Cells[$"B{rowIndex}"].Value = Phancong.mssv;
                     worksheet.Cells[$"C{rowIndex}"].Value = Phancong.sinhvien?.thuoclop;
-                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.sinhvien?.firstName;
-                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.sinhvien?.lastName;
+                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.sinhvien?.ho;
+                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.sinhvien?.ten;
                     worksheet.Cells[$"F{rowIndex}"].Value = Phancong.giangvien?.tengv;
 
                     rowIndex++;
@@ -194,7 +195,7 @@ namespace Ueh.BackendApi.Repositorys
         {
             var result = await _context.Phancongs
                         .Include(p => p.sinhvien)
-                        .Where(p => p.sinhvien.lastName.Contains(tenSinhVien))
+                        .Where(p => p.sinhvien.ten.Contains(tenSinhVien))
                         .ToListAsync();
 
             return result;

@@ -94,6 +94,74 @@ namespace Ueh.BackendApi.Controllers
             return NoContent();
         }
 
+        [HttpGet("generatepdfbygv")]
+        [ProducesResponseType(200, Type = typeof(FileContentResult))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GeneratePdfByGv([FromQuery] string magv)
+        {
+            try
+            {
+                var content = await _KetquaRepository.GeneratePdfByGv(magv);
+                if (content != null)
+                {
+                    return File(content, "application/pdf", "BaoCao.pdf");
+                }
+                else
+                {
+                    return BadRequest("Không có dữ liệu để xuất.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+        }
+
+        [HttpGet("generatepdfbysv")]
+        [ProducesResponseType(200, Type = typeof(FileContentResult))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GeneratePdfBySv([FromQuery] string mssv)
+        {
+            try
+            {
+                var content = await _KetquaRepository.GeneratePdfBySv(mssv);
+                if (content != null)
+                {
+                    return File(content, "application/pdf", "BaoCao.pdf");
+                }
+                else
+                {
+                    return BadRequest("Không có dữ liệu để xuất.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+        }
+        [HttpGet("generate")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> ExportToExcel()
+        {
+            try
+            {
+                var content = await _KetquaRepository.ExportToExcel();
+                if (content != null)
+                {
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSdiemtonghop.xlsx");
+                }
+                else
+                {
+                    return BadRequest("Không có dữ liệu để xuất.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+        }
+
     }
 }
 
