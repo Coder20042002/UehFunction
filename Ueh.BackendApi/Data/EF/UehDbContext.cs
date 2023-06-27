@@ -11,7 +11,7 @@ using Ueh.BackendApi.Data.Entities;
 
 namespace Ueh.BackendApi.Data.EF
 {
-    public class UehDbContext : IdentityDbContext<AppUser, AppRole, Guid>
+    public class UehDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
     {
         public UehDbContext(DbContextOptions options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,9 +33,9 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new UploadResultConfiguration());
 
 
-            modelBuilder.ApplyConfiguration(new AppUserConfiguration());
-            modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
 
+            modelBuilder.Entity<IdentityUser<Guid>>().ToTable("AppUser").HasKey(x => x.Id);
+            modelBuilder.Entity<IdentityRole<Guid>>().ToTable("AppRole").HasKey(x => x.Id);
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
@@ -43,7 +43,6 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
 
-            modelBuilder.Seed();
             //base.OnModelCreating(modelBuilder);
         }
         public DbSet<Sinhvien> Sinhviens { get; set; }

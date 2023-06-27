@@ -1,4 +1,4 @@
-﻿namespace Ueh.BackendApi.User.Model
+﻿namespace Ueh.BackendApi.User
 {
     public class LoginRequest
     {
@@ -6,6 +6,5 @@
 
         public string Password { get; set; }
 
-        public bool RememberMe { get; set; }
     }
 }
