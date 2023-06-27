@@ -16,9 +16,12 @@ namespace Ueh.BackendApi.Data.Configuration
         public void Configure(EntityTypeBuilder<Lichsu> builder)
         {
             builder.ToTable("Lichsus");
-            builder.HasKey(ls => new { ls.mapc, ls.ngay });
+            builder.HasKey(ls => new { ls.Id, ls.ngay });
 
-
+            builder.HasOne(ls => ls.phancong)
+                .WithMany(pc => pc.lichsus)
+                .HasForeignKey(ls => ls.Id)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

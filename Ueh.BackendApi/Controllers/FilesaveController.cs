@@ -37,7 +37,7 @@ namespace Ueh.BackendApi.Controllers
         }
         [HttpPost]
         public async Task<ActionResult<IList<UploadResult>>> PostFile(
-            [FromForm] IEnumerable<IFormFile> files, string mssv)
+            [FromForm] IEnumerable<IFormFile> files, string mssv, string filetype)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             foreach (var file in files)
@@ -54,9 +54,9 @@ namespace Ueh.BackendApi.Controllers
                 await using FileStream fs = new(path, FileMode.Create);
                 await file.CopyToAsync(fs);
                 uploadResult.Id = Guid.NewGuid();
-                uploadResult.Uploaded = true;
+                uploadResult.FileType = filetype;
                 uploadResult.ContentType = file.ContentType;
-                uploadResult.UserId = mssv;
+                uploadResult.Mssv = mssv;
                 uploadResult.StoredFileName = trustedFileNameForFileStorage;
                 uploadResults.Add(uploadResult);
 

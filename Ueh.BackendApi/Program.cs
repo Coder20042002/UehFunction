@@ -15,8 +15,6 @@ using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
-using Ueh.BackendApi.User;
-using Ueh.BackendApi.User.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,13 +38,12 @@ builder.Services.AddScoped<IChuyennganhRepository, ChuyennganhRepository>();
 builder.Services.AddScoped<IChitietRepository, ChitietRepository>();
 builder.Services.AddScoped<IKetquaRepository, KetquaRepository>();
 
-builder.Services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
-builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
-builder.Services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+builder.Services.AddTransient<UserManager<IdentityUser<Guid>>, UserManager<IdentityUser<Guid>>>();
+builder.Services.AddTransient<SignInManager<IdentityUser<Guid>>, SignInManager<IdentityUser<Guid>>>();
+builder.Services.AddTransient<RoleManager<IdentityRole<Guid>>, RoleManager<IdentityRole<Guid>>>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
-builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
-builder.Services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
@@ -57,7 +54,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddDbContext<UehDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("UehDb")));
 
-builder.Services.AddIdentity<AppUser, AppRole>()
+builder.Services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>()
               .AddEntityFrameworkStores<UehDbContext>()
               .AddDefaultTokenProviders();
 

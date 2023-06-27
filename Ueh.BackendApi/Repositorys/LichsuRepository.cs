@@ -28,7 +28,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public Task<Lichsu> GetLichsu(Guid mapc)
         {
-            return _context.Lichsus.Where(r => r.mapc == mapc && r.phancong.status == "true").FirstOrDefaultAsync();
+            return _context.Lichsus.Where(r => r.Id == mapc && r.phancong.status == "true").FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Lichsu>> GetLichsus()
@@ -38,12 +38,12 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<ICollection<Lichsu>> GetLichsusOfASinhvien(Guid mapc)
         {
-            return await _context.Lichsus.Where(r => r.mapc == mapc && r.phancong.status == "true").ToListAsync();
+            return await _context.Lichsus.Where(r => r.Id == mapc && r.phancong.status == "true").ToListAsync();
         }
 
         public async Task<bool> LichsuExists(Guid mapc, DateTime dateTime)
         {
-            return await _context.Lichsus.AnyAsync(r => r.mapc == mapc && r.ngay == dateTime && r.phancong.status == "true");
+            return await _context.Lichsus.AnyAsync(r => r.Id == mapc && r.ngay == dateTime && r.phancong.status == "true");
         }
 
         public async Task<bool> Save()
