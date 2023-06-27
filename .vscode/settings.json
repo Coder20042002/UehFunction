@@ -1,6 +1,0 @@
-{
-  "files.exclude": {
-    "Ueh.BackendApi\\bin": true,
-    "Ueh.BackendApi\\obj": true
-  }
-}
