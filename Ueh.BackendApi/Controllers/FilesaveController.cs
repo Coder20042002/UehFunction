@@ -21,11 +21,11 @@ namespace Ueh.BackendApi.Controllers
             this.context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> DownloadFile(string filename)
+        [HttpGet("{fileName}")]
+        public async Task<IActionResult> DownloadFile(string fileName, [FromQuery] string mssv, [FromQuery] string filetype)
         {
-            var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(filename));
-            var path = Path.Combine(env.ContentRootPath, "SaveUploadFiles", filename);
+            var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(fileName) && u.Mssv == mssv && u.FileType == filetype);
+            var path = Path.Combine(env.ContentRootPath, "Uploads", fileName);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))
@@ -35,8 +35,9 @@ namespace Ueh.BackendApi.Controllers
             memory.Position = 0;
             return File(memory, uploadResult.ContentType, Path.GetFileName(path));
         }
+
         [HttpPost]
-        public async Task<ActionResult<IList<UploadResult>>> PostFile(
+        public async Task<ActionResult<List<UploadResult>>> PostFile(
             [FromForm] IEnumerable<IFormFile> files, string mssv, string filetype)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
@@ -49,7 +50,7 @@ namespace Ueh.BackendApi.Controllers
                 var trustedFileNameForDisplay = WebUtility.HtmlEncode(untrusteFilename);
 
                 trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var path = Path.Combine(env.ContentRootPath, "SaveUploadFiles", trustedFileNameForFileStorage);
+                var path = Path.Combine(env.ContentRootPath, "Uploads", trustedFileNameForFileStorage);
 
                 await using FileStream fs = new(path, FileMode.Create);
                 await file.CopyToAsync(fs);

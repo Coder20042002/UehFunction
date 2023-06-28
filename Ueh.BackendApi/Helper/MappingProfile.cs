@@ -28,6 +28,7 @@ namespace Ueh.BackendApi.Helper
             CreateMap<ChitietDto, Chitiet>();
             CreateMap<Ketqua, KetquaDto>();
             CreateMap<KetquaDto, Ketqua>();
+            CreateMap<ChamcheoDto, Chamcheo>();
 
         }
     }

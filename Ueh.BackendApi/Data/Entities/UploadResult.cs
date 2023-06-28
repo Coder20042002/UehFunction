@@ -8,5 +8,8 @@
         public string? FileName { get; set; }
         public string? StoredFileName { get; set; }
         public string? ContentType { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.Now;
+        public string Status { get; set; } = "true";
+
     }
 }

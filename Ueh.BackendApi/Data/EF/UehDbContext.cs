@@ -31,6 +31,7 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new KetquaConfiguration());
             modelBuilder.ApplyConfiguration(new GiangvienKhoaConfiguration());
             modelBuilder.ApplyConfiguration(new UploadResultConfiguration());
+            modelBuilder.ApplyConfiguration(new ChamcheoConfiguration());
 
 
 
@@ -60,6 +61,6 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<Ketqua> Ketquas { get; set; }
         public DbSet<GiangvienKhoa> GiangvienKhoas { get; set; }
         public DbSet<UploadResult> UploadResults { get; set; }
-
+        public DbSet<Chamcheo> Chamcheos { get; set; }
     }
 }

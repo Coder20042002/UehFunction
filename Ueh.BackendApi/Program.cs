@@ -37,6 +37,7 @@ builder.Services.AddScoped<IPhancongRepository, PhancongRepository>();
 builder.Services.AddScoped<IChuyennganhRepository, ChuyennganhRepository>();
 builder.Services.AddScoped<IChitietRepository, ChitietRepository>();
 builder.Services.AddScoped<IKetquaRepository, KetquaRepository>();
+builder.Services.AddScoped<IChamcheoRepository, ChamcheoRepository>();
 
 builder.Services.AddTransient<UserManager<IdentityUser<Guid>>, UserManager<IdentityUser<Guid>>>();
 builder.Services.AddTransient<SignInManager<IdentityUser<Guid>>, SignInManager<IdentityUser<Guid>>>();
