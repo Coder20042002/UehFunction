@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using ServiceStack.Web;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Ueh.BackendApi.Helper;
 using Ueh.BackendApi.IRepositorys;
@@ -52,6 +53,62 @@ namespace Ueh.BackendApi.Repositorys
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public async Task<string> Decrypt(string encryptedJson, string key, string iv)
+        {
+            byte[] encryptedBytes = Convert.FromBase64String(encryptedJson);
+            byte[] keyBytes = Convert.FromBase64String(key);
+            byte[] ivBytes = Convert.FromBase64String(iv);
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = keyBytes;
+                aes.IV = ivBytes;
+
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (var ms = new MemoryStream(encryptedBytes))
+                {
+                    using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var sr = new StreamReader(cs))
+                        {
+                            return await sr.ReadToEndAsync();
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        public async Task<string> Encrypt(string json, string key, string iv)
+        {
+            byte[] encryptedBytes;
+            byte[] keyBytes = Convert.FromBase64String(key);
+            byte[] ivBytes = Convert.FromBase64String(iv);
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = keyBytes;
+                aes.IV = ivBytes;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (var ms = new MemoryStream())
+                {
+                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
+                        await cs.WriteAsync(jsonBytes, 0, jsonBytes.Length);
+                    }
+                    encryptedBytes = ms.ToArray();
+                }
+            }
+
+            return Convert.ToBase64String(encryptedBytes);
+        }
+
+
         public async Task<bool> Register(string username, string password, string email, string role)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -81,7 +138,7 @@ namespace Ueh.BackendApi.Repositorys
                 await _userManager.AddToRoleAsync(user, role);
                 return true;
             }
-           
+
             return false;
         }
 

@@ -9,5 +9,8 @@ namespace Ueh.BackendApi.IRepositorys
         Task<bool> Register(string username, string password, string email, string role);
         Task<bool> RoleAssign(Guid id, RoleAssignRequest request);
         Task<bool> UserExist(string username);
+        Task<string> Encrypt(string json, string key, string iv);
+        Task<string> Decrypt(string encryptedJson, string key, string iv);
+
     }
 }
