@@ -21,6 +21,14 @@ namespace Ueh.BackendApi.Controllers
             this.context = context;
         }
 
+        // GET api/files?mssv={mssv}
+        [HttpGet]
+        public async Task<IActionResult> GetFiles(string mssv)
+        {
+            List<UploadResult> files = await context.UploadResults.Where(u => u.Mssv == mssv).ToListAsync(); ;
+            return Ok(files);
+        }
+
         [HttpGet("{fileName}/{mssv}")]
         public async Task<IActionResult> DownloadFile(string fileName, string mssv)
         {
