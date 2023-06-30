@@ -3,10 +3,12 @@ using AutoMapper.Execution;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using SelectPdf;
+using System.IO.Compression;
 using System.Text;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
+using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -529,7 +531,54 @@ namespace Ueh.BackendApi.Repositorys
             }
         }
 
+        public async Task<byte[]?> GenerateZipFileForGv(string magv)
+        {
+            var phancongs = await _context.Phancongs
+                .Include(p => p.sinhvien)
+                .Include(p => p.chitiets)
+                .Where(p => p.magv == magv)
+                .ToListAsync();
 
+            if (phancongs.Count == 0)
+            {
+                return null;
+            }
+
+
+            MemoryStream zipStream = new MemoryStream();
+
+
+            using (ZipArchive zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+            {
+                foreach (var phancong in phancongs)
+                {
+                    var mssv = phancong.mssv;
+
+
+                    byte[] pdfBytes = await GeneratePdfBySv(mssv);
+
+                    if (pdfBytes != null)
+                    {
+
+                        var entry = zipArchive.CreateEntry($"{mssv}.pdf", CompressionLevel.Optimal);
+
+
+                        using (Stream entryStream = entry.Open())
+                        {
+                            await entryStream.WriteAsync(pdfBytes, 0, pdfBytes.Length);
+                        }
+                    }
+                }
+            }
+
+
+            byte[] zipBytes = zipStream.ToArray();
+
+
+            zipStream.Dispose();
+
+            return zipBytes;
+        }
 
     }
 }

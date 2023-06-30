@@ -162,6 +162,19 @@ namespace Ueh.BackendApi.Controllers
             }
         }
 
+
+        [HttpGet("generatezip")]
+        public async Task<IActionResult> GenerateZip([FromQuery] string giangVienId)
+        {
+            byte[]? zipBytes = await _KetquaRepository.GenerateZipFileForGv(giangVienId);
+
+            if (zipBytes == null)
+            {
+                return NotFound();
+            }
+
+            return File(zipBytes, "application/zip", "Dsbaocaobangdiemchitiet.zip");
+        }
     }
 }
 
