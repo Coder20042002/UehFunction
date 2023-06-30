@@ -38,7 +38,7 @@ namespace Ueh.BackendApi.Controllers
 
         [HttpPost]
         public async Task<ActionResult<List<UploadResult>>> PostFile(
-            [FromForm] IEnumerable<IFormFile> files, [FromForm] string mssv, [FromForm] string filetype)
+            [FromForm] IEnumerable<IFormFile> files,  string mssv,  string filetype)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             foreach (var file in files)
