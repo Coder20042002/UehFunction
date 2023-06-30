@@ -10,22 +10,22 @@ namespace Ueh.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilesaveController : ControllerBase
+    public class FileController : ControllerBase
     {
         private readonly IWebHostEnvironment env;
         private readonly UehDbContext context;
 
-        public FilesaveController(IWebHostEnvironment env, UehDbContext context)
+        public FileController(IWebHostEnvironment env, UehDbContext context)
         {
             this.env = env;
             this.context = context;
         }
 
-        [HttpGet("{fileName}")]
-        public async Task<IActionResult> DownloadFile(string fileName, [FromQuery] string mssv, [FromQuery] string filetype)
+        [HttpGet("{fileName}/{mssv}")]
+        public async Task<IActionResult> DownloadFile(string fileName, string mssv)
         {
-            var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(fileName) && u.Mssv == mssv && u.FileType == filetype);
-            var path = Path.Combine(env.ContentRootPath, "Uploads", fileName);
+            var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(fileName) && u.Mssv == mssv && u.FileType == "baocao");
+            var path = Path.Combine(env.ContentRootPath, "uploads", fileName);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))
@@ -36,9 +36,9 @@ namespace Ueh.BackendApi.Controllers
             return File(memory, uploadResult.ContentType, Path.GetFileName(path));
         }
 
-        [HttpPost]
+        [HttpPost("{mssv}")]
         public async Task<ActionResult<List<UploadResult>>> PostFile(
-            [FromForm] IEnumerable<IFormFile> files,  string mssv,  string filetype)
+             [FromForm] IEnumerable<IFormFile> files, string mssv)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             foreach (var file in files)
@@ -50,12 +50,12 @@ namespace Ueh.BackendApi.Controllers
                 var trustedFileNameForDisplay = WebUtility.HtmlEncode(untrusteFilename);
 
                 trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var path = Path.Combine(env.ContentRootPath, "Uploads", trustedFileNameForFileStorage);
+                var path = Path.Combine(env.ContentRootPath, "uploads", trustedFileNameForFileStorage);
 
                 await using FileStream fs = new(path, FileMode.Create);
                 await file.CopyToAsync(fs);
                 uploadResult.Id = Guid.NewGuid();
-                uploadResult.FileType = filetype;
+                uploadResult.FileType = "baocao";
                 uploadResult.ContentType = file.ContentType;
                 uploadResult.Mssv = mssv;
                 uploadResult.StoredFileName = trustedFileNameForFileStorage;
