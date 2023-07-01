@@ -3,6 +3,7 @@ using OfficeOpenXml;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -73,7 +74,24 @@ namespace Ueh.BackendApi.Repositorys
             return await saved > 0 ? true : false;
         }
 
-
+        public async Task<List<ChamcheoRequest>> GetChamcheoByGiangVien(string makhoa)
+        {
+            var chamcheoList = await _context.Chamcheos
+                 .Where(cc => cc.makhoa == makhoa)
+                 .Join(_context.Giangviens, cc => cc.magv1, gv => gv.magv, (cc, gv) => new { Chamcheo = cc, Giangvien = gv })
+                 .Join(_context.Giangviens, ccgv => ccgv.Chamcheo.magv2, gv => gv.magv, (ccgv, gv2) => new { ccgv.Chamcheo, ccgv.Giangvien, Giangvien2 = gv2 })
+                 .Select(ccgvv => new ChamcheoRequest
+                 {
+                     magv1 = ccgvv.Chamcheo.magv1,
+                     tengv1 = ccgvv.Giangvien.tengv,
+                     email1 = ccgvv.Giangvien.email,
+                     magv2 = ccgvv.Chamcheo.magv2,
+                     tengv2 = ccgvv.Giangvien2.tengv,
+                     email2 = ccgvv.Giangvien2.email
+                 })
+                 .ToListAsync();
+            return chamcheoList;
+        }
     }
 
 }

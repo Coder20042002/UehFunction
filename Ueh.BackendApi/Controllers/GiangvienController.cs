@@ -5,6 +5,7 @@ using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -49,6 +50,32 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Giangvien);
         }
 
+        [HttpGet("khoa/{makhoa}/giangvien")]
+        [ProducesResponseType(200, Type = typeof(List<Giangvien>))]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetGiangvienByKhoa(string makhoa)
+        {
+            var giangvienList = _mapper.Map<List<GiangvienDto>>(await _giangvienRepository.GetGiangvienByKhoa(makhoa));
+
+            if (giangvienList == null)
+                return NotFound();
+
+            return Ok(giangvienList);
+        }
+
+        [HttpGet("sinhvientotal")]
+        public async Task<ActionResult<List<GiangvienRequest>>> GetGiangVienAndSinhVienHuongDan(string makhoa)
+        {
+            try
+            {
+                var giangVienList = await _giangvienRepository.GetGiangVienAndSinhVienHuongDan(makhoa);
+                return Ok(giangVienList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+        }
 
 
         [HttpPost]
@@ -140,12 +167,12 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost("formFile")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ImportExcelFile([FromQuery] string makhoa, IFormFile formFile)
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, string makhoa)
         {
             try
             {
 
-                bool success = await _giangvienRepository.ImportExcelFile(makhoa, formFile);
+                bool success = await _giangvienRepository.ImportExcelFile(formFile, makhoa);
                 if (success)
                 {
                     return Ok("Import thành công"); // Trả về thông báo thành công

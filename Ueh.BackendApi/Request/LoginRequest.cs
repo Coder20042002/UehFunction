@@ -1,4 +1,4 @@
-﻿namespace Ueh.BackendApi.User
+﻿namespace Ueh.BackendApi.Request
 {
     public class LoginRequest
     {

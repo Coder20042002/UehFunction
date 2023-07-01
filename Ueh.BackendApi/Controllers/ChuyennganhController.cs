@@ -10,23 +10,21 @@ namespace Ueh.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ChuyennganhController : ControllerBase
     {
-        private readonly IChuyennganhRepository _ChuyennganhRepository;
+        private readonly IChuyennganhRepository _chuyennganhRepository;
         private readonly IMapper _mapper;
 
-        public ChuyennganhController(IChuyennganhRepository ChuyennganhRepository, IMapper mapper)
+        public ChuyennganhController(IChuyennganhRepository chuyennganhRepository, IMapper mapper)
         {
-            _ChuyennganhRepository = ChuyennganhRepository;
+            _chuyennganhRepository = chuyennganhRepository;
             _mapper = mapper;
         }
 
-        [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Chuyennganh>))]
-        public async Task<IActionResult> GetChuyennganhs()
+        [HttpGet("GetChuyennganhsByKhoa/{makhoa}")]
+        public async Task<IActionResult> GetChuyennganhsByKhoa(string makhoa)
         {
-            var Chuyennganhs = _mapper.Map<List<ChuyennganhDto>>(await _ChuyennganhRepository.GetChuyennganhs());
+            var Chuyennganhs = _mapper.Map<List<ChuyennganhDto>>(await _chuyennganhRepository.GetChuyennganhsByKhoa(makhoa));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,14 +33,12 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("{macn}")]
-        [ProducesResponseType(200, Type = typeof(Chuyennganh))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetChuyennganh(string macn)
+        public async Task<IActionResult> GetChuyennganhById(string macn)
         {
-            if (!await _ChuyennganhRepository.ChuyennganhExists(macn))
+            if (!await _chuyennganhRepository.ChuyennganhExists(macn))
                 return NotFound();
 
-            var Chuyennganh = _mapper.Map<ChuyennganhDto>(await _ChuyennganhRepository.GetChuyennganh(macn));
+            var Chuyennganh = _mapper.Map<ChuyennganhDto>(await _chuyennganhRepository.GetChuyennganhById(macn));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -50,14 +46,12 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Chuyennganh);
         }
 
-        [HttpPost("formFile")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> ImportExcelFile(IFormFile formFile)
+        [HttpPost("formFile/{makhoa}")]
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, string makhoa)
         {
             try
             {
-                bool success = await _ChuyennganhRepository.ImportExcelFile(formFile);
+                bool success = await _chuyennganhRepository.ImportExcelFile(formFile, makhoa);
                 if (success)
                 {
                     return Ok("Import thành công"); // Trả về thông báo thành công
@@ -77,13 +71,11 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("generate")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var content = await _ChuyennganhRepository.ExportToExcel();
+                var content = await _chuyennganhRepository.ExportToExcel();
                 if (content != null)
                 {
                     return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSChuyennganh.xlsx");
@@ -101,14 +93,12 @@ namespace Ueh.BackendApi.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateChuyennganh([FromBody] ChuyennganhDto ChuyennganhCreate)
         {
             if (ChuyennganhCreate == null)
                 return BadRequest(ModelState);
 
-            bool Chuyennganhs = await _ChuyennganhRepository.ChuyennganhExists(ChuyennganhCreate.macn);
+            bool Chuyennganhs = await _chuyennganhRepository.ChuyennganhExists(ChuyennganhCreate.macn);
 
             if (Chuyennganhs == true)
             {
@@ -122,7 +112,7 @@ namespace Ueh.BackendApi.Controllers
             var ChuyennganhMap = _mapper.Map<Chuyennganh>(ChuyennganhCreate);
 
 
-            if (!await _ChuyennganhRepository.CreateChuyennganh(ChuyennganhMap))
+            if (!await _chuyennganhRepository.CreateChuyennganh(ChuyennganhMap))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
@@ -132,9 +122,6 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpPut("{macn}")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateChuyennganh(string macn,
             [FromBody] ChuyennganhDto updatedChuyennganh)
         {
@@ -144,7 +131,7 @@ namespace Ueh.BackendApi.Controllers
             if (macn != updatedChuyennganh.macn)
                 return BadRequest(ModelState);
 
-            if (!await _ChuyennganhRepository.ChuyennganhExists(macn))
+            if (!await _chuyennganhRepository.ChuyennganhExists(macn))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -152,7 +139,7 @@ namespace Ueh.BackendApi.Controllers
 
             var ChuyennganhMap = _mapper.Map<Chuyennganh>(updatedChuyennganh);
 
-            if (!await _ChuyennganhRepository.UpdateChuyennganh(ChuyennganhMap))
+            if (!await _chuyennganhRepository.UpdateChuyennganh(ChuyennganhMap))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                 return StatusCode(500, ModelState);
@@ -162,23 +149,20 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpDelete("{macn}")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteChuyennganh(string macn)
         {
-            if (!await _ChuyennganhRepository.ChuyennganhExists(macn))
+            if (!await _chuyennganhRepository.ChuyennganhExists(macn))
             {
                 return NotFound();
             }
-            var ChuyennganhToDelete = await _ChuyennganhRepository.GetChuyennganh(macn);
+            var ChuyennganhToDelete = await _chuyennganhRepository.GetChuyennganhById(macn);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
 
 
-            if (!await _ChuyennganhRepository.DeleteChuyennganh(ChuyennganhToDelete))
+            if (!await _chuyennganhRepository.DeleteChuyennganh(ChuyennganhToDelete))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa");
             }

@@ -4,5 +4,7 @@
     {
         public string macn { get; set; }
         public string tencn { get; set; }
+        public string makhoa { get; set; }
+
     }
 }

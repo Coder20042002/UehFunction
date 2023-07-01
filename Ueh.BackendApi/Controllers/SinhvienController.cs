@@ -34,6 +34,9 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Sinhviens);
         }
 
+
+
+
         [HttpGet("khoa/{mssv}")]
         public async Task<IActionResult> GetKhoaBySinhvien(string mssv)
         {

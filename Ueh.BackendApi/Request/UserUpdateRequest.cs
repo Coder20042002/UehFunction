@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ueh.BackendApi.User
+namespace Ueh.BackendApi.Request
 {
     public class UserUpdateRequest
     {

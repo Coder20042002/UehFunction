@@ -31,20 +31,16 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<Chuyennganh> GetChuyennganh(string macn)
+        public async Task<Chuyennganh> GetChuyennganhById(string macn)
         {
             return await _context.Chuyennganhs.Where(s => s.macn == macn).FirstOrDefaultAsync();
         }
 
-        public async Task<Chuyennganh> GetChuyennganhName(string name)
-        {
-            return await _context.Chuyennganhs.Where(s => s.tencn == name).FirstOrDefaultAsync();
 
-        }
 
-        public async Task<ICollection<Chuyennganh>> GetChuyennganhs()
+        public async Task<ICollection<Chuyennganh>> GetChuyennganhsByKhoa(string makhoa)
         {
-            return await _context.Chuyennganhs.OrderBy(s => s.macn).ToListAsync();
+            return await _context.Chuyennganhs.Where(c => c.makhoa == makhoa).ToListAsync();
         }
 
         public async Task<bool> Save()
@@ -67,7 +63,7 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> ImportExcelFile(IFormFile formFile)
+        public async Task<bool> ImportExcelFile(IFormFile formFile, string makhoa)
         {
             if (formFile != null && formFile.Length > 0)
             {
@@ -87,8 +83,9 @@ namespace Ueh.BackendApi.Repositorys
 
                             var chuyennganh = new Chuyennganh
                             {
-                                macn = worksheet.Cells[row, 2].Value?.ToString(),
-                                tencn = worksheet.Cells[row, 3].Value?.ToString(),
+                                macn = worksheet.Cells[row, 1].Value?.ToString(),
+                                tencn = worksheet.Cells[row, 2].Value?.ToString(),
+                                makhoa = makhoa
                             };
 
                             await _context.Chuyennganhs.AddAsync(chuyennganh);

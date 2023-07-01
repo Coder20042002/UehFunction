@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -15,6 +17,40 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
+        public async Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string makhoa)
+        {
+            var giangVienList = await _context.Phancongs
+                .Where(p => p.status == "true")
+                .Join(_context.GiangvienKhoas, p => p.magv, gk => gk.magv, (p, gk) => new { Phancong = p, GiangvienKhoa = gk })
+                .Where(pgk => pgk.GiangvienKhoa.makhoa == makhoa)
+                .GroupBy(pgk => pgk.Phancong.magv)
+                .Select(g => new GiangvienRequest
+                {
+                    MaGiangVien = g.Key,
+                    TenGiangVien = g.First().Phancong.giangvien.tengv,
+                    Email = g.First().Phancong.giangvien.email,
+                    SDT = g.First().Phancong.giangvien.sdt,
+                    SoSinhVienHuongDan = g.Count()
+                })
+                .ToListAsync();
+
+            return giangVienList;
+        }
+
+
+
+        public async Task<List<Giangvien>> GetGiangvienByKhoa(string makhoa)
+        {
+            var giangvienKhoaList = await _context.GiangvienKhoas
+                .Include(gk => gk.giangvien)
+                .Where(gk => gk.makhoa == makhoa)
+                .ToListAsync();
+
+            var giangvienList = giangvienKhoaList.Select(gk => gk.giangvien).ToList();
+
+            return giangvienList;
+        }
+
         public async Task<bool> CreateGiangvien(string makhoa, Giangvien Giangvien)
         {
             bool giangvienkhoa = await _context.Khoas.AnyAsync(a => a.makhoa == makhoa);
@@ -27,7 +63,7 @@ namespace Ueh.BackendApi.Repositorys
 
             if (giangvienkhoa)
                 _context.Add(gvkhoa);
-                _context.Add(Giangvien);
+            _context.Add(Giangvien);
 
             return await Save();
         }
@@ -74,7 +110,7 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> ImportExcelFile(string makhoa, IFormFile formFile)
+        public async Task<bool> ImportExcelFile(IFormFile formFile, string makhoa)
         {
             if (formFile != null && formFile.Length > 0)
             {

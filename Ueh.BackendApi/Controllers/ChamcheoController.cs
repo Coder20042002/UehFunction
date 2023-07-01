@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -19,6 +20,23 @@ namespace Ueh.BackendApi.Controllers
             _chamcheoRepository = chamcheoRepository;
             _mapper = mapper;
         }
+
+
+        [HttpGet("chamcheo")]
+        public async Task<ActionResult<List<ChamcheoRequest>>> GetChamcheoByGiangVien(string makhoa)
+        {
+            try
+            {
+                var chamcheoList = await _chamcheoRepository.GetChamcheoByGiangVien(makhoa);
+                return Ok(chamcheoList);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý khi có lỗi xảy ra
+                return BadRequest($"Đã xảy ra lỗi: {ex.Message}");
+            }
+        }
+
 
         [HttpPost("formFile")]
         [ProducesResponseType(204)]

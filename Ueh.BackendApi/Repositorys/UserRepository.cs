@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Ueh.BackendApi.Helper;
 using Ueh.BackendApi.IRepositorys;
-using Ueh.BackendApi.User;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
