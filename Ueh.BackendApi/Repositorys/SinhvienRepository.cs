@@ -154,5 +154,19 @@ namespace Ueh.BackendApi.Repositorys
             return false;
         }
 
+        public async Task<Khoa> GetKhoaBySinhvien(string mssv)
+        {
+            var sinhvienKhoa = await _context.SinhvienKhoas
+                .Include(sk => sk.khoa)
+                .FirstOrDefaultAsync(sk => sk.mssv == mssv);
+
+            if (sinhvienKhoa != null)
+            {
+                return sinhvienKhoa.khoa;
+            }
+
+            return null;
+        }
+
     }
 }

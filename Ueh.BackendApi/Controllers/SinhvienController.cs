@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
@@ -32,6 +33,20 @@ namespace Ueh.BackendApi.Controllers
 
             return Ok(Sinhviens);
         }
+
+        [HttpGet("khoa/{mssv}")]
+        public async Task<IActionResult> GetKhoaBySinhvien(string mssv)
+        {
+            var sinhvienKhoa = await _sinhvienRepository.GetKhoaBySinhvien(mssv);
+
+            if (sinhvienKhoa != null)
+            {
+                return Ok(sinhvienKhoa);
+            }
+
+            return NotFound();
+        }
+
 
         [HttpGet("{mssv}")]
         [ProducesResponseType(200, Type = typeof(Sinhvien))]
