@@ -46,19 +46,19 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Chuyennganh);
         }
 
-        [HttpPost("formFile/{makhoa}")]
-        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, string makhoa)
+        [HttpPost("formFile")]
+        public async Task<IActionResult> ImportExcelFile([FromQuery] string makhoa,IFormFile formFile)
         {
             try
             {
                 bool success = await _chuyennganhRepository.ImportExcelFile(formFile, makhoa);
                 if (success)
                 {
-                    return Ok("Import thành công"); // Trả về thông báo thành công
+                    return Ok("Import thành công"); 
                 }
                 else
                 {
-                    return BadRequest("Import thất bại"); // Trả về thông báo lỗi
+                    return BadRequest("Import thất bại");
                 }
             }
             catch (Exception ex)

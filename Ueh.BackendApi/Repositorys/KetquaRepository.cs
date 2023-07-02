@@ -101,37 +101,37 @@ namespace Ueh.BackendApi.Repositorys
         background-color: rgb(172, 172, 172);
         }
          
-    </style>
-    <div class=""title"">
-         <div>
-            <p><strong>Trường Đại học Kinh tế Tp. Hồ Chí Minh</strong></p>
-            <p><strong>Khoa Công nghệ Thông tin Kinh doanh</strong></p>
-            <p><strong>Chuyên ngành: .............................................</strong></p>
+        </style>
+        <div class=""title"">
+             <div>
+                <p><strong>Trường Đại học Kinh tế Tp. Hồ Chí Minh</strong></p>
+                <p><strong>Khoa Công nghệ Thông tin Kinh doanh</strong></p>
+                <p><strong>Chuyên ngành: .............................................</strong></p>
+            </div>
+            <div>
+                <p><strong>Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</strong></p>
+                <p style=""text-align: center;""><strong >Độc lập – Tự do – Hạnh phúc</strong></p>
+                <p><strong>&nbsp;</strong></p>
+            </div>
+        </div>
+        <div class=""content"">
+            <p class=""lable""><strong>BẢNG ĐIỂM TỔNG HỢP - THỰC TẬP TỐT NGHIỆP</strong></p>
+            <p class=""lable""><strong>ĐỢT
+                </strong>..........<strong>
+                    Hình thức:
+                </strong>............
+            </p>
+            <p><em>(Lưu ý: nếu loại hình thức ""học kỳ doanh nghiệp"" thì không có giáo viên chấm 2)</em></p>
         </div>
         <div>
-            <p><strong>Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</strong></p>
-            <p style=""text-align: center;""><strong >Độc lập – Tự do – Hạnh phúc</strong></p>
-            <p><strong>&nbsp;</strong></p>
-        </div>
-    </div>
-    <div class=""content"">
-        <p class=""lable""><strong>BẢNG ĐIỂM TỔNG HỢP - THỰC TẬP TỐT NGHIỆP</strong></p>
-        <p class=""lable""><strong>ĐỢT
-            </strong>..........<strong>
-                Hình thức:
-            </strong>............
-        </p>
-        <p><em>(Lưu ý: nếu loại hình thức ""học kỳ doanh nghiệp"" thì không có giáo viên chấm 2)</em></p>
-    </div>
-    <div>
-        <table width=""100%"">
-            <tr class=""table-title"">
-                <td><strong>STT</strong></td>
-                <td><strong>Mã số sinh viên|Lớp|Khoa</strong></td>
-                <td><strong>Tên sinh viên</strong></td>
-                <td><strong>Tên đề tài</strong></td>
-                <td><strong>Điểm cuối cùng</strong></td>
-            </tr>");
+            <table width=""100%"">
+                <tr class=""table-title"">
+                    <td><strong>STT</strong></td>
+                    <td><strong>Mã số sinh viên|Lớp|Khoa</strong></td>
+                    <td><strong>Tên sinh viên</strong></td>
+                    <td><strong>Tên đề tài</strong></td>
+                    <td><strong>Điểm cuối cùng</strong></td>
+                </tr>");
 
             // Retrieve data from the database
             List<Ketqua> listketqua = await _context.Ketquas
@@ -244,206 +244,206 @@ namespace Ueh.BackendApi.Repositorys
 
             // Append the HTML content before the table
             htmlBuilder.AppendLine(@"  <style>
-    .title {
-        display: flex;
-        justify-content: space-between;
-        margin: 0 50px;
+            .title {
+                display: flex;
+                justify-content: space-between;
+                margin: 0 50px;
 
-    }
+            }
 
-    .content {
-        text-align: center;
-    }
+            .content {
+                text-align: center;
+            }
 
-    .lable {
-        font-size: 20px;
-        height: 6px;
-    }
+            .lable {
+                font-size: 20px;
+                height: 6px;
+            }
 
-    table,
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse;
-        margin: 0 50px 0 50px;
+            table,
+            th,
+            td {
+                border: 1px solid black;
+                border-collapse: collapse;
+                margin: 0 50px 0 50px;
 
-    }
+            }
 
-    .table-title {
-        font-size: 18px;
-        background-color: rgb(172, 172, 172);
-    }
+            .table-title {
+                font-size: 18px;
+                background-color: rgb(172, 172, 172);
+            }
 
-    .lable_chitiet {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 50px 0 50px;
-        font-weight: 200;
-        font-size: 20px;
-        height: 40px;
-    }
+            .lable_chitiet {
+                display: flex;
+                justify-content: space-between;
+                padding: 0 50px 0 50px;
+                font-weight: 200;
+                font-size: 20px;
+                height: 40px;
+            }
 
-    .content-chitiet {
-        font-weight: 100;
-    }
+            .content-chitiet {
+                font-weight: 100;
+            }
 
-    .itatic {
-        font-weight: 100;
-        font-style: italic;
+            .itatic {
+                font-weight: 100;
+                font-style: italic;
     
-    }
+            }
 
-    .footer {
-        margin: 0px 50px;
-        double: right;
-        text-align: center;
-    }
-</style>");
+            .footer {
+                margin: 0px 50px;
+                double: right;
+                text-align: center;
+            }
+        </style>");
             htmlBuilder.AppendLine($@"
           
 
-<body>
-    <div class=""title"">
-        <div>
-            <p><strong>Trường Đại học Kinh tế Tp. Hồ Chí Minh</strong></p>
-            <p><strong>Khoa Công nghệ Thông tin Kinh doanh</strong></p>
-            <p><strong>Chuyên ngành:{phancong.sinhvien.chuyennganh.tencn}</strong></p>
-        </div>
-        <div>
-            <p><strong>Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</strong></p>
-            <p style=""text-align: center;""><strong>Độc lập – Tự do – Hạnh phúc</strong></p>
-            <p><strong>&nbsp;</strong></p>
-        </div>
+        <body>
+            <div class=""title"">
+                <div>
+                    <p><strong>Trường Đại học Kinh tế Tp. Hồ Chí Minh</strong></p>
+                    <p><strong>Khoa Công nghệ Thông tin Kinh doanh</strong></p>
+                    <p><strong>Chuyên ngành:{phancong.sinhvien.chuyennganh.tencn}</strong></p>
+                </div>
+                <div>
+                    <p><strong>Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</strong></p>
+                    <p style=""text-align: center;""><strong>Độc lập – Tự do – Hạnh phúc</strong></p>
+                    <p><strong>&nbsp;</strong></p>
+                </div>
 
-    </div>
-    <div class=""content"">
+            </div>
+            <div class=""content"">
 
-        <p class=""lable""><strong>BẢNG ĐIỂM CHI TIẾT </strong></p>
-        <p class=""lable""><strong>THỰC TẬP TỐT NGHIỆP CHO SINH VIÊN </strong></p>
-        <p class=""lable""><strong>ĐỢT: {phancong.dot.name}
-        </p>
-        <p class=""itatic""><em>(Dành cho tất cả hình thức thực tập tốt nghiêp)</em></p>
-    </div>
-    <div class=""lable_chitiet"">
-        <p>Họ tên sinh viên: <strong>{phancong.sinhvien.ho + " " + phancong.sinhvien.ten}</strong>  </p>
-        <p class=""lable_chitiet--small"">Mã số sinh viên: <strong>{phancong.mssv}</strong> </p>
-    </div>
-    <div class=""lable_chitiet"">
-        <p>Khoá: <strong>{phancong.sinhvien.khoagoc}</strong>  </p>
-        <p class=""lable_chitiet--small"">Lớp: <strong>{phancong.sinhvien.thuoclop}</strong></p>
-    </div>
-    <div class=""lable_chitiet"">
-        <p>Tên khoá luận: <strong>{phancong.chitiets.FirstOrDefault()?.tendetai}</strong> </p>
-    </div>
-    <div class=""lable_chitiet "">
-        <p>Họ tên giáo viên chấm: <strong>{phancong.giangvien.tengv}</strong> </p>
-        <p class=""lable_chitiet--small"">Là người hướng dẫn:</p>
-    </div>
-    <div style=""font-weight: 700; "" class=""lable_chitiet"">
-        <p>Điểm thành phần</p>
-    </div>
-    <div>
-        <table  width=""90%"">
-            <tr class=""table-title"">
-                <td><strong>STT</strong></td>
-                <td><strong>Tiêu chí</strong></td>
-                <td><strong>Điểm /điểm tối đa</strong></td>
+                <p class=""lable""><strong>BẢNG ĐIỂM CHI TIẾT </strong></p>
+                <p class=""lable""><strong>THỰC TẬP TỐT NGHIỆP CHO SINH VIÊN </strong></p>
+                <p class=""lable""><strong>ĐỢT: {phancong.dot.name}
+                </p>
+                <p class=""itatic""><em>(Dành cho tất cả hình thức thực tập tốt nghiêp)</em></p>
+            </div>
+            <div class=""lable_chitiet"">
+                <p>Họ tên sinh viên: <strong>{phancong.sinhvien.ho + " " + phancong.sinhvien.ten}</strong>  </p>
+                <p class=""lable_chitiet--small"">Mã số sinh viên: <strong>{phancong.mssv}</strong> </p>
+            </div>
+            <div class=""lable_chitiet"">
+                <p>Khoá: <strong>{phancong.sinhvien.khoagoc}</strong>  </p>
+                <p class=""lable_chitiet--small"">Lớp: <strong>{phancong.sinhvien.thuoclop}</strong></p>
+            </div>
+            <div class=""lable_chitiet"">
+                <p>Tên khoá luận: <strong>{phancong.chitiets.FirstOrDefault()?.tendetai}</strong> </p>
+            </div>
+            <div class=""lable_chitiet "">
+                <p>Họ tên giáo viên chấm: <strong>{phancong.giangvien.tengv}</strong> </p>
+                <p class=""lable_chitiet--small"">Là người hướng dẫn:</p>
+            </div>
+            <div style=""font-weight: 700; "" class=""lable_chitiet"">
+                <p>Điểm thành phần</p>
+            </div>
+            <div>
+                <table  width=""90%"">
+                    <tr class=""table-title"">
+                        <td><strong>STT</strong></td>
+                        <td><strong>Tiêu chí</strong></td>
+                        <td><strong>Điểm /điểm tối đa</strong></td>
 
-            </tr>
-            <tr class=""content-chitiet"">
-                <td>1</td>
-                <td>Về vấn đề được đặt ra hay mục tiêu (dựa trên có hay không, tính rõ ràng, tính hợp thời, tính mức độ
-                    cấp thiết, tính mức độ phức tạp,…)</td>
-                <td> {ketqua.tieuchi1}/ 1</td>
+                    </tr>
+                    <tr class=""content-chitiet"">
+                        <td>1</td>
+                        <td>Về vấn đề được đặt ra hay mục tiêu (dựa trên có hay không, tính rõ ràng, tính hợp thời, tính mức độ
+                            cấp thiết, tính mức độ phức tạp,…)</td>
+                        <td> {ketqua.tieuchi1}/ 1</td>
 
-            </tr>
-            <tr class=""content-chitiet"">
-                <td>2</td>
-                <td>
-                    <p>Phương pháp giải quyết vấn đề hay phương pháp để đạt mục tiêu:</p>
-                    <p>+ Rõ ràng và hợp lý | đúng.</p>
-                    <p>+ Mức độ áp dụng kiến thức ngành đã học | tự học.</p>
-                    <p>+ Hợp thời đại | thiết thực.</p>
-                </td>
-                <td>{ketqua.tieuchi2}/ 1.5</td>
+                    </tr>
+                    <tr class=""content-chitiet"">
+                        <td>2</td>
+                        <td>
+                            <p>Phương pháp giải quyết vấn đề hay phương pháp để đạt mục tiêu:</p>
+                            <p>+ Rõ ràng và hợp lý | đúng.</p>
+                            <p>+ Mức độ áp dụng kiến thức ngành đã học | tự học.</p>
+                            <p>+ Hợp thời đại | thiết thực.</p>
+                        </td>
+                        <td>{ketqua.tieuchi2}/ 1.5</td>
 
-            </tr>
-            <tr class=""content-chitiet"">
-                <td>3</td>
-                <td>
-                    <p>Kỹ năng giải quyết vấn đề và kết quả đạt được so với mục tiêu, gồm:</p>
-                    <p>+ Kỹ năng phân tích nghiệp vụ</p>
-                    <p>+ Kỹ năng phân tích mô hình | hệ thống | giải pháp.</p>
-                    <p>+ Kỹ năng thiết kế mô hình | hệ thống | giải pháp.</p>
-                    <p>+ Kỹ năng thiết kế dữ liệu.p>
-                    <p>+ Kỹ năng thu thập và phân tích dữ liệu.</p>
-                    <p>+ Kỹ năng lập trình.</p>
-                    <p>+ Kỹ năng sử dụng, vận dụng các công cụ công nghệ giải quyết các vấn đề.</p>
-                    <p>+ Kỹ năng lập kế hoạch và chiến lược công nghệ.</p>
-                    <p>+ Kỹ năng sử dụng, vận dụng các công cụ công nghệ giải quyết các vấn đề.</p>
-                    <p>+ …</p>
-                    <p class=""itatic"">(Ít nhất phải thể hiện được 3 kỹ năng, mỗi kỹ năng tối đa được 3 điểm)</p>
-                </td>
-                <td>{ketqua.tieuchi3}/5</td>
-            </tr>
-            <tr class=""content-chitiet"">
-                <td>4</td>
-                <td>
-                    <p>Mức độ kết quả đạt được so với mục tiêu đã đề ra</p>
-                </td>
-                <td>{ketqua.tieuchi4}/ 1</td>
+                    </tr>
+                    <tr class=""content-chitiet"">
+                        <td>3</td>
+                        <td>
+                            <p>Kỹ năng giải quyết vấn đề và kết quả đạt được so với mục tiêu, gồm:</p>
+                            <p>+ Kỹ năng phân tích nghiệp vụ</p>
+                            <p>+ Kỹ năng phân tích mô hình | hệ thống | giải pháp.</p>
+                            <p>+ Kỹ năng thiết kế mô hình | hệ thống | giải pháp.</p>
+                            <p>+ Kỹ năng thiết kế dữ liệu.p>
+                            <p>+ Kỹ năng thu thập và phân tích dữ liệu.</p>
+                            <p>+ Kỹ năng lập trình.</p>
+                            <p>+ Kỹ năng sử dụng, vận dụng các công cụ công nghệ giải quyết các vấn đề.</p>
+                            <p>+ Kỹ năng lập kế hoạch và chiến lược công nghệ.</p>
+                            <p>+ Kỹ năng sử dụng, vận dụng các công cụ công nghệ giải quyết các vấn đề.</p>
+                            <p>+ …</p>
+                            <p class=""itatic"">(Ít nhất phải thể hiện được 3 kỹ năng, mỗi kỹ năng tối đa được 3 điểm)</p>
+                        </td>
+                        <td>{ketqua.tieuchi3}/5</td>
+                    </tr>
+                    <tr class=""content-chitiet"">
+                        <td>4</td>
+                        <td>
+                            <p>Mức độ kết quả đạt được so với mục tiêu đã đề ra</p>
+                        </td>
+                        <td>{ketqua.tieuchi4}/ 1</td>
 
-            </tr>
-            <tr class=""content-chitiet"">
-                <td>5</td>
-                <td>
-                    <p>Cách thức trình bày nội dung</p>
-                </td>
-                <td>{ketqua.tieuchi5}/ 1</td>
+                    </tr>
+                    <tr class=""content-chitiet"">
+                        <td>5</td>
+                        <td>
+                            <p>Cách thức trình bày nội dung</p>
+                        </td>
+                        <td>{ketqua.tieuchi5}/ 1</td>
 
-            </tr>
-            <tr class=""content-chitiet"">
-                <td>6</td>
-                <td>
-                    <p>Tuân thủ quy định làm thực tập tốt nghiệp (dựa trên thái độ, hành vi, tính chuyên cần, …)</p>
-                </td>
-                <td>{ketqua.tieuchi6}/ 0.5</td>
+                    </tr>
+                    <tr class=""content-chitiet"">
+                        <td>6</td>
+                        <td>
+                            <p>Tuân thủ quy định làm thực tập tốt nghiệp (dựa trên thái độ, hành vi, tính chuyên cần, …)</p>
+                        </td>
+                        <td>{ketqua.tieuchi6}/ 0.5</td>
 
-            </tr>
-            <tr class=""content-chitiet"">
-                <td>7</td>
-                <td>
-                    <p>Điểm cộng thêm cho một số trường hợp đặc biệt:p>
-                    <p>+ Bài mang tính mới, giải quyết được và cho kết quả chấp nhận được.</p>
-                    <p>+ Có bài báo được đăng trên các tạp chí khoa học.</p>
-                </td>
+                    </tr>
+                    <tr class=""content-chitiet"">
+                        <td>7</td>
+                        <td>
+                            <p>Điểm cộng thêm cho một số trường hợp đặc biệt:p>
+                            <p>+ Bài mang tính mới, giải quyết được và cho kết quả chấp nhận được.</p>
+                            <p>+ Có bài báo được đăng trên các tạp chí khoa học.</p>
+                        </td>
 
-                <td>{ketqua.tieuchi7}/ 1</td>
+                        <td>{ketqua.tieuchi7}/ 1</td>
 
-            </tr>
-            <tr class=""lable "">
-                <td></td>
-                <td>Điểm tổng cộng :</td>
-                <td>{sum}/10</td>
+                    </tr>
+                    <tr class=""lable "">
+                        <td></td>
+                        <td>Điểm tổng cộng :</td>
+                        <td>{sum}/10</td>
 
-            </tr>
+                    </tr>
 
            
-        </table>
+                </table>
 
-    </div>
-    <div class=""footer"">
-        <p><strong>Giáo viên chấm</strong></p>
-        <p class=""itatic"">(Ký tên và ghi rõ họ tên)</p>
+            </div>
+            <div class=""footer"">
+                <p><strong>Giáo viên chấm</strong></p>
+                <p class=""itatic"">(Ký tên và ghi rõ họ tên)</p>
 
-    </div>
-
-
+            </div>
 
 
 
 
-</body>
+
+
+        </body>
 ");
 
 
@@ -530,7 +530,70 @@ namespace Ueh.BackendApi.Repositorys
                 return content;
             }
         }
+        public async Task<byte[]> ExportToExcelByKhoa(string makhoa)
+        {
+            var ketquas = await _context.Ketquas
+                         .Include(k => k.phancong)
+                             .ThenInclude(p => p.sinhvien)
+                         .Include(k => k.phancong)
+                             .ThenInclude(p => p.giangvien)
+                                 .ThenInclude(g => g.giangvienkhoas)
+                                     .ThenInclude(gk => gk.khoa)
+                         .Where(k => k.phancong.giangvien.giangvienkhoas.Any(gk => gk.khoa.makhoa == makhoa)) // Thêm điều kiện "thuộc khoa"
+                         .OrderBy(k => k.phancong.sinhvien.ten)
+                         .ToListAsync();
+            // Tạo một package Excel
+            using (var package = new ExcelPackage())
+            {
+                // Tạo một worksheet trong package
+                var worksheet = package.Workbook.Worksheets.Add("ketqua");
 
+                // Đặt tiêu đề cho các cột
+                worksheet.Cells["A1"].Value = "MSSV";
+                worksheet.Cells["B1"].Value = "Họ";
+                worksheet.Cells["C1"].Value = "Tên";
+                worksheet.Cells["D1"].Value = "Điểm";
+                worksheet.Cells["E1"].Value = "Giáo viên hướng dẫn";
+
+
+                // Ghi dữ liệu vào worksheet
+                int rowIndex = 2;
+                foreach (var ketqua in ketquas)
+                {
+                    if (ketqua.phancong.status != "true")
+                    {
+                        continue; // Bỏ qua bản ghi không có status bằng "true"
+                    }
+
+                    double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+                    if (ketqua.phancong.maloai == "HKDN")
+                    {
+                        sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
+
+                    }
+                    if (sum >= 10)
+                    {
+                        sum = 10;
+                    }
+
+                    worksheet.Cells[$"A{rowIndex}"].Value = ketqua.phancong.mssv;
+                    worksheet.Cells[$"B{rowIndex}"].Value = ketqua.phancong.sinhvien.ho;
+                    worksheet.Cells[$"C{rowIndex}"].Value = ketqua.phancong.sinhvien.ten;
+                    worksheet.Cells[$"D{rowIndex}"].Value = sum;
+                    worksheet.Cells[$"E{rowIndex}"].Value = ketqua.phancong.giangvien.tengv;
+
+
+                    rowIndex++;
+                }
+
+                // Tự động điều chỉnh kích thước các cột
+                worksheet.Cells.AutoFitColumns();
+
+                // Xuất file Excel
+                var content = package.GetAsByteArray();
+                return content;
+            }
+        }
         public async Task<byte[]?> GenerateZipFileForGv(string magv)
         {
             var phancongs = await _context.Phancongs

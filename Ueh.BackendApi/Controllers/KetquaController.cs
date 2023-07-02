@@ -162,6 +162,28 @@ namespace Ueh.BackendApi.Controllers
             }
         }
 
+        [HttpGet("ExportToExcelByKhoa")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> ExportToExcel([FromQuery] string makhoa)
+        {
+            try
+            {
+                var content = await _KetquaRepository.ExportToExcelByKhoa(makhoa);
+                if (content != null)
+                {
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSdiemtonghop.xlsx");
+                }
+                else
+                {
+                    return BadRequest("Không có dữ liệu để xuất.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+        }
 
         [HttpGet("generatezip")]
         public async Task<IActionResult> GenerateZip([FromQuery] string giangVienId)

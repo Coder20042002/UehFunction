@@ -76,11 +76,16 @@ namespace Ueh.BackendApi.Repositorys
                         var worksheet = package.Workbook.Worksheets[0];
                         var rowCount = worksheet.Dimension.Rows;
 
-                        // Lặp qua các dòng trong tệp Excel và xử lý dữ liệu
-                        // Bắt đầu từ dòng thứ 2 (loại bỏ header)
-                        for (int row = 2; row <= rowCount; row++)
-                        {
 
+                        for (int row = 1; row <= rowCount; row++)
+                        {
+                            var macn = worksheet.Cells[row, 1].Value?.ToString();
+                            bool existing = await _context.Chuyennganhs.AnyAsync(s => s.macn == macn);
+
+                            if (existing != false)
+                            {
+                                continue;
+                            }
                             var chuyennganh = new Chuyennganh
                             {
                                 macn = worksheet.Cells[row, 1].Value?.ToString(),

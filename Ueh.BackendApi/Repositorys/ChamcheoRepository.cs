@@ -52,8 +52,8 @@ namespace Ueh.BackendApi.Repositorys
                                 id = Guid.NewGuid(),
                                 magv1 = magv1,
                                 magv2 = magv2,
-                                makhoa = madot,
-                                madot = makhoa
+                                makhoa = makhoa,
+                                madot = madot
                             };
 
                             await _context.Chamcheos.AddAsync(chamcheolist);
