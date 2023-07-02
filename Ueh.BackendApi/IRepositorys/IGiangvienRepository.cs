@@ -6,6 +6,9 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IGiangvienRepository
     {
+        Task<List<KetquaRequest>> GetDanhSachDiem(string magv);
+
+        Task<List<Sinhvien>> GetSinhVienByGiangVien(string magv);
         Task<List<Giangvien>> GetGiangvienByKhoa(string makhoa);
         Task<ICollection<Giangvien>> GetGiangviens();
         Task<Giangvien> GetGiangvien(string magv);

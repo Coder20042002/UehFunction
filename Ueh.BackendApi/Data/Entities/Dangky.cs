@@ -3,8 +3,10 @@
     public class Dangky
     {
         public string mssv { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
+        public string ho { get; set; }
+        public string ten { get; set; }
+        public string lop { get; set; }
+        public string email { get; set; }
         public string magv { get; set; }
         public string makhoa { get; set; }
         public string status { get; set; } = "true";

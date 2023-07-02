@@ -127,7 +127,9 @@ namespace Ueh.BackendApi.Controllers
                 var content = await _KetquaRepository.GeneratePdfBySv(mssv);
                 if (content != null)
                 {
-                    return File(content, "application/pdf", "BaoCao.pdf");
+                    string fileName = $"BaoCaoChitiet_{mssv}.pdf";
+
+                    return File(content, "application/pdf", fileName);
                 }
                 else
                 {
@@ -188,14 +190,24 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("generatezip")]
         public async Task<IActionResult> GenerateZip([FromQuery] string giangVienId)
         {
-            byte[]? zipBytes = await _KetquaRepository.GenerateZipFileForGv(giangVienId);
-
-            if (zipBytes == null)
+            try
             {
-                return NotFound();
-            }
 
-            return File(zipBytes, "application/zip", "Dsbaocaobangdiemchitiet.zip");
+                byte[]? zipBytes = await _KetquaRepository.GenerateZipFileForGv(giangVienId);
+
+                if (zipBytes == null)
+                {
+                    return NotFound("Không có dữ liệu để tạo tệp tin nén.");
+                }
+
+                string fileName = $"Dsbaocaobangdiemchitiet_{giangVienId}.zip";
+
+                return File(zipBytes, "application/zip", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra lỗi: {ex.Message}");
+            }
         }
     }
 }

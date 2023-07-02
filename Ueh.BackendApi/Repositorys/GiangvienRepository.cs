@@ -17,6 +17,34 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
+        public async Task<List<KetquaRequest>> GetDanhSachDiem(string magv)
+        {
+            List<KetquaRequest> ketquaList = await _context.Ketquas
+                   .Include(k => k.phancong)
+                   .ThenInclude(p => p.sinhvien)
+                   .Where(k => k.phancong.magv == magv)
+                   .Select(k => new KetquaRequest
+                   {
+                       TenSinhVien = $"{k.phancong.sinhvien.ho} {k.phancong.sinhvien.ten}",
+                       MaSinhVien = k.phancong.sinhvien.mssv,
+                       Lop = k.phancong.sinhvien.thuoclop,
+                       Khoa = k.phancong.sinhvien.khoagoc,
+                       Diem = k.phancong.maloai == "HKDN" ?
+                       (double)(((k.tieuchi1 ?? 0) + (k.tieuchi2 ?? 0) + (k.tieuchi3 ?? 0) + (k.tieuchi4 ?? 0) + (k.tieuchi5 ?? 0) + (k.tieuchi6 ?? 0) + (k.tieuchi7 ?? 0)) * 0.6 + ((k.diemDN ?? 0) * 0.4))
+                           : (double)(k.tieuchi1 ?? 0 + k.tieuchi2 ?? 0 + k.tieuchi3 ?? 0 + k.tieuchi4 ?? 0 + k.tieuchi5 ?? 0 + k.tieuchi6 ?? 0 + k.tieuchi7 ?? 0)
+                   })
+           .ToListAsync();
+
+
+            return ketquaList;
+        }
+        public async Task<List<Sinhvien>> GetSinhVienByGiangVien(string magv)
+        {
+            return await _context.Phancongs
+                .Where(p => p.magv == magv)
+                .Select(p => p.sinhvien)
+                .ToListAsync();
+        }
         public async Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string makhoa)
         {
             var giangVienList = await _context.Phancongs

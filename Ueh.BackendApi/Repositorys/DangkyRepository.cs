@@ -15,6 +15,14 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
+        public async Task<List<Dangky>> GetSinhVienByGiaoVien(string maGiaoVien)
+        {
+            var sinhVienList = await _context.Dangkys
+                .Where(dk => dk.magv == maGiaoVien)
+                .ToListAsync();
+
+            return sinhVienList;
+        }
 
         public async Task<bool> CreateDangky(Dangky Dangky)
         {
@@ -38,11 +46,7 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Dangkys.Where(s => s.mssv == mssv && s.status == "true").FirstOrDefaultAsync();
         }
 
-        public async Task<Dangky> GetDangkyName(string name)
-        {
-            return await _context.Dangkys.Where(s => s.lastName == name && s.status == "true").FirstOrDefaultAsync();
 
-        }
 
         public async Task<ICollection<Dangky>> GetDangkys()
         {
@@ -69,7 +73,7 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> ImportExcelFile(IFormFile formFile)
+        public async Task<bool> ImportExcelFile(IFormFile formFile, string makhoa, string magv)
         {
             if (formFile != null && formFile.Length > 0)
             {
@@ -83,9 +87,9 @@ namespace Ueh.BackendApi.Repositorys
                         var rowCount = worksheet.Dimension.Rows;
 
 
-                        for (int row = 2; row <= rowCount; row++)
+                        for (int row = 1; row <= rowCount; row++)
                         {
-                            var mssv = worksheet.Cells[row, 2].Value?.ToString();
+                            var mssv = worksheet.Cells[row, 1].Value?.ToString();
                             bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true");
 
                             if (existing != false)
@@ -95,9 +99,13 @@ namespace Ueh.BackendApi.Repositorys
                             var dangky = new Dangky
                             {
                                 mssv = mssv,
-                                firstName = worksheet.Cells[row, 3].Value?.ToString(),
-                                lastName = worksheet.Cells[row, 4].Value?.ToString(),
-                                magv = worksheet.Cells[row, 5].Value?.ToString(),
+                                ho = worksheet.Cells[row, 2].Value?.ToString(),
+                                ten = worksheet.Cells[row, 3].Value?.ToString(),
+                                lop = worksheet.Cells[row, 4].Value?.ToString(),
+                                email = worksheet.Cells[row, 5].Value?.ToString(),
+
+                                magv = magv,
+                                makhoa = makhoa
                             };
 
                             await _context.Dangkys.AddAsync(dangky);
@@ -143,7 +151,7 @@ namespace Ueh.BackendApi.Repositorys
                     }
                     worksheet.Cells[$"A{rowIndex}"].Value = count++;
                     worksheet.Cells[$"B{rowIndex}"].Value = dangky.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = dangky.firstName + " " + dangky.lastName;
+                    worksheet.Cells[$"C{rowIndex}"].Value = dangky.ho + " " + dangky.ten;
                     worksheet.Cells[$"D{rowIndex}"].Value = dangky.magv;
                     worksheet.Cells[$"E{rowIndex}"].Value = dangky.giangvien?.tengv;
 

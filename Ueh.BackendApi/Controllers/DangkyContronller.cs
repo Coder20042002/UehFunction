@@ -21,6 +21,18 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("GetSinhVienByGiaoVien")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Dangky>))]
+        public async Task<IActionResult> GetSinhVienByGiaoVien([FromQuery] string magv)
+        {
+            var Dangkys = _mapper.Map<List<DangkyDto>>(await _DangkyRepository.GetSinhVienByGiaoVien(magv));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Dangkys);
+        }
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Dangky>))]
         public async Task<IActionResult> GetDangkys()
@@ -52,11 +64,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost("formFile")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ImportExcelFile(IFormFile formFile)
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, [FromQuery] string makhoa, [FromQuery] string magv)
         {
             try
             {
-                bool success = await _DangkyRepository.ImportExcelFile(formFile);
+                bool success = await _DangkyRepository.ImportExcelFile(formFile, makhoa, magv);
                 if (success)
                 {
                     return Ok("Import thành công"); // Trả về thông báo thành công

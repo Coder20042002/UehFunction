@@ -22,6 +22,31 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("SinhVienByGiangVien")]
+        public async Task<ActionResult<List<Sinhvien>>> GetSinhVienByGiangVien(string magv)
+        {
+            var sinhviens = await _giangvienRepository.GetSinhVienByGiangVien(magv);
+            if (sinhviens == null || sinhviens.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return sinhviens;
+        }
+
+        [HttpGet("GetDanhSachDiem")]
+        public async Task<ActionResult<List<KetquaRequest>>> GetDanhSachDiem(string magv)
+        {
+            var sinhviens = await _giangvienRepository.GetDanhSachDiem(magv);
+            if (sinhviens == null || sinhviens.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return sinhviens;
+        }
+
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Giangvien>))]
         public async Task<IActionResult> GetGiangviens()

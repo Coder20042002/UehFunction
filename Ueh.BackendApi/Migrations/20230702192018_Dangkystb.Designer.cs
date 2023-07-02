@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ueh.BackendApi.Data.EF;
 
@@ -11,9 +12,10 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    partial class UehDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230702192018_Dangkystb")]
+    partial class Dangkystb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,15 +284,10 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("mssv")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Loaimaloai")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ho")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("lop")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -311,6 +308,8 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("mssv");
+
+                    b.HasIndex("Loaimaloai");
 
                     b.HasIndex("magv");
 
@@ -650,6 +649,10 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dangky", b =>
                 {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Loai", null)
+                        .WithMany("dangkies")
+                        .HasForeignKey("Loaimaloai");
+
                     b.HasOne("Ueh.BackendApi.Data.Entities.Giangvien", "giangvien")
                         .WithMany("dangkys")
                         .HasForeignKey("magv")
@@ -822,6 +825,8 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Loai", b =>
                 {
+                    b.Navigation("dangkies");
+
                     b.Navigation("phanCongs");
                 });
 

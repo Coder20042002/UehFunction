@@ -13,7 +13,7 @@ namespace Ueh.BackendApi.Data.Configuration
         public void Configure(EntityTypeBuilder<Dangky> builder)
         {
             builder.ToTable("Dangkys");
-            builder.HasKey(dk => new { dk.mssv, dk.magv, dk.makhoa });
+            builder.HasKey(dk => new { dk.mssv });
 
             builder.HasOne(dk => dk.giangvien).WithMany(gv => gv.dangkys).HasForeignKey(dk => dk.magv);
             builder.HasOne(dk => dk.khoa).WithMany(l => l.dangkis).HasForeignKey(dk => dk.makhoa);

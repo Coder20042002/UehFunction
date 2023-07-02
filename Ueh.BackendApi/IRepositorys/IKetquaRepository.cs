@@ -1,4 +1,6 @@
-﻿using Ueh.BackendApi.Data.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Ueh.BackendApi.Data.Entities;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.IRepositorys
 {
