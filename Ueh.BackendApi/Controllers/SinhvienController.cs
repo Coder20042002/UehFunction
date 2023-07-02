@@ -34,7 +34,18 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Sinhviens);
         }
 
+        [HttpGet("dssv")]
+        public async Task<IActionResult> GetDsSinhvienOfKhoa(string makhoa)
+        {
+            var sinhvienKhoa = await _sinhvienRepository.GetDsSinhvienOfKhoa(makhoa);
 
+            if (sinhvienKhoa != null)
+            {
+                return Ok(sinhvienKhoa);
+            }
+
+            return NotFound();
+        }
 
 
         [HttpGet("khoa/{mssv}")]

@@ -168,6 +168,14 @@ namespace Ueh.BackendApi.Repositorys
             return null;
         }
 
+        public async Task<List<Sinhvien>> GetDsSinhvienOfKhoa(string makhoa)
+        {
+            var sinhvienKhoas = await _context.SinhvienKhoas
+                   .Where(sk => sk.makhoa == makhoa)
+                   .Select(sk => sk.sinhvien)
+                   .ToListAsync();
 
+            return sinhvienKhoas;
+        }
     }
 }
