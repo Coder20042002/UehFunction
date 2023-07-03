@@ -2,6 +2,7 @@
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -14,9 +15,19 @@ namespace Ueh.BackendApi.Repositorys
             _context = context;
         }
 
-        public async Task<bool> CreateLichsu(Lichsu lichsu)
+        public async Task<bool> CreateLichsu(LichsuRequest lichsurequest, string mssv)
         {
-            _context.Add(lichsu);
+            var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == mssv);
+            if (phancong != null)
+            {
+                var lichsu = new Lichsu
+                {
+                    Id = phancong.Id,
+                    ngay = lichsurequest.ngay,
+                    noidung = lichsurequest.noidung
+                };
+                _context.Add(lichsu);
+            }
             return await Save();
         }
 
@@ -31,6 +42,15 @@ namespace Ueh.BackendApi.Repositorys
             return _context.Lichsus.Where(r => r.Id == mapc && r.phancong.status == "true").FirstOrDefaultAsync();
         }
 
+        public async Task<ICollection<Lichsu>> GetLichSuByMssv(string mssv)
+        {
+            var phanCong = await _context.Phancongs.FirstOrDefaultAsync(pc => pc.mssv == mssv);
+
+            var lichSu = await _context.Lichsus.Where(ls => ls.Id == phanCong.Id).ToListAsync();
+            return  lichSu;
+            
+        }
+
         public async Task<ICollection<Lichsu>> GetLichsus()
         {
             return await _context.Lichsus.Where(r => r.phancong.status == "true").ToListAsync();
@@ -41,7 +61,7 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Lichsus.Where(r => r.Id == mapc && r.phancong.status == "true").ToListAsync();
         }
 
-        public async Task<bool> LichsuExists(Guid mapc, DateTime dateTime)
+        public async Task<bool> LichsuExists(Guid mapc, string dateTime)
         {
             return await _context.Lichsus.AnyAsync(r => r.Id == mapc && r.ngay == dateTime && r.phancong.status == "true");
         }

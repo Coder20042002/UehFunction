@@ -12,8 +12,8 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    [Migration("20230628193650_UploadTT")]
-    partial class UploadTT
+    [Migration("20230703200723_DB")]
+    partial class DB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -194,6 +194,33 @@ namespace Ueh.BackendApi.Migrations
                     b.ToTable("AppUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chamcheo", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("madot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("magv1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("magv2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("makhoa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Chamcheos", (string)null);
+                });
+
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Chitiet", b =>
                 {
                     b.Property<Guid>("mapc")
@@ -239,6 +266,10 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("macn")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("makhoa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("tencn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -253,30 +284,35 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("mssv")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ho")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("lop")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("magv")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("makhoa")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Loaimaloai")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("firstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("lastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("mssv", "magv", "makhoa");
+                    b.Property<string>("ten")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("Loaimaloai");
+                    b.HasKey("mssv");
 
                     b.HasIndex("magv");
 
@@ -290,18 +326,17 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("madot")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("dateEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("dateStart")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ngaybatdau")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ngayketthuc")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("madot");
@@ -406,8 +441,8 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ngay")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ngay")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("noidung")
                         .IsRequired()
@@ -616,10 +651,6 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Dangky", b =>
                 {
-                    b.HasOne("Ueh.BackendApi.Data.Entities.Loai", null)
-                        .WithMany("dangkies")
-                        .HasForeignKey("Loaimaloai");
-
                     b.HasOne("Ueh.BackendApi.Data.Entities.Giangvien", "giangvien")
                         .WithMany("dangkys")
                         .HasForeignKey("magv")
@@ -792,8 +823,6 @@ namespace Ueh.BackendApi.Migrations
 
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Loai", b =>
                 {
-                    b.Navigation("dangkies");
-
                     b.Navigation("phanCongs");
                 });
 

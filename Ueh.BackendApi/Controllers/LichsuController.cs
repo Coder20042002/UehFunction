@@ -4,6 +4,7 @@ using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -22,6 +23,17 @@ namespace Ueh.BackendApi.Controllers
 
         }
 
+
+        [HttpGet("lichsu/{mssv}")]
+        public async Task<IActionResult> GetLichSuByMssv(string mssv)
+        {
+            var lichsus = _mapper.Map<List<LichsuDto>>(await _lichsuRepository.GetLichSuByMssv(mssv));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(lichsus);
+        }
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Lichsu>))]
         public async Task<IActionResult> GetLichsus()
@@ -37,7 +49,7 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("{mapc}")]
         [ProducesResponseType(200, Type = typeof(Lichsu))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Getsinhvien(Guid mapc, DateTime date)
+        public async Task<IActionResult> Getsinhvien(Guid mapc, string date)
         {
             if (!await _lichsuRepository.LichsuExists(mapc, date))
                 return NotFound();
@@ -66,7 +78,7 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateLichsu([FromBody] LichsuDto lichsuDto)
+        public async Task<IActionResult> CreateLichsu(LichsuRequest lichsuRequest, string mssv)
         {
 
             if (_lichsuRepository == null)
@@ -76,29 +88,25 @@ namespace Ueh.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var LichsuMap = _mapper.Map<Lichsu>(lichsuDto);
 
-
-            if (!await _lichsuRepository.CreateLichsu(LichsuMap))
+            if (!await _lichsuRepository.CreateLichsu(lichsuRequest, mssv))
             {
                 ModelState.AddModelError("", "Xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(LichsuMap);
+            return Ok(lichsuRequest);
         }
 
         [HttpPut("{mapc}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateLichsu(Guid mapc, DateTime dateTime, [FromBody] LichsuDto updatedLichsu)
+        public async Task<IActionResult> UpdateLichsu(Guid mapc, string dateTime, [FromBody] LichsuDto updatedLichsu)
         {
             if (updatedLichsu == null)
                 return BadRequest(ModelState);
 
-            if (mapc != updatedLichsu.Id)
-                return BadRequest(ModelState);
 
             if (!await _lichsuRepository.LichsuExists(mapc, dateTime))
                 return NotFound();
@@ -121,7 +129,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteLichsu(Guid mapc, DateTime dateTime)
+        public async Task<IActionResult> DeleteLichsu(Guid mapc, string dateTime)
         {
             if (!await _lichsuRepository.LichsuExists(mapc, dateTime))
             {

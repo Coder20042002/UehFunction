@@ -37,9 +37,9 @@ namespace Ueh.BackendApi.Repositorys
 
 
 
-        public async Task<Dot> GetDot(string id)
+        public async Task<Dot> GetDot()
         {
-            return await _context.Dots.Where(e => e.madot == id).FirstOrDefaultAsync();
+            return await _context.Dots.Where(e => e.status == "true" ).FirstOrDefaultAsync();
 
         }
 

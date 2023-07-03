@@ -324,18 +324,17 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("madot")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("dateEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("dateStart")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ngaybatdau")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ngayketthuc")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("madot");
@@ -440,8 +439,8 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ngay")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ngay")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("noidung")
                         .IsRequired()

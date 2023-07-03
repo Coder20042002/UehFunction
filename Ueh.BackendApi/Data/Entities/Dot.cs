@@ -10,9 +10,9 @@ namespace Ueh.BackendApi.Data.Entities
     {
         public string madot { get; set; }
         public string name { get; set; }
-        public DateTime dateStart { get; set; }
-        public DateTime dateEnd { get; set; }
-        public string status { get; set; }
+        public DateTime? ngaybatdau { get; set; }
+        public DateTime? ngayketthuc { get; set; }
+        public string? status { get; set; }
         public ICollection<SinhvienDot> sinhviendots { get; set; }
         public ICollection<Phancong> phanCongs { get; set; }
 

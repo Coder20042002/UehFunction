@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ueh.BackendApi.Migrations
 {
-    public partial class DbIntit : Migration
+    public partial class DB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -119,11 +119,27 @@ namespace Ueh.BackendApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Chamcheos",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    magv1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    magv2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    makhoa = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    madot = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chamcheos", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Chuyennganhs",
                 columns: table => new
                 {
                     macn = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    tencn = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    tencn = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    makhoa = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,9 +152,9 @@ namespace Ueh.BackendApi.Migrations
                 {
                     madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    dateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    dateEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ngaybatdau = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ngayketthuc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,7 +210,9 @@ namespace Ueh.BackendApi.Migrations
                     FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StoredFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,6 +250,36 @@ namespace Ueh.BackendApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Dangkys",
+                columns: table => new
+                {
+                    mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ho = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    lop = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dangkys", x => x.mssv);
+                    table.ForeignKey(
+                        name: "FK_Dangkys_Giangviens_magv",
+                        column: x => x.magv,
+                        principalTable: "Giangviens",
+                        principalColumn: "magv",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dangkys_Khoas_makhoa",
+                        column: x => x.makhoa,
+                        principalTable: "Khoas",
+                        principalColumn: "makhoa",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GiangvienKhoas",
                 columns: table => new
                 {
@@ -253,40 +301,6 @@ namespace Ueh.BackendApi.Migrations
                         principalTable: "Khoas",
                         principalColumn: "makhoa",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Dangkys",
-                columns: table => new
-                {
-                    mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    firstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Loaimaloai = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dangkys", x => new { x.mssv, x.magv, x.makhoa });
-                    table.ForeignKey(
-                        name: "FK_Dangkys_Giangviens_magv",
-                        column: x => x.magv,
-                        principalTable: "Giangviens",
-                        principalColumn: "magv",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Dangkys_Khoas_makhoa",
-                        column: x => x.makhoa,
-                        principalTable: "Khoas",
-                        principalColumn: "makhoa",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Dangkys_Loais_Loaimaloai",
-                        column: x => x.Loaimaloai,
-                        principalTable: "Loais",
-                        principalColumn: "maloai");
                 });
 
             migrationBuilder.CreateTable(
@@ -430,7 +444,7 @@ namespace Ueh.BackendApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ngay = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ngay = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     noidung = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -443,11 +457,6 @@ namespace Ueh.BackendApi.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dangkys_Loaimaloai",
-                table: "Dangkys",
-                column: "Loaimaloai");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Dangkys_magv",
@@ -522,6 +531,9 @@ namespace Ueh.BackendApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "AppUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Chamcheos");
 
             migrationBuilder.DropTable(
                 name: "Chitiets");

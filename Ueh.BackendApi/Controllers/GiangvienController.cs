@@ -23,9 +23,9 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("SinhVienByGiangVien")]
-        public async Task<ActionResult<List<Sinhvien>>> GetSinhVienByGiangVien(string magv)
+        public async Task<ActionResult<List<Sinhvien>>> GetSinhVienByGiangVien(string madot, string magv)
         {
-            var sinhviens = await _giangvienRepository.GetSinhVienByGiangVien(magv);
+            var sinhviens = await _giangvienRepository.GetSinhVienByGiangVien(madot, magv);
             if (sinhviens == null || sinhviens.Count == 0)
             {
                 return NotFound();
@@ -35,9 +35,9 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("GetDanhSachDiem")]
-        public async Task<ActionResult<List<KetquaRequest>>> GetDanhSachDiem(string magv)
+        public async Task<ActionResult<List<KetquaRequest>>> GetDanhSachDiem(string madot, string magv)
         {
-            var sinhviens = await _giangvienRepository.GetDanhSachDiem(magv);
+            var sinhviens = await _giangvienRepository.GetDanhSachDiem(madot, magv);
             if (sinhviens == null || sinhviens.Count == 0)
             {
                 return NotFound();
@@ -106,7 +106,7 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateGiangvien([FromQuery] string makhoa, [FromBody] GiangvienDto GiangvienCreate)
+        public async Task<IActionResult> CreateGiangvien([FromQuery] string makhoa, GiangvienDto GiangvienCreate)
         {
             if (GiangvienCreate == null)
                 return BadRequest(ModelState);

@@ -6,7 +6,7 @@ namespace Ueh.BackendApi.IRepositorys
     public interface IDotRepository
     {
         Task<ICollection<Dot>> GetAllDot();
-        Task<Dot> GetDot(string id);
+        Task<Dot> GetDot();
         Task<ICollection<Sinhvien>> GetSinhvienByDot(string dotId);
         Task<bool> DotExists(string id);
         Task<bool> CreateDot(Dot dot);

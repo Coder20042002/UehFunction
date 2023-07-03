@@ -15,8 +15,7 @@ namespace Ueh.BackendApi.Data.Configuration
         {
             builder.ToTable("Dots");
             builder.HasKey(x => x.madot);
-            builder.Property(x => x.dateStart).IsRequired();
-            builder.Property(x => x.dateEnd).IsRequired();
+
 
 
         }

@@ -55,7 +55,7 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Ketquas.AnyAsync(kq => kq.mapc == mapc && phanCongIds.Contains(kq.mapc));
         }
 
-        public async Task<bool> UpdateDiem(Ketqua updateketqua,string mssv)
+        public async Task<bool> UpdateDiem(Ketqua updateketqua, string mssv)
         {
             var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == mssv);
 

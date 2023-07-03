@@ -21,27 +21,24 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllDots()
+        //{
+        //    var getalldot = await _dotRepository.GetAllDot();
+        //    var categories = _mapper.Map<List<DotDto>>(getalldot);
+
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+        //    return Ok(categories);
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> GetAllDots()
-        {
-            var getalldot = await _dotRepository.GetAllDot();
-            var categories = _mapper.Map<List<DotDto>>(getalldot);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(categories);
-        }
-
-        [HttpGet("{dotId}")]
         [ProducesResponseType(200, Type = typeof(Dot))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetDot(string dotId)
+        public async Task<IActionResult> GetDot()
         {
-            bool exists = await _dotRepository.DotExists(dotId);
-            if (!exists)
-                return NotFound();
-            Dot dotid = await _dotRepository.GetDot(dotId);
+            Dot dotid = await _dotRepository.GetDot();
             var dot = _mapper.Map<DotDto>(dotid);
 
             if (!ModelState.IsValid)
@@ -143,7 +140,7 @@ namespace Ueh.BackendApi.Controllers
                 return NotFound();
             }
 
-            var dotToDelete = await _dotRepository.GetDot(dotId);
+            var dotToDelete = await _dotRepository.GetDot();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
