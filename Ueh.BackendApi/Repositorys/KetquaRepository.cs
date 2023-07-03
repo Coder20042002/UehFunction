@@ -37,10 +37,10 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Ketquas.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mapc).ToListAsync();
         }
 
-        public async Task<Ketqua> GetScores(Guid mapc)
+        public async Task<Ketqua> GetDiemByMssv(string mssv)
         {
-            var phanCongIds = await _context.Phancongs.Where(pc => pc.status == "true").Select(pc => pc.Id).ToListAsync();
-            return await _context.Ketquas.Where(kq => kq.mapc == mapc && phanCongIds.Contains(kq.mapc)).FirstOrDefaultAsync();
+            var phanCongIds = await _context.Phancongs.Where(pc => pc.status == "true" && pc.mssv == mssv).FirstOrDefaultAsync();
+            return await _context.Ketquas.Where(kq => kq.mapc == phanCongIds.Id).FirstOrDefaultAsync();
         }
 
         public async Task<bool> Save()
@@ -55,10 +55,33 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Ketquas.AnyAsync(kq => kq.mapc == mapc && phanCongIds.Contains(kq.mapc));
         }
 
-        public Task<bool> UpdateScores(Ketqua ketqua)
+        public async Task<bool> UpdateDiem(Ketqua updateketqua,string mssv)
         {
-            _context.Update(ketqua);
-            return Save();
+            var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == mssv);
+
+            if (phancong == null)
+            {
+                return false;
+            }
+
+            var ketqua = await _context.Ketquas.FirstOrDefaultAsync(k => k.mapc == phancong.Id);
+
+            if (ketqua == null)
+            {
+                return false;
+            }
+
+            ketqua.tieuchi1 = updateketqua.tieuchi1;
+            ketqua.tieuchi2 = updateketqua.tieuchi2;
+            ketqua.tieuchi3 = updateketqua.tieuchi3;
+            ketqua.tieuchi4 = updateketqua.tieuchi4;
+            ketqua.tieuchi5 = updateketqua.tieuchi5;
+            ketqua.tieuchi6 = updateketqua.tieuchi6;
+            ketqua.tieuchi7 = updateketqua.tieuchi7;
+            ketqua.diemDN = updateketqua.diemDN;
+
+            _context.Ketquas.Update(ketqua);
+            return await Save();
         }
 
         public async Task<byte[]> GeneratePdfByGv(string magv)
@@ -163,7 +186,7 @@ namespace Ueh.BackendApi.Repositorys
                 htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.mssv + "|" + ketqua.phancong.sinhvien.malop + "|" + ketqua.phancong.maloai}</td>");
                 htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.ho + " " + ketqua.phancong.sinhvien.ten}</td>");
                 htmlBuilder.AppendLine($"<td>{tendetai}</td>");
-                htmlBuilder.AppendLine($"<td>{sum}</td>");
+                htmlBuilder.AppendLine($"<td>{Math.Round(sum, 2)}</td>");
                 htmlBuilder.AppendLine("</tr>");
             }
             htmlBuilder.AppendLine(@"</table></div>");
@@ -424,7 +447,7 @@ namespace Ueh.BackendApi.Repositorys
                     <tr class=""lable "">
                         <td></td>
                         <td>Điểm tổng cộng :</td>
-                        <td>{sum}/10</td>
+                        <td>{Math.Round(sum, 2)}/10</td>
 
                     </tr>
 
@@ -515,7 +538,7 @@ namespace Ueh.BackendApi.Repositorys
                     worksheet.Cells[$"A{rowIndex}"].Value = ketqua.phancong.mssv;
                     worksheet.Cells[$"B{rowIndex}"].Value = ketqua.phancong.sinhvien.ho;
                     worksheet.Cells[$"C{rowIndex}"].Value = ketqua.phancong.sinhvien.ten;
-                    worksheet.Cells[$"D{rowIndex}"].Value = sum;
+                    worksheet.Cells[$"D{rowIndex}"].Value = Math.Round(sum, 2);
                     worksheet.Cells[$"E{rowIndex}"].Value = ketqua.phancong.giangvien.tengv;
 
 
@@ -579,7 +602,7 @@ namespace Ueh.BackendApi.Repositorys
                     worksheet.Cells[$"A{rowIndex}"].Value = ketqua.phancong.mssv;
                     worksheet.Cells[$"B{rowIndex}"].Value = ketqua.phancong.sinhvien.ho;
                     worksheet.Cells[$"C{rowIndex}"].Value = ketqua.phancong.sinhvien.ten;
-                    worksheet.Cells[$"D{rowIndex}"].Value = sum;
+                    worksheet.Cells[$"D{rowIndex}"].Value = Math.Round(sum, 2);
                     worksheet.Cells[$"E{rowIndex}"].Value = ketqua.phancong.giangvien.tengv;
 
 

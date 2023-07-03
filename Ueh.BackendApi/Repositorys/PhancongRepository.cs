@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
@@ -14,6 +15,15 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
+
+        public async Task<bool> KiemTraMaloai(string mssv)
+        {
+            bool hasHKDN = await _context.Phancongs
+                .AnyAsync(p => p.mssv == mssv && p.maloai == "HKDN");
+
+            return hasHKDN;
+        }
+
         public async Task<bool> CreatePhancong(Phancong phancong)
         {
             var Phancongkhoa = await _context.Phancongs.Where(a => a.mssv == phancong.mssv).FirstOrDefaultAsync();

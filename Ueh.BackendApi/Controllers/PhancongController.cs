@@ -24,6 +24,15 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+
+        [HttpGet("kiemtra/{mssv}")]
+        public async Task<bool> KiemTraMaloai(string mssv)
+        {
+            bool hasHKDN = await  _PhancongRepository.KiemTraMaloai(mssv);
+
+            return hasHKDN;
+        }
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Phancong>))]
         public async Task<IActionResult> GetPhancongs()

@@ -34,15 +34,13 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Ketquas);
         }
 
-        [HttpGet("{mapc}")]
+        [HttpGet("sinhvien")]
         [ProducesResponseType(200, Type = typeof(Ketqua))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetKetqua(Guid mapc)
+        public async Task<IActionResult> GetDiemByMssv([FromQuery] string mssv)
         {
-            if (!await _KetquaRepository.ScoresExists(mapc))
-                return NotFound();
 
-            var Ketqua = _mapper.Map<KetquaDto>(await _KetquaRepository.GetScores(mapc));
+            var Ketqua = _mapper.Map<KetquaDto>(await _KetquaRepository.GetDiemByMssv(mssv));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -64,28 +62,21 @@ namespace Ueh.BackendApi.Controllers
 
 
 
-        [HttpPut("{mapc}")]
+        [HttpPut("diem")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateKetqua(Guid mapc,
-            [FromBody] KetquaDto updatedKetqua)
+        public async Task<IActionResult> UpdateDiem(KetquaDto updatedKetqua, [FromQuery] string mssv)
         {
             if (updatedKetqua == null)
                 return BadRequest(ModelState);
-
-            if (mapc != updatedKetqua.mapc)
-                return BadRequest(ModelState);
-
-            if (!await _KetquaRepository.ScoresExists(mapc))
-                return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var KetquaMap = _mapper.Map<Ketqua>(updatedKetqua);
 
-            if (!await _KetquaRepository.UpdateScores(KetquaMap))
+            if (!await _KetquaRepository.UpdateDiem(KetquaMap, mssv))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                 return StatusCode(500, ModelState);

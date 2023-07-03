@@ -7,9 +7,9 @@ namespace Ueh.BackendApi.IRepositorys
     public interface IKetquaRepository
     {
         Task<ICollection<Ketqua>> GetScores();
-        Task<Ketqua> GetScores(Guid mapc);
+        Task<Ketqua> GetDiemByMssv(string mssv);
         Task<bool> ScoresExists(Guid mapc);
-        Task<bool> UpdateScores(Ketqua ketqua);
+        Task<bool> UpdateDiem(Ketqua updateketqua, string mssv);
         Task<ICollection<Ketqua>> GetKetQuaByMaGV(string magv);
         Task<byte[]> ExportToExcel();
         Task<byte[]> ExportToExcelByKhoa(string makhoa);
