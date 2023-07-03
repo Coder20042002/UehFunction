@@ -22,6 +22,8 @@ namespace Ueh.BackendApi.Data.Entities
         public string bacdt { get; set; }
         public string loaihinh { get; set; }
         public string? macn { get; set; }
+        public string madot { get; set; }
+
         public string status { get; set; }
 
 

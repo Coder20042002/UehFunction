@@ -63,10 +63,10 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("add")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateDot([FromBody] DotDto dotcreate)
+        public async Task<IActionResult> CreateDot(DotDto dotcreate)
         {
             if (dotcreate == null)
                 return BadRequest(ModelState);

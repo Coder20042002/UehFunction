@@ -75,13 +75,9 @@ namespace Ueh.BackendApi.Repositorys
             _context.Update(sinhvien);
             return Save();
         }
-        public async Task<bool> ImportExcelFile(string makhoa, IFormFile formFile)
+        public async Task<bool> ImportExcelFile(IFormFile formFile, string dot, string makhoa)
         {
-            bool sinhvienkhoa = await _context.Khoas.AnyAsync(a => a.makhoa == makhoa);
-            if (!sinhvienkhoa)
-            {
-                return false;
-            }
+
             if (formFile != null && formFile.Length > 0)
             {
                 using (var stream = new MemoryStream())
@@ -131,6 +127,7 @@ namespace Ueh.BackendApi.Repositorys
                                 bacdt = worksheet.Cells[row, 12].Value?.ToString(),
                                 loaihinh = worksheet.Cells[row, 13].Value?.ToString(),
                                 macn = macn,
+                                madot = dot,
                                 status = "true"
                             };
 

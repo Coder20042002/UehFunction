@@ -168,11 +168,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost("formFile")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ImportExcelFile([FromQuery] string makhoa, IFormFile formFile)
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, string madot, string makhoa)
         {
             try
             {
-                bool success = await _sinhvienRepository.ImportExcelFile(makhoa, formFile);
+                bool success = await _sinhvienRepository.ImportExcelFile(formFile, madot, makhoa);
                 if (success)
                 {
                     return Ok("Import thành công");
