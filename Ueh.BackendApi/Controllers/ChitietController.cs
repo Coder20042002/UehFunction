@@ -32,15 +32,13 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Chitiets);
         }
 
-        [HttpGet("{mapc}")]
+        [HttpGet("getchitiet")]
         [ProducesResponseType(200, Type = typeof(Chitiet))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetChitiet(Guid mapc)
+        public async Task<IActionResult> GetChitiet(string mssv)
         {
-            if (!await _ChitietRepository.ChitietExists(mapc))
-                return NotFound();
 
-            var Chitiet = _mapper.Map<ChitietDto>(await _ChitietRepository.GetChitiet(mapc));
+            var Chitiet = _mapper.Map<ChitietDto>(await _ChitietRepository.GetChitiet(mssv));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -53,28 +51,22 @@ namespace Ueh.BackendApi.Controllers
 
 
 
-        [HttpPut("{mapc}")]
+        [HttpPut("update")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateChitiet(Guid mapc,
-            [FromBody] ChitietDto updatedChitiet)
+        public async Task<IActionResult> UpdateChitiet(ChitietDto updatedChitiet, string mssv)
         {
+
             if (updatedChitiet == null)
                 return BadRequest(ModelState);
-
-            if (mapc != updatedChitiet.mapc)
-                return BadRequest(ModelState);
-
-            if (!await _ChitietRepository.ChitietExists(mapc))
-                return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
             var ChitietMap = _mapper.Map<Chitiet>(updatedChitiet);
 
-            if (!await _ChitietRepository.UpdateChitiet(ChitietMap))
+            if (!await _ChitietRepository.UpdateChitiet(ChitietMap, mssv))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                 return StatusCode(500, ModelState);

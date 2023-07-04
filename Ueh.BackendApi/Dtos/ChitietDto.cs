@@ -2,8 +2,7 @@
 {
     public class ChitietDto
     {
-        public Guid mapc { get; set; }
-        public string mssv { get; set; }
+        public string? emailsv { get; set; }
         public string? tencty { get; set; }
         public string? vitri { get; set; }
         public string? sdt { get; set; }
@@ -13,6 +12,5 @@
         public string? email { get; set; }
         public string? stdhd { get; set; }
         public string? tendetai { get; set; }
-        public string? status { get; set; }
     }
 }

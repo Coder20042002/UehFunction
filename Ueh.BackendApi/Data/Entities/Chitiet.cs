@@ -3,6 +3,7 @@
     public class Chitiet
     {
         public Guid mapc { get; set; }
+        public string? emailsv { get; set; }
         public string? tencty { get; set; }
         public string? vitri { get; set; }
         public string? sdt { get; set; }

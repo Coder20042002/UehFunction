@@ -29,10 +29,11 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Chitiets.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mapc).ToListAsync();
         }
 
-        public async Task<Chitiet> GetChitiet(Guid mapc)
+        public async Task<Chitiet> GetChitiet(string mssv)
         {
-            var phanCongIds = await _context.Phancongs.Where(ct => ct.status == "true").Select(ct => ct.Id).ToListAsync();
-            return await _context.Chitiets.Where(kq => kq.mapc == mapc && phanCongIds.Contains(kq.mapc)).FirstOrDefaultAsync();
+            var phanCongIds = await _context.Phancongs.FirstOrDefaultAsync(ct => ct.status == "true" && ct.mssv == mssv);
+
+            return await _context.Chitiets.FirstOrDefaultAsync(kq => kq.mapc == phanCongIds.Id);
         }
 
         public async Task<bool> Save()
@@ -47,10 +48,35 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Chitiets.AnyAsync(s => s.mapc == mapc && phanCongIds.Contains(s.mapc));
         }
 
-        public Task<bool> UpdateChitiet(Chitiet ketqua)
+        public async Task<bool> UpdateChitiet(Chitiet updatechitiet, string mssv)
         {
-            _context.Update(ketqua);
-            return Save();
+            var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == mssv);
+
+            if (phancong == null)
+            {
+                return false;
+            }
+
+            var chitiet = await _context.Chitiets.FirstOrDefaultAsync(k => k.mapc == phancong.Id);
+
+            if (chitiet == null)
+            {
+                return false;
+            }
+
+            chitiet.emailsv = updatechitiet.emailsv;
+            chitiet.tencty = updatechitiet.tencty;
+            chitiet.vitri = updatechitiet.vitri;
+            chitiet.sdt = updatechitiet.sdt;
+            chitiet.website = updatechitiet.website;
+            chitiet.huongdan = updatechitiet.huongdan;
+            chitiet.chucvu = updatechitiet.chucvu;
+            chitiet.email = updatechitiet.email;
+            chitiet.stdhd = updatechitiet.stdhd;
+            chitiet.tendetai = updatechitiet.tendetai;
+            chitiet.status = "true";
+            _context.Chitiets.Update(chitiet);
+            return await Save();
         }
     }
 }
