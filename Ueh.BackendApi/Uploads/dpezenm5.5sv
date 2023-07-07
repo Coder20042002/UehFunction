@@ -1,0 +1,196 @@
+﻿@page "/dangky"
+@using UehInternFrontend.Components
+@inject IJSRuntime JS
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@using Newtonsoft.Json
+
+@code {
+
+    public string? api;
+    protected override void OnInitialized()
+    {
+        api = Configuration["apiBackend"];
+    }
+
+    private string? mssv = "";
+
+
+    private ChitietModel? chitiet = new ChitietModel();
+    private bool kiemtra =true;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) {
+             mssv = await JS.InvokeAsync<string>("getUserData", "Code");
+            await RenderDatas();
+            StateHasChanged();
+        }
+    }
+
+    private async Task RenderDatas()
+    {
+        kiemtra = await KiemTraLoai(mssv);
+        chitiet = await GetChitietSinhVien(mssv);
+        StateHasChanged();
+
+    }
+
+
+
+     private async Task<ChitietModel> GetChitietSinhVien(string mssv)
+    {
+        var response = await Http.GetAsync(api + $"Chitiet/getchitiet?mssv={mssv}");
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            var uploadModel = JsonConvert.DeserializeObject<ChitietModel>(content);
+            return uploadModel;
+        }
+        else
+        {
+            Console.WriteLine($"Error retrieving sinh viên: {response.StatusCode}");
+            return null;
+        }
+    }
+        private async Task<bool> KiemTraLoai(string mssv)
+    {
+        string url = api + $"Phancong/kiemtra/{mssv}";
+        HttpResponseMessage response = await Http.GetAsync(url);
+        
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+            
+            // Kiểm tra giá trị phản hồi
+            if (responseBody == "true")
+            {
+                return true;
+            } else {
+                return false;
+            }
+        
+        
+        
+    }
+
+    private async Task SubmitChitiet(string mssv)
+    {
+
+        var response = await Http.PutAsJsonAsync(api + $"Chitiet/update?mssv={mssv}", chitiet);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await RenderDatas();
+        }
+        else
+        {
+
+            Console.WriteLine("Đã xảy ra lỗi khi gửi điểm!");
+        }
+    }
+
+}
+
+<PageTitle>Đăng ký</PageTitle>
+
+<CheckUserComponent CheckRole="sinhvien">
+    <ItemContent>
+
+
+    <div class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2  sm:p-6">
+        @if (kiemtra) {
+            <h3 class="mb-4 text-xl font-semibold">Đăng ký thực tập doanh nghiệp</h3>
+        } else {
+            <h3 class="mb-4 text-xl font-semibold">Đăng ký khóa luận tốt nghiệp</h3>
+        }
+
+            <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900">
+                        Email
+                    </label>
+                    <input type="email" @bind="@chitiet.emailsv"  name="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="phone" class="block mb-2 text-sm font-medium text-gray-900">
+                        Số điện thoại
+                    </label>
+                    <input type="text" @bind="@chitiet.sdt" name="phone" id="phone" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+            @if (kiemtra) {
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="name-cty" class="block mb-2 text-sm font-medium text-gray-900">
+                        Tên công ty
+                    </label>
+                    <input type="text" @bind="@chitiet.tencty" name="name-cty" id="name-cty" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="position" class="block mb-2 text-sm font-medium text-gray-900">
+                        Vị trí thực tập
+                    </label>
+                    <input type="text" @bind="@chitiet.vitri" name="position" id="position" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="website" class="block mb-2 text-sm font-medium text-gray-900">
+                        Website công ty
+                    </label>
+                    <input type="text" @bind="@chitiet.website" name="website" id="website" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="name-hd" class="block mb-2 text-sm font-medium text-gray-900">
+                        Tên người hướng dẫn
+                    </label>
+                    <input type="text" @bind="@chitiet.huongdan" name="name-hd" id="name-hd" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="position-hd" class="block mb-2 text-sm font-medium text-gray-900">
+                        Chức vụ người hướng dẫn
+                    </label>
+                    <input type="text" @bind="@chitiet.chucvu" name="position-hd" id="position-hd" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="email-hd" class="block mb-2 text-sm font-medium text-gray-900">
+                        Email người hướng dẫn
+                    </label>
+                    <input type="email" @bind="@chitiet.email"  name="email-hd" id="email-hd" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="phone-hd" class="block mb-2 text-sm font-medium text-gray-900">
+                        Số điện thoại người hướng dẫn
+                    </label>
+                    <input type="text" @bind="@chitiet.stdhd"  name="phone-hd" id="phone-hd" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+            } else {
+
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="detai" class="block mb-2 text-sm font-medium text-gray-900">
+                        Đề tài
+                    </label>
+                    <input type="text" @bind="@chitiet.tendetai" name="detai" id="detai" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-teal-600 focus:border-teal-600 block w-full py-2.5 px-4" required>
+                </div>
+
+            }
+
+                <div class="col-span-6 sm:col-full">
+                    <button 
+                         @onclick="() => SubmitChitiet(mssv)" 
+                        class="text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">
+                        Lưu thông tin
+                    </button>
+                </div>
+            </div>
+    </div>
+
+
+    </ItemContent>
+</CheckUserComponent>
+

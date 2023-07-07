@@ -1,6 +1,5 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +61,7 @@ builder.Services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>()
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen();/*c =>
 {
 
 
@@ -95,13 +94,13 @@ builder.Services.AddSwaggerGen(c =>
          }
     });
 });
-
-
+*/
+/*
 string issuer = builder.Configuration.GetValue<string>("Tokens:Issuer");
 string signingKey = builder.Configuration.GetValue<string>("Tokens:Key");
-byte[] signingKeyBytes = System.Text.Encoding.UTF8.GetBytes(signingKey);
+byte[] signingKeyBytes = System.Text.Encoding.UTF8.GetBytes(signingKey);*/
 
-builder.Services.AddAuthentication(opt =>
+/*builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -121,7 +120,7 @@ builder.Services.AddAuthentication(opt =>
                    ClockSkew = System.TimeSpan.Zero,
                    IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
                };
-           });
+           });*/
 
 
 
@@ -143,3 +142,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+//app.Run("http://0.0.0.0");
