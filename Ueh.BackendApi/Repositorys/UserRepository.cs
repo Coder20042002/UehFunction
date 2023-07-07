@@ -44,5 +44,35 @@ namespace Ueh.BackendApi.Repositorys
             return await saved > 0 ? true : false;
         }
 
+        public async Task<int> KiemTraUser(string id)
+        {
+            bool dot = await _context.Dots.AnyAsync(d => d.status == "true");
+            bool dangky = await _context.Dangkys.AnyAsync(k => k.mssv == id);
+            bool phancong = await _context.Phancongs.AnyAsync(p => p.mssv == id && p.status == "true");
+            bool sinhvien = await _context.Sinhviens.AnyAsync(s => s.mssv == id && s.status == "true");
+
+            if (dot)
+            {
+                if (phancong)
+                {
+                    return 1;
+
+                }
+                else
+                {
+                    if (dangky && sinhvien)
+                    {
+                        return 2;
+                    }
+                    else
+                        return 0;
+                }
+
+
+
+            }
+            return -1;
+
+        }
     }
 }

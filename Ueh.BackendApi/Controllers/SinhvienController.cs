@@ -22,6 +22,28 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("GetGvHuongDanSv")]
+        public async Task<IActionResult> GetGvHuongDanSv(string mssv)
+        {
+            var giangvien = await _sinhvienRepository.GetGvHuongDanSv(mssv);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(giangvien);
+        }
+
+        [HttpGet("GetLoaiHinhThucTap")]
+        public async Task<IActionResult> GetLoaiHinhThucTap(string mssv)
+        {
+            string loai = await _sinhvienRepository.GetLoaiHinhThucTap(mssv);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(loai);
+        }
+
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Sinhvien>))]
         public async Task<IActionResult> GetSinhviens()

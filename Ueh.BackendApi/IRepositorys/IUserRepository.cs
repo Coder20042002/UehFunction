@@ -8,6 +8,8 @@ namespace Ueh.BackendApi.IRepositorys
     {
         Task<User> GetInfoUser(string id);
         Task<bool> UpdateInfoUser(User user, string id);
+        Task<int> KiemTraUser(string id);
+
         Task<bool> Save();
 
     }

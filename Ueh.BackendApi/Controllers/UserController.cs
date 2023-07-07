@@ -42,6 +42,20 @@ namespace Ueh.BackendApi.Controllers
 
 
 
+        [HttpGet("KiemTraUser")]
+        public async Task<IActionResult> KiemTraUser(string id)
+        {
+
+            int kiemtra = await _userRepository.KiemTraUser(id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(kiemtra);
+        }
+
+
+
         [HttpPut("UpdateInfoUser")]
         public async Task<IActionResult> UpdateInfoUser(UserDto updateUser, string id)
         {

@@ -174,5 +174,33 @@ namespace Ueh.BackendApi.Repositorys
 
             return sinhvienKhoas;
         }
+
+        public async Task<Giangvien> GetGvHuongDanSv(string mssv)
+        {
+            var giangvien = await _context.Phancongs
+                .Include(p => p.giangvien)
+                .Where(p => p.mssv == mssv)
+                .Select(p => p.giangvien)
+                .FirstOrDefaultAsync();
+
+
+            return giangvien;
+        }
+
+        public async Task<string> GetLoaiHinhThucTap(string mssv)
+        {
+            var phancong = await _context.Phancongs
+                .Include(p => p.loai)
+                .FirstOrDefaultAsync(p => p.mssv == mssv);
+
+            if (phancong != null)
+            {
+                return phancong.loai?.name;
+            }
+
+            return null;
+        }
+
+
     }
 }
