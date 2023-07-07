@@ -9,6 +9,7 @@
         public string email { get; set; }
         public string magv { get; set; }
         public string makhoa { get; set; }
+        public string madot { get; set; }
         public string status { get; set; } = "true";
         public Giangvien giangvien { get; set; }
         public Khoa khoa { get; set; }

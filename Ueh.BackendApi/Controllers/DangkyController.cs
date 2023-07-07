@@ -10,12 +10,12 @@ namespace Ueh.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DangkyContronller : ControllerBase
+    public class DangkyController : ControllerBase
     {
         private readonly IDangkyRepository _DangkyRepository;
         private readonly IMapper _mapper;
 
-        public DangkyContronller(IDangkyRepository DangkyRepository, IMapper mapper)
+        public DangkyController(IDangkyRepository DangkyRepository, IMapper mapper)
         {
             _DangkyRepository = DangkyRepository;
             _mapper = mapper;
@@ -23,9 +23,9 @@ namespace Ueh.BackendApi.Controllers
 
         [HttpGet("GetSinhVienByGiaoVien")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Dangky>))]
-        public async Task<IActionResult> GetSinhVienByGiaoVien([FromQuery] string magv)
+        public async Task<IActionResult> GetSinhVienByGiaoVien([FromQuery] string madot, [FromQuery] string makhoa, [FromQuery] string magv)
         {
-            var Dangkys = _mapper.Map<List<DangkyDto>>(await _DangkyRepository.GetSinhVienByGiaoVien(magv));
+            var Dangkys = _mapper.Map<List<DangkyDto>>(await _DangkyRepository.GetSinhVienByGiaoVien(madot, makhoa, magv));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -64,11 +64,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost("formFile")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, [FromQuery] string makhoa, [FromQuery] string magv)
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, [FromQuery] string madot, [FromQuery] string makhoa, [FromQuery] string magv)
         {
             try
             {
-                bool success = await _DangkyRepository.ImportExcelFile(formFile, makhoa, magv);
+                bool success = await _DangkyRepository.ImportExcelFile(formFile, madot, makhoa, magv);
                 if (success)
                 {
                     return Ok("Import thành công"); // Trả về thông báo thành công

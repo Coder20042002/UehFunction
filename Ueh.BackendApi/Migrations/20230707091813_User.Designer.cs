@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ueh.BackendApi.Data.EF;
 
@@ -11,9 +12,10 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    partial class UehDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230707091813_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,16 +59,22 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("chucvu")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("emailhd")
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("emailsv")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("huongdan")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("sdthd")
+                    b.Property<string>("sdt")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("stdhd")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("tencty")
@@ -179,6 +187,14 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("chuyenmon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("sdt")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")

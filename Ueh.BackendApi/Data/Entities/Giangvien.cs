@@ -10,8 +10,6 @@ namespace Ueh.BackendApi.Data.Entities
     {
         public string magv { get; set; }
         public string tengv { get; set; }
-        public string email { get; set; }
-        public string sdt { get; set; }
         public string status { get; set; } = "true";
         public string? chuyenmon { get; set; }
         public ICollection<Dangky> dangkys { get; set; }

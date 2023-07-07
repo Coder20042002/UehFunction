@@ -18,7 +18,7 @@ namespace Ueh.BackendApi.IRepositorys
         Task<bool> UpdateGiangvien(Giangvien Giangvien);
         Task<bool> DeleteGiangvien(Giangvien Giangvien);
         Task<bool> ImportExcelFile(IFormFile formFile, string makhoa);
-        Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string makhoa);
+        Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string madot, string makhoa);
         Task<bool> Save();
     }
 }

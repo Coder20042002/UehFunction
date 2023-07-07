@@ -47,20 +47,6 @@ namespace Ueh.BackendApi.Controllers
             return Ok(dot);
         }
 
-        [HttpGet("sinhvien/{dotId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Sinhvien>))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GetSinhvienByDotId(string dotId)
-        {
-            var sinhvien = await _dotRepository.GetSinhvienByDot(dotId);
-            var sinhviens = _mapper.Map<List<SinhvienDto>>(sinhvien
-               );
-
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            return Ok(sinhviens);
-        }
 
 
         [HttpPost("add")]

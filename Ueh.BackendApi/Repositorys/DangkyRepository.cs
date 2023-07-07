@@ -15,10 +15,10 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-        public async Task<List<Dangky>> GetSinhVienByGiaoVien(string maGiaoVien)
+        public async Task<List<Dangky>> GetSinhVienByGiaoVien(string madot, string makhoa, string maGiaoVien)
         {
             var sinhVienList = await _context.Dangkys
-                .Where(dk => dk.magv == maGiaoVien)
+                .Where(dk => dk.magv == maGiaoVien && dk.makhoa == makhoa && dk.madot == madot)
                 .ToListAsync();
 
             return sinhVienList;
@@ -73,7 +73,7 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> ImportExcelFile(IFormFile formFile, string makhoa, string magv)
+        public async Task<bool> ImportExcelFile(IFormFile formFile, string madot, string makhoa, string magv)
         {
             if (formFile != null && formFile.Length > 0)
             {
@@ -103,7 +103,7 @@ namespace Ueh.BackendApi.Repositorys
                                 ten = worksheet.Cells[row, 3].Value?.ToString(),
                                 lop = worksheet.Cells[row, 4].Value?.ToString(),
                                 email = worksheet.Cells[row, 5].Value?.ToString(),
-
+                                madot = madot,
                                 magv = magv,
                                 makhoa = makhoa
                             };

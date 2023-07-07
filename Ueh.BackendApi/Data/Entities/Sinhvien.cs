@@ -25,10 +25,7 @@ namespace Ueh.BackendApi.Data.Entities
         public string madot { get; set; }
 
         public string status { get; set; }
-
-
         public Chuyennganh chuyennganh { get; set; }
-        public ICollection<SinhvienDot> sinhviendots { get; set; }
         public ICollection<Phancong> phancongs { get; set; }
         public ICollection<SinhvienKhoa> sinhvienkhoas { get; set; }
 

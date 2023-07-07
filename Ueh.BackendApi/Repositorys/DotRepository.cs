@@ -39,14 +39,11 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<Dot> GetDot()
         {
-            return await _context.Dots.Where(e => e.status == "true" ).FirstOrDefaultAsync();
+            return await _context.Dots.Where(e => e.status == "true").FirstOrDefaultAsync();
 
         }
 
-        public async Task<ICollection<Sinhvien>> GetSinhvienByDot(string dotId)
-        {
-            return await _context.SinhvienDots.Where(e => e.madot == dotId).Select(c => c.sinhvien).ToListAsync();
-        }
+
 
         public async Task<bool> Save()
         {

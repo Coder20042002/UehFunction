@@ -17,7 +17,7 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
-        public async Task<List<KetquaRequest>> GetDanhSachDiem(string madot,string magv)
+        public async Task<List<KetquaRequest>> GetDanhSachDiem(string madot, string magv)
         {
             List<KetquaRequest> ketquaList = await _context.Ketquas
                    .Include(k => k.phancong)
@@ -45,10 +45,10 @@ namespace Ueh.BackendApi.Repositorys
                 .Select(p => p.sinhvien)
                 .ToListAsync();
         }
-        public async Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string makhoa)
+        public async Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string madot, string makhoa)
         {
             var giangVienList = await _context.Phancongs
-                .Where(p => p.status == "true")
+                .Where(p => p.status == "true" && p.madot == madot)
                 .Join(_context.GiangvienKhoas, p => p.magv, gk => gk.magv, (p, gk) => new { Phancong = p, GiangvienKhoa = gk })
                 .Where(pgk => pgk.GiangvienKhoa.makhoa == makhoa)
                 .GroupBy(pgk => pgk.Phancong.magv)
@@ -56,14 +56,23 @@ namespace Ueh.BackendApi.Repositorys
                 {
                     MaGiangVien = g.Key,
                     TenGiangVien = g.First().Phancong.giangvien.tengv,
-                    Email = g.First().Phancong.giangvien.email,
-                    SDT = g.First().Phancong.giangvien.sdt,
                     SoSinhVienHuongDan = g.Count()
                 })
                 .ToListAsync();
 
+            foreach (var giangVien in giangVienList)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.userId == giangVien.MaGiangVien);
+                if (user != null)
+                {
+                    giangVien.Email = user.email;
+                    giangVien.SDT = user.sdt;
+                }
+            }
+
             return giangVienList;
         }
+
 
 
 
@@ -165,8 +174,8 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 magv = magv,
                                 tengv = worksheet.Cells[row, 2].Value?.ToString(),
-                                sdt = worksheet.Cells[row, 3].Value?.ToString(),
-                                email = worksheet.Cells[row, 4].Value?.ToString(),
+                                //sdt = worksheet.Cells[row, 3].Value?.ToString(),
+                                //email = worksheet.Cells[row, 4].Value?.ToString(),
 
                             };
 

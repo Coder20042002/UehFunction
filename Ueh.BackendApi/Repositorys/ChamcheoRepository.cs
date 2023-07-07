@@ -76,35 +76,45 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<List<ChamcheoRequest>> GetChamcheoByGiangVien(string makhoa)
         {
-            var pairs = _context.Chamcheos.Where(c => c.makhoa == makhoa).ToList();
+            var pairs = await _context.Chamcheos.Where(c => c.makhoa == makhoa).ToListAsync();
 
             var chamcheoRequests = new List<ChamcheoRequest>();
 
             foreach (var pair in pairs)
             {
-                var giangvien1 = _context.Giangviens.FirstOrDefault(gv => gv.magv == pair.magv1);
+                var giangvien1 = await _context.Giangviens.FirstOrDefaultAsync(gv => gv.magv == pair.magv1);
                 if (giangvien1 != null)
                 {
-                    var chamcheoRequest = new ChamcheoRequest
+                    var user1 = await _context.Users.FirstOrDefaultAsync(u => u.userId == giangvien1.magv);
+                    if (user1 != null)
                     {
-                        magv1 = giangvien1.magv,
-                        tengv1 = giangvien1.tengv,
-                        email1 = giangvien1.email
-                    };
+                        var chamcheoRequest = new ChamcheoRequest
+                        {
+                            magv1 = giangvien1.magv,
+                            tengv1 = giangvien1.tengv,
+                            email1 = user1.email
+                        };
 
-                    var giangvien2 = _context.Giangviens.FirstOrDefault(gv => gv.magv == pair.magv2);
-                    if (giangvien2 != null)
-                    {
-                        chamcheoRequest.magv2 = giangvien2.magv;
-                        chamcheoRequest.tengv2 = giangvien2.tengv;
-                        chamcheoRequest.email2 = giangvien2.email;
+                        var giangvien2 = await _context.Giangviens.FirstOrDefaultAsync(gv => gv.magv == pair.magv2);
+                        if (giangvien2 != null)
+                        {
+                            var user2 = await _context.Users.FirstOrDefaultAsync(u => u.userId == giangvien2.magv);
+                            if (user2 != null)
+                            {
+                                chamcheoRequest.magv2 = giangvien2.magv;
+                                chamcheoRequest.tengv2 = giangvien2.tengv;
+                                chamcheoRequest.email2 = user2.email;
+                            }
+                        }
+
+                        chamcheoRequests.Add(chamcheoRequest);
                     }
-
-                    chamcheoRequests.Add(chamcheoRequest);
                 }
             }
+
             return chamcheoRequests;
         }
+
     }
 
 }

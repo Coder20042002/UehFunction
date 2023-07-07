@@ -7,7 +7,6 @@ namespace Ueh.BackendApi.IRepositorys
     {
         Task<ICollection<Dot>> GetAllDot();
         Task<Dot> GetDot();
-        Task<ICollection<Sinhvien>> GetSinhvienByDot(string dotId);
         Task<bool> DotExists(string id);
         Task<bool> CreateDot(Dot dot);
         Task<bool> UpdateDot(Dot dot);

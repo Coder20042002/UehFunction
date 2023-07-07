@@ -2,6 +2,7 @@
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -29,11 +30,27 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Chitiets.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mapc).ToListAsync();
         }
 
-        public async Task<Chitiet> GetChitiet(string mssv)
+        public async Task<ChitietRequest> GetChitiet(string mssv)
         {
             var phanCongIds = await _context.Phancongs.FirstOrDefaultAsync(ct => ct.status == "true" && ct.mssv == mssv);
+            var chitiet = await _context.Chitiets.FirstOrDefaultAsync(kq => kq.mapc == phanCongIds.Id);
+            var user = await _context.Users.FirstOrDefaultAsync(c => c.userId == mssv);
 
-            return await _context.Chitiets.FirstOrDefaultAsync(kq => kq.mapc == phanCongIds.Id);
+            var request = new ChitietRequest
+            {
+                emailsv = user.email,
+                sdtsv = user.sdt,
+                chucvu = chitiet.chucvu,
+                huongdan = chitiet.huongdan,
+                emailhd = chitiet.emailhd,
+                sdthd = chitiet.sdthd,
+                tencty = chitiet.tencty,
+                vitri = chitiet.vitri,
+                website = chitiet.website,
+                tendetai = chitiet.tendetai
+
+            };
+            return request;
         }
 
         public async Task<bool> Save()
@@ -48,8 +65,9 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Chitiets.AnyAsync(s => s.mapc == mapc && phanCongIds.Contains(s.mapc));
         }
 
-        public async Task<bool> UpdateChitiet(Chitiet updatechitiet, string mssv)
+        public async Task<bool> UpdateChitiet(ChitietRequest updatechitiet, string mssv)
         {
+
             var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == mssv);
 
             if (phancong == null)
@@ -59,23 +77,30 @@ namespace Ueh.BackendApi.Repositorys
 
             var chitiet = await _context.Chitiets.FirstOrDefaultAsync(k => k.mapc == phancong.Id);
 
-            if (chitiet == null)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.userId == mssv);
+
+
+            if (chitiet == null || user == null)
             {
                 return false;
             }
 
-            chitiet.emailsv = updatechitiet.emailsv;
+            user.email = updatechitiet.emailsv;
+            user.sdt = updatechitiet.sdtsv;
+
             chitiet.tencty = updatechitiet.tencty;
             chitiet.vitri = updatechitiet.vitri;
-            chitiet.sdt = updatechitiet.sdt;
             chitiet.website = updatechitiet.website;
             chitiet.huongdan = updatechitiet.huongdan;
             chitiet.chucvu = updatechitiet.chucvu;
-            chitiet.email = updatechitiet.email;
-            chitiet.stdhd = updatechitiet.stdhd;
+            chitiet.emailhd = updatechitiet.emailhd;
+            chitiet.sdthd = updatechitiet.sdthd;
             chitiet.tendetai = updatechitiet.tendetai;
             chitiet.status = "true";
+
             _context.Chitiets.Update(chitiet);
+            _context.Users.Update(user);
+
             return await Save();
         }
     }

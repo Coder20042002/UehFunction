@@ -13,7 +13,6 @@ namespace Ueh.BackendApi.Data.Entities
         public DateTime? ngaybatdau { get; set; }
         public DateTime? ngayketthuc { get; set; }
         public string? status { get; set; }
-        public ICollection<SinhvienDot> sinhviendots { get; set; }
         public ICollection<Phancong> phanCongs { get; set; }
 
     }

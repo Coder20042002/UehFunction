@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -38,7 +39,7 @@ namespace Ueh.BackendApi.Controllers
         public async Task<IActionResult> GetChitiet(string mssv)
         {
 
-            var Chitiet = _mapper.Map<ChitietDto>(await _ChitietRepository.GetChitiet(mssv));
+            var Chitiet = await _ChitietRepository.GetChitiet(mssv);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -55,7 +56,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateChitiet(ChitietDto updatedChitiet, string mssv)
+        public async Task<IActionResult> UpdateChitiet(ChitietRequest updatedChitiet, string mssv)
         {
 
             if (updatedChitiet == null)
@@ -64,9 +65,8 @@ namespace Ueh.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var ChitietMap = _mapper.Map<Chitiet>(updatedChitiet);
 
-            if (!await _ChitietRepository.UpdateChitiet(ChitietMap, mssv))
+            if (!await _ChitietRepository.UpdateChitiet(updatedChitiet, mssv))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                 return StatusCode(500, ModelState);

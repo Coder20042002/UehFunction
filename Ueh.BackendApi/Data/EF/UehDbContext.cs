@@ -11,7 +11,7 @@ using Ueh.BackendApi.Data.Entities;
 
 namespace Ueh.BackendApi.Data.EF
 {
-    public class UehDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
+    public class UehDbContext : DbContext
     {
         public UehDbContext(DbContextOptions options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,7 +23,6 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new KhoaConfiguration());
             modelBuilder.ApplyConfiguration(new DangKyConfiguration());
             modelBuilder.ApplyConfiguration(new LichsuConfiguration());
-            modelBuilder.ApplyConfiguration(new SinhvienDotConfiguration());
             modelBuilder.ApplyConfiguration(new ChuyenNganhConfiguration());
             modelBuilder.ApplyConfiguration(new PhancongConfiguration());
             modelBuilder.ApplyConfiguration(new SinhvienKhoaConfiguration());
@@ -32,17 +31,18 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new GiangvienKhoaConfiguration());
             modelBuilder.ApplyConfiguration(new UploadResultConfiguration());
             modelBuilder.ApplyConfiguration(new ChamcheoConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
 
 
 
-            modelBuilder.Entity<IdentityUser<Guid>>().ToTable("AppUser").HasKey(x => x.Id);
-            modelBuilder.Entity<IdentityRole<Guid>>().ToTable("AppRole").HasKey(x => x.Id);
-            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
-            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
-            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
+            //modelBuilder.Entity<IdentityUser<Guid>>().ToTable("AppUser").HasKey(x => x.Id);
+            //modelBuilder.Entity<IdentityRole<Guid>>().ToTable("AppRole").HasKey(x => x.Id);
+            //modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
+            //modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
+            //modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
 
-            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
-            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
+            //modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
+            //modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
 
             //base.OnModelCreating(modelBuilder);
         }
@@ -53,7 +53,6 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<Khoa> Khoas { get; set; }
         public DbSet<Dangky> Dangkys { get; set; }
         public DbSet<Lichsu> Lichsus { get; set; }
-        public DbSet<SinhvienDot> SinhvienDots { get; set; }
         public DbSet<Chuyennganh> Chuyennganhs { get; set; }
         public DbSet<Phancong> Phancongs { get; set; }
         public DbSet<SinhvienKhoa> SinhvienKhoas { get; set; }
@@ -62,5 +61,7 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<GiangvienKhoa> GiangvienKhoas { get; set; }
         public DbSet<UploadResult> UploadResults { get; set; }
         public DbSet<Chamcheo> Chamcheos { get; set; }
+        public DbSet<User> Users { get; set; }
+
     }
 }

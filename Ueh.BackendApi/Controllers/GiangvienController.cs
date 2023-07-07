@@ -89,11 +89,11 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("sinhvientotal")]
-        public async Task<ActionResult<List<GiangvienRequest>>> GetGiangVienAndSinhVienHuongDan(string makhoa)
+        public async Task<ActionResult<List<GiangvienRequest>>> GetGiangVienAndSinhVienHuongDan(string madot, string makhoa)
         {
             try
             {
-                var giangVienList = await _giangvienRepository.GetGiangVienAndSinhVienHuongDan(makhoa);
+                var giangVienList = await _giangvienRepository.GetGiangVienAndSinhVienHuongDan(madot, makhoa);
                 return Ok(giangVienList);
             }
             catch (Exception ex)
