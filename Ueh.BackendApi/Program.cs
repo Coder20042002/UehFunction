@@ -1,6 +1,5 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
@@ -86,3 +85,5 @@ app.UseAuthorization();
 app.MapControllers();
 //app.Run("http://0.0.0.0");
 app.Run();
+
+//app.Run("http://0.0.0.0");
