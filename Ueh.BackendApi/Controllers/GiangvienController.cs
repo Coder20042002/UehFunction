@@ -47,19 +47,8 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Giangvien>))]
-        public async Task<IActionResult> GetGiangviens()
-        {
-            var Giangviens = _mapper.Map<List<GiangvienDto>>(await _giangvienRepository.GetGiangviens());
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(Giangviens);
-        }
-
-        [HttpGet("{magv}")]
+        [HttpGet("GetThongtinGiangvien")]
         [ProducesResponseType(200, Type = typeof(Giangvien))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetGiangvien(string magv)
@@ -67,7 +56,7 @@ namespace Ueh.BackendApi.Controllers
             if (!await _giangvienRepository.GiangvienExists(magv))
                 return NotFound();
 
-            var Giangvien = _mapper.Map<GiangvienDto>(await _giangvienRepository.GetGiangvien(magv));
+            var Giangvien = await _giangvienRepository.GetThongtinGiangvien(magv);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -134,12 +123,11 @@ namespace Ueh.BackendApi.Controllers
             return Ok(GiangvienMap);
         }
 
-        [HttpPut("{magv}")]
+        [HttpPut("UpdateThongTin")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateGiangvien(string magv,
-            [FromBody] GiangvienDto updatedGiangvien)
+        public async Task<IActionResult> UpdateGiangvien(GiangvienUpdateRequest updatedGiangvien, string magv)
         {
             if (updatedGiangvien == null)
                 return BadRequest(ModelState);
@@ -153,9 +141,8 @@ namespace Ueh.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var GiangvienMap = _mapper.Map<Giangvien>(updatedGiangvien);
 
-            if (!await _giangvienRepository.UpdateGiangvien(GiangvienMap))
+            if (!await _giangvienRepository.UpdateGiangvien(updatedGiangvien))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật");
                 return StatusCode(500, ModelState);
@@ -174,17 +161,10 @@ namespace Ueh.BackendApi.Controllers
             {
                 return NotFound();
             }
-            var GiangvienToDelete = await _giangvienRepository.GetGiangvien(magv);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-
-
-            if (!await _giangvienRepository.DeleteGiangvien(GiangvienToDelete))
-            {
-                ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa ");
-            }
 
             return NoContent();
         }

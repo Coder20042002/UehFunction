@@ -10,12 +10,11 @@ namespace Ueh.BackendApi.IRepositorys
 
         Task<List<Sinhvien>> GetSinhVienByGiangVien(string dot, string magv);
         Task<List<Giangvien>> GetGiangvienByKhoa(string makhoa);
-        Task<ICollection<Giangvien>> GetGiangviens();
-        Task<Giangvien> GetGiangvien(string magv);
+        Task<GiangvienUpdateRequest> GetThongtinGiangvien(string magv);
         Task<Giangvien> GetGiangvienName(string name);
         Task<bool> GiangvienExists(string magv);
         Task<bool> CreateGiangvien(string makhoa, Giangvien Giangvien);
-        Task<bool> UpdateGiangvien(Giangvien Giangvien);
+        Task<bool> UpdateGiangvien(GiangvienUpdateRequest Giangvien);
         Task<bool> DeleteGiangvien(Giangvien Giangvien);
         Task<bool> ImportExcelFile(IFormFile formFile, string makhoa);
         Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string madot, string makhoa);

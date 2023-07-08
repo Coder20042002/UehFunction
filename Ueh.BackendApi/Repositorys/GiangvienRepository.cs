@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using ServiceStack.Text;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
@@ -114,9 +115,37 @@ namespace Ueh.BackendApi.Repositorys
 
 
 
-        public async Task<Giangvien> GetGiangvien(string magv)
+        public async Task<GiangvienUpdateRequest> GetThongtinGiangvien(string magv)
         {
-            return await _context.Giangviens.Where(s => s.magv == magv).FirstOrDefaultAsync();
+            var usergv = await _context.Users.FirstOrDefaultAsync(u => u.userId == magv);
+            var giangvien = await _context.Giangviens.FirstOrDefaultAsync(u => u.magv == magv);
+
+            if (usergv != null)
+            {
+                var thongtingv = new GiangvienUpdateRequest
+                {
+                    magv = giangvien.magv,
+                    tengv = giangvien.tengv,
+                    chuyenmon = giangvien.chuyenmon,
+                    email = usergv.email,
+                    sdt = usergv.sdt
+                };
+                return thongtingv;
+
+            }
+            else
+            {
+                var thongtingv = new GiangvienUpdateRequest
+                {
+                    magv = giangvien.magv,
+                    tengv = giangvien.tengv,
+                    chuyenmon = giangvien.chuyenmon
+
+                };
+                return thongtingv;
+
+            }
+
         }
 
         public async Task<Giangvien> GetGiangvienName(string name)
@@ -125,10 +154,7 @@ namespace Ueh.BackendApi.Repositorys
 
         }
 
-        public async Task<ICollection<Giangvien>> GetGiangviens()
-        {
-            return await _context.Giangviens.OrderBy(s => s.magv).ToListAsync();
-        }
+
 
         public async Task<bool> Save()
         {
@@ -141,9 +167,29 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Giangviens.AnyAsync(s => s.magv == magv);
         }
 
-        public async Task<bool> UpdateGiangvien(Giangvien Giangvien)
+        public async Task<bool> UpdateGiangvien(GiangvienUpdateRequest updategiangvien)
         {
-            _context.Update(Giangvien);
+            bool user = await _context.Users.AnyAsync(u => u.userId == updategiangvien.magv);
+            if (user)
+            {
+                var usergv = new User
+                {
+                    email = updategiangvien.email,
+                    sdt = updategiangvien.sdt
+                };
+                _context.Update(usergv);
+
+            }
+
+
+            var giangvien = new Giangvien
+            {
+                magv = updategiangvien.magv,
+                tengv = updategiangvien.tengv,
+                chuyenmon = updategiangvien.chuyenmon
+
+            };
+            _context.Update(giangvien);
             return await Save();
         }
 
