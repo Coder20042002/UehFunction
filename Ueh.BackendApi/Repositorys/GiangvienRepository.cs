@@ -77,17 +77,31 @@ namespace Ueh.BackendApi.Repositorys
 
 
 
-        public async Task<List<Giangvien>> GetGiangvienByKhoa(string makhoa)
+        public async Task<List<GiangvienUpdateRequest>> GetGiangvienByKhoa(string makhoa)
         {
-            var giangvienKhoaList = await _context.GiangvienKhoas
-                .Include(gk => gk.giangvien)
-                .Where(gk => gk.makhoa == makhoa)
+            List<GiangvienUpdateRequest> giangviens = await _context.GiangvienKhoas
+                .Include(gvk => gvk.giangvien)
+                .Where(gvk => gvk.makhoa == makhoa && gvk.giangvien.status == "true")
+                .Select(gvk => new GiangvienUpdateRequest
+                {
+                    magv = gvk.giangvien.magv,
+                    tengv = gvk.giangvien.tengv,
+                })
                 .ToListAsync();
 
-            var giangvienList = giangvienKhoaList.Select(gk => gk.giangvien).ToList();
+            foreach (var giangvien in giangviens)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.userId == giangvien.magv);
+                if (user != null)
+                {
+                    giangvien.email = user.email;
+                    giangvien.sdt = user.sdt;
+                }
+            }
 
-            return giangvienList;
+            return giangviens;
         }
+
 
         public async Task<bool> CreateGiangvien(string makhoa, Giangvien Giangvien)
         {
@@ -106,19 +120,26 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public Task<bool> DeleteGiangvien(Giangvien Giangvien)
+        public async Task<bool> DeleteGiangvien(string magv)
         {
-            Giangvien.status = "false";
-            _context.Update(Giangvien);
-            return Save();
+            var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == magv);
+            if (giangvien == null)
+            {
+                return false;
+            }
+
+            giangvien.status = "false";
+
+            return await Save();
         }
+
 
 
 
         public async Task<GiangvienUpdateRequest> GetThongtinGiangvien(string magv)
         {
             var usergv = await _context.Users.FirstOrDefaultAsync(u => u.userId == magv);
-            var giangvien = await _context.Giangviens.FirstOrDefaultAsync(u => u.magv == magv);
+            var giangvien = await _context.Giangviens.FirstOrDefaultAsync(u => u.magv == magv && u.status == "true");
 
             if (usergv != null)
             {

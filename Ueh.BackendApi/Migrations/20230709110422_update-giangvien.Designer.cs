@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ueh.BackendApi.Data.EF;
 
@@ -11,9 +12,10 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    partial class UehDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230709110422_update-giangvien")]
+    partial class updategiangvien
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +180,13 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("magv")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Khoamakhoa")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("chuyenmon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("makhoa")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("status")
@@ -190,6 +198,8 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("magv");
+
+                    b.HasIndex("Khoamakhoa");
 
                     b.ToTable("Giangviens", (string)null);
                 });
@@ -332,9 +342,6 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("mssv")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("madot")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("bacdt")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -357,6 +364,10 @@ namespace Ueh.BackendApi.Migrations
 
                     b.Property<string>("macn")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("madot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("mahp")
                         .IsRequired()
@@ -390,7 +401,7 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("mssv", "madot");
+                    b.HasKey("mssv");
 
                     b.HasIndex("macn");
 
@@ -499,6 +510,13 @@ namespace Ueh.BackendApi.Migrations
                     b.Navigation("khoa");
                 });
 
+            modelBuilder.Entity("Ueh.BackendApi.Data.Entities.Giangvien", b =>
+                {
+                    b.HasOne("Ueh.BackendApi.Data.Entities.Khoa", null)
+                        .WithMany("giangviens")
+                        .HasForeignKey("Khoamakhoa");
+                });
+
             modelBuilder.Entity("Ueh.BackendApi.Data.Entities.GiangvienKhoa", b =>
                 {
                     b.HasOne("Ueh.BackendApi.Data.Entities.Giangvien", "giangvien")
@@ -563,8 +581,7 @@ namespace Ueh.BackendApi.Migrations
                     b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
                         .WithMany("phancongs")
                         .HasForeignKey("mssv")
-                        .HasPrincipalKey("mssv")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("dot");
@@ -596,8 +613,7 @@ namespace Ueh.BackendApi.Migrations
                     b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
                         .WithMany("sinhvienkhoas")
                         .HasForeignKey("mssv")
-                        .HasPrincipalKey("mssv")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("khoa");
@@ -629,6 +645,8 @@ namespace Ueh.BackendApi.Migrations
                     b.Navigation("dangkis");
 
                     b.Navigation("giangvienkhoas");
+
+                    b.Navigation("giangviens");
 
                     b.Navigation("sinhvienkhoas");
                 });

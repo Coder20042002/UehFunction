@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ueh.BackendApi.Data.EF;
 
@@ -11,9 +12,10 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    partial class UehDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230709110659_update-giangviens")]
+    partial class updategiangviens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,9 +334,6 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<string>("mssv")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("madot")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("bacdt")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -357,6 +356,10 @@ namespace Ueh.BackendApi.Migrations
 
                     b.Property<string>("macn")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("madot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("mahp")
                         .IsRequired()
@@ -390,7 +393,7 @@ namespace Ueh.BackendApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("mssv", "madot");
+                    b.HasKey("mssv");
 
                     b.HasIndex("macn");
 
@@ -563,8 +566,7 @@ namespace Ueh.BackendApi.Migrations
                     b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
                         .WithMany("phancongs")
                         .HasForeignKey("mssv")
-                        .HasPrincipalKey("mssv")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("dot");
@@ -596,8 +598,7 @@ namespace Ueh.BackendApi.Migrations
                     b.HasOne("Ueh.BackendApi.Data.Entities.Sinhvien", "sinhvien")
                         .WithMany("sinhvienkhoas")
                         .HasForeignKey("mssv")
-                        .HasPrincipalKey("mssv")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("khoa");

@@ -64,12 +64,12 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Giangvien);
         }
 
-        [HttpGet("khoa/{makhoa}/giangvien")]
+        [HttpGet("khoa/{makhoa}")]
         [ProducesResponseType(200, Type = typeof(List<Giangvien>))]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetGiangvienByKhoa(string makhoa)
         {
-            var giangvienList = _mapper.Map<List<GiangvienDto>>(await _giangvienRepository.GetGiangvienByKhoa(makhoa));
+            var giangvienList = await _giangvienRepository.GetGiangvienByKhoa(makhoa);
 
             if (giangvienList == null)
                 return NotFound();
@@ -151,7 +151,7 @@ namespace Ueh.BackendApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{magv}")]
+        [HttpDelete("DeleteGiangvien")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -165,6 +165,12 @@ namespace Ueh.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+
+            if (!await _giangvienRepository.DeleteGiangvien(magv))
+            {
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật");
+                return StatusCode(500, ModelState);
+            }
 
             return NoContent();
         }
