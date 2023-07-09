@@ -83,33 +83,39 @@ namespace Ueh.BackendApi.Repositorys
             foreach (var pair in pairs)
             {
                 var giangvien1 = await _context.Giangviens.FirstOrDefaultAsync(gv => gv.magv == pair.magv1);
-                if (giangvien1 != null)
+                var giangvien2 = await _context.Giangviens.FirstOrDefaultAsync(gv => gv.magv == pair.magv2);
+                var user1 = await _context.Users.FirstOrDefaultAsync(u => u.userId == pair.magv1);
+                var user2 = await _context.Users.FirstOrDefaultAsync(u => u.userId == pair.magv2);
+
+                if (user1 != null && user2 != null)
                 {
-                    var user1 = await _context.Users.FirstOrDefaultAsync(u => u.userId == giangvien1.magv);
-                    if (user1 != null)
+                    var chamcheoRequest = new ChamcheoRequest
                     {
-                        var chamcheoRequest = new ChamcheoRequest
-                        {
-                            magv1 = giangvien1.magv,
-                            tengv1 = giangvien1.tengv,
-                            email1 = user1.email
-                        };
+                        magv1 = pair.magv1,
+                        magv2 = pair.magv2,
+                        tengv1 = giangvien1 != null ? giangvien1.tengv : string.Empty,
+                        tengv2 = giangvien2 != null ? giangvien2.tengv : string.Empty,
+                        email1 = user1.email,
+                        email2 = user2.email
+                    };
 
-                        var giangvien2 = await _context.Giangviens.FirstOrDefaultAsync(gv => gv.magv == pair.magv2);
-                        if (giangvien2 != null)
-                        {
-                            var user2 = await _context.Users.FirstOrDefaultAsync(u => u.userId == giangvien2.magv);
-                            if (user2 != null)
-                            {
-                                chamcheoRequest.magv2 = giangvien2.magv;
-                                chamcheoRequest.tengv2 = giangvien2.tengv;
-                                chamcheoRequest.email2 = user2.email;
-                            }
-                        }
-
-                        chamcheoRequests.Add(chamcheoRequest);
-                    }
+                    chamcheoRequests.Add(chamcheoRequest);
                 }
+                else
+                {
+                    var chamcheoRequest = new ChamcheoRequest
+                    {
+                        magv1 = pair.magv1,
+                        magv2 = pair.magv2,
+                        tengv1 = giangvien1 != null ? giangvien1.tengv : string.Empty,
+                        tengv2 = giangvien2 != null ? giangvien2.tengv : string.Empty,
+
+                    };
+
+                    chamcheoRequests.Add(chamcheoRequest);
+                }
+
+
             }
 
             return chamcheoRequests;

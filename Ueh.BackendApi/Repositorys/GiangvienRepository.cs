@@ -190,27 +190,22 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> UpdateGiangvien(GiangvienUpdateRequest updategiangvien)
         {
-            bool user = await _context.Users.AnyAsync(u => u.userId == updategiangvien.magv);
-            if (user)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.userId == updategiangvien.magv);
+            var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == updategiangvien.magv);
+            if (user != null)
             {
-                var usergv = new User
-                {
-                    email = updategiangvien.email,
-                    sdt = updategiangvien.sdt
-                };
-                _context.Update(usergv);
+                user.email = updategiangvien.email;
+                user.sdt = updategiangvien.sdt;
 
             }
 
 
-            var giangvien = new Giangvien
-            {
-                magv = updategiangvien.magv,
-                tengv = updategiangvien.tengv,
-                chuyenmon = updategiangvien.chuyenmon
 
-            };
-            _context.Update(giangvien);
+            giangvien.magv = updategiangvien.magv;
+            giangvien.tengv = updategiangvien.tengv;
+            giangvien.chuyenmon = updategiangvien.chuyenmon;
+
+
             return await Save();
         }
 
