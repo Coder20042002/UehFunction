@@ -4,6 +4,7 @@ using OfficeOpenXml;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Migrations;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -109,12 +110,13 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
-                            bool existing = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true");
+                            var existing = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
 
-                            if (existing != false)
+                            if (existing != null)
                             {
-                                // Nếu MSSV đã tồn tại, bỏ qua sinh viên này và tiếp tục với dòng tiếp theo
-                                continue;
+                                existing.magv = worksheet.Cells[row, 2].Value?.ToString();
+                                existing.maloai = worksheet.Cells[row, 3].Value?.ToString();
+                                existing.madot = worksheet.Cells[row, 4].Value?.ToString();
                             }
 
                             var phanconglist = new Phancong
@@ -151,7 +153,7 @@ namespace Ueh.BackendApi.Repositorys
             return false;
         }
 
-        public async Task<byte[]> ExportToExcel()
+        public async Task<byte[]> ExportToExcel(string madot, string makhoa)
         {
             var Phancongs = await _context.Phancongs
                 .Include(d => d.sinhvien)

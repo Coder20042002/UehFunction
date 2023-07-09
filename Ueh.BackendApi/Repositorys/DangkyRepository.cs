@@ -4,6 +4,8 @@ using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Migrations;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -15,6 +17,36 @@ namespace Ueh.BackendApi.Repositorys
         {
             _context = context;
         }
+
+
+        public async Task<List<GiangvienRequest>> GetGiangvienListFromDangky(string madot, string makhoa)
+        {
+            var giangVienList = await _context.Dangkys
+                .Where(p => p.status == "true" && p.madot == madot)
+                .Join(_context.GiangvienKhoas, p => p.magv, gk => gk.magv, (p, gk) => new { Phancong = p, GiangvienKhoa = gk })
+                .Where(pgk => pgk.GiangvienKhoa.makhoa == makhoa)
+                .GroupBy(pgk => pgk.Phancong.magv)
+                .Select(g => new GiangvienRequest
+                {
+                    MaGiangVien = g.Key,
+                    TenGiangVien = g.First().Phancong.giangvien.tengv,
+                    SoSinhVienHuongDan = g.Count()
+                }).OrderByDescending(t => t.TenGiangVien)
+                .ToListAsync();
+
+            foreach (var giangVien in giangVienList)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.userId == giangVien.MaGiangVien);
+                if (user != null)
+                {
+                    giangVien.Email = user.email;
+                    giangVien.SDT = user.sdt;
+                }
+            }
+
+            return giangVienList;
+        }
+
         public async Task<List<Dangky>> GetSinhVienByGiaoVien(string madot, string makhoa, string maGiaoVien)
         {
             var sinhVienList = await _context.Dangkys
@@ -119,10 +151,12 @@ namespace Ueh.BackendApi.Repositorys
             return false;
         }
 
-        public async Task<byte[]> ExportToExcel()
+        public async Task<byte[]> ExportToExcel(string madot, string makhoa)
         {
             var dangkys = await _context.Dangkys
                 .Include(d => d.giangvien)
+                .Where(d => d.madot == madot && d.makhoa == makhoa)
+                .OrderByDescending(d => d.giangvien.tengv)
                 .ToListAsync();
 
             // Tạo một package Excel
@@ -132,13 +166,12 @@ namespace Ueh.BackendApi.Repositorys
                 var worksheet = package.Workbook.Worksheets.Add("DangKy");
 
                 // Đặt tiêu đề cho các cột
-                worksheet.Cells["A1"].Value = "STT";
-                worksheet.Cells["B1"].Value = "MSSV";
-                worksheet.Cells["C1"].Value = "Họ tên sinh viên";
-                worksheet.Cells["D1"].Value = "MaGV";
-                worksheet.Cells["E1"].Value = "Giáo viên hướng dẫn";
-                worksheet.Cells["F1"].Value = "MaLoai";
-                worksheet.Cells["G1"].Value = "Tên Loại";
+                worksheet.Cells["A1"].Value = "MSSV";
+                worksheet.Cells["B1"].Value = "Họ tên sinh viên";
+                worksheet.Cells["C1"].Value = "Lớp";
+                worksheet.Cells["D1"].Value = "Email sinh viên";
+                worksheet.Cells["E1"].Value = "magv";
+                worksheet.Cells["F1"].Value = "Tên giáo viên";
 
                 // Ghi dữ liệu vào worksheet
                 int rowIndex = 2;
@@ -147,13 +180,14 @@ namespace Ueh.BackendApi.Repositorys
                 {
                     if (dangky.status != "true")
                     {
-                        continue; // Bỏ qua bản ghi không có status bằng "true"
+                        continue;
                     }
-                    worksheet.Cells[$"A{rowIndex}"].Value = count++;
-                    worksheet.Cells[$"B{rowIndex}"].Value = dangky.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = dangky.ho + " " + dangky.ten;
-                    worksheet.Cells[$"D{rowIndex}"].Value = dangky.magv;
-                    worksheet.Cells[$"E{rowIndex}"].Value = dangky.giangvien?.tengv;
+                    worksheet.Cells[$"A{rowIndex}"].Value = dangky.mssv;
+                    worksheet.Cells[$"B{rowIndex}"].Value = dangky.ho + " " + dangky.ten;
+                    worksheet.Cells[$"C{rowIndex}"].Value = dangky.lop;
+                    worksheet.Cells[$"D{rowIndex}"].Value = dangky.email;
+                    worksheet.Cells[$"E{rowIndex}"].Value = dangky.magv;
+                    worksheet.Cells[$"F{rowIndex}"].Value = dangky.giangvien?.tengv;
 
                     rowIndex++;
                 }

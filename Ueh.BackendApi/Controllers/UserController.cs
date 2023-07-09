@@ -28,6 +28,42 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+
+        [HttpPost("CreateUser")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateUser(string encryptedJson)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await _userRepository.CreateUser(encryptedJson))
+            {
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost("DecryptData")]
+        public async Task<IActionResult> DecryptData(EncryptedDto encryptedData)
+        {
+            try
+            {
+                string decryptedJson = await _userRepository.Decrypt(encryptedData.EncryptedJson);
+                UserDto user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDto>(decryptedJson);
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi nếu có
+                return BadRequest("Không thể giải mã dữ liệu.");
+            }
+        }
+
         [HttpGet("GetInfoUser")]
         public async Task<IActionResult> GetInfoUser(string id)
         {
@@ -53,7 +89,6 @@ namespace Ueh.BackendApi.Controllers
 
             return Ok(kiemtra);
         }
-
 
 
         [HttpPut("UpdateInfoUser")]

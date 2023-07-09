@@ -163,6 +163,7 @@ namespace Ueh.BackendApi.Repositorys
                 .Include(k => k.phancong)
                 .ThenInclude(p => p.chitiets)
                 .Where(k => k.phancong.magv == magv)
+                .OrderByDescending(t => t.phancong.sinhvien.ten)
                 .ToListAsync();
 
 
@@ -553,7 +554,7 @@ namespace Ueh.BackendApi.Repositorys
                 return content;
             }
         }
-        public async Task<byte[]> ExportToExcelByKhoa(string makhoa)
+        public async Task<byte[]> ExportToExcelByKhoa(string madot, string makhoa)
         {
             var ketquas = await _context.Ketquas
                          .Include(k => k.phancong)
@@ -562,8 +563,8 @@ namespace Ueh.BackendApi.Repositorys
                              .ThenInclude(p => p.giangvien)
                                  .ThenInclude(g => g.giangvienkhoas)
                                      .ThenInclude(gk => gk.khoa)
-                         .Where(k => k.phancong.giangvien.giangvienkhoas.Any(gk => gk.khoa.makhoa == makhoa)) // Thêm điều kiện "thuộc khoa"
-                         .OrderBy(k => k.phancong.sinhvien.ten)
+                         .Where(k => k.phancong.giangvien.giangvienkhoas.Any(gk => gk.khoa.makhoa == makhoa) && k.phancong.madot == madot)
+                         .OrderBy(k => k.phancong.giangvien.tengv)
                          .ToListAsync();
             // Tạo một package Excel
             using (var package = new ExcelPackage())

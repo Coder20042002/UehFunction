@@ -33,7 +33,8 @@ namespace Ueh.BackendApi.Repositorys
                        Diem = k.phancong.maloai == "HKDN" ?
                        (double)(((k.tieuchi1 ?? 0) + (k.tieuchi2 ?? 0) + (k.tieuchi3 ?? 0) + (k.tieuchi4 ?? 0) + (k.tieuchi5 ?? 0) + (k.tieuchi6 ?? 0) + (k.tieuchi7 ?? 0)) * 0.6 + ((k.diemDN ?? 0) * 0.4))
                            : ((k.tieuchi1 ?? 0) + (k.tieuchi2 ?? 0) + (k.tieuchi3 ?? 0) + (k.tieuchi4 ?? 0) + (k.tieuchi5 ?? 0) + (k.tieuchi6 ?? 0) + (k.tieuchi7 ?? 0))
-                   })
+                   }).OrderByDescending(t => t.TenSinhVien)
+
            .ToListAsync();
 
 
@@ -44,6 +45,7 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Phancongs
                 .Where(p => p.magv == magv && p.madot == madot)
                 .Select(p => p.sinhvien)
+                .OrderByDescending(t => t.ten)
                 .ToListAsync();
         }
         public async Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string madot, string makhoa)
@@ -58,7 +60,8 @@ namespace Ueh.BackendApi.Repositorys
                     MaGiangVien = g.Key,
                     TenGiangVien = g.First().Phancong.giangvien.tengv,
                     SoSinhVienHuongDan = g.Count()
-                })
+                }).OrderByDescending(t => t.TenGiangVien)
+
                 .ToListAsync();
 
             foreach (var giangVien in giangVienList)
@@ -86,7 +89,8 @@ namespace Ueh.BackendApi.Repositorys
                 {
                     magv = gvk.giangvien.magv,
                     tengv = gvk.giangvien.tengv,
-                })
+                }).OrderByDescending(t => t.tengv)
+
                 .ToListAsync();
 
             foreach (var giangvien in giangviens)

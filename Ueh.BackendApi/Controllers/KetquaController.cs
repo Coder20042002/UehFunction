@@ -158,11 +158,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("ExportToExcelByKhoa")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ExportToExcel([FromQuery] string makhoa)
+        public async Task<IActionResult> ExportToExcel(string madot, string makhoa)
         {
             try
             {
-                var content = await _KetquaRepository.ExportToExcelByKhoa(makhoa);
+                var content = await _KetquaRepository.ExportToExcelByKhoa(madot, makhoa);
                 if (content != null)
                 {
                     return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSdiemtonghop.xlsx");

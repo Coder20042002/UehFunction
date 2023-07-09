@@ -28,7 +28,7 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("kiemtra/{mssv}")]
         public async Task<bool> KiemTraMaloai(string mssv)
         {
-            bool hasHKDN = await  _PhancongRepository.KiemTraMaloai(mssv);
+            bool hasHKDN = await _PhancongRepository.KiemTraMaloai(mssv);
 
             return hasHKDN;
         }
@@ -106,11 +106,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("generate")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ExportToExcel()
+        public async Task<IActionResult> ExportToExcel(string madot, string makhoa)
         {
             try
             {
-                var content = await _PhancongRepository.ExportToExcel();
+                var content = await _PhancongRepository.ExportToExcel(madot, makhoa);
                 if (content != null)
                 {
                     return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSPhancongChinhThuc.xlsx");

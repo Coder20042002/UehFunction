@@ -170,6 +170,7 @@ namespace Ueh.BackendApi.Repositorys
             var sinhvienKhoas = await _context.SinhvienKhoas
                    .Where(sk => sk.makhoa == makhoa)
                    .Select(sk => sk.sinhvien)
+                   .OrderByDescending(t => t.ten)
                    .ToListAsync();
 
             return sinhvienKhoas;

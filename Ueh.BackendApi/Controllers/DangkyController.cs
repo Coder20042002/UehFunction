@@ -5,6 +5,7 @@ using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -19,6 +20,21 @@ namespace Ueh.BackendApi.Controllers
         {
             _DangkyRepository = DangkyRepository;
             _mapper = mapper;
+        }
+
+
+        [HttpGet("GetGiangvienListFromDangky")]
+        public async Task<ActionResult<List<GiangvienRequest>>> GetGiangvienListFromDangky(string madot, string makhoa)
+        {
+            try
+            {
+                var giangVienList = await _DangkyRepository.GetGiangvienListFromDangky(madot, makhoa);
+                return Ok(giangVienList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
         }
 
         [HttpGet("GetSinhVienByGiaoVien")]
@@ -88,13 +104,11 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("generate")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> ExportToExcel()
+        public async Task<IActionResult> ExportToExcel(string madot, string makhoa)
         {
             try
             {
-                var content = await _DangkyRepository.ExportToExcel();
+                var content = await _DangkyRepository.ExportToExcel(madot, makhoa);
                 if (content != null)
                 {
                     return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSdangky.xlsx");
