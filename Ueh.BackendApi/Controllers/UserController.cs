@@ -37,14 +37,14 @@ namespace Ueh.BackendApi.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            if (!await _userRepository.CreateUser(encryptedJson))
+            var user = await _userRepository.CreateUser(encryptedJson);
+            if (user == null)
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
-            return NoContent();
+            return Ok(user);
         }
 
         [HttpPost("DecryptData")]
@@ -54,7 +54,6 @@ namespace Ueh.BackendApi.Controllers
             {
                 string decryptedJson = await _userRepository.Decrypt(encryptedData.EncryptedJson);
                 UserDto user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserDto>(decryptedJson);
-
                 return Ok(user);
             }
             catch (Exception ex)

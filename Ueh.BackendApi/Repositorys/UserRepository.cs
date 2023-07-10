@@ -132,12 +132,116 @@ namespace Ueh.BackendApi.Repositorys
 
         }
 
-        public async Task<bool> CreateUser(string encryptedJson)
+        public async Task<UserRequest> CreateUser(string encryptedJson)
         {
+
             var decryptedJson = await Decrypt(encryptedJson);
             var user = JsonConvert.DeserializeObject<User>(decryptedJson);
-            _context.Users.Add(user);
-            return await Save();
+
+            bool userexist = await _context.Users.AnyAsync(u => u.userId == user.userId);
+            var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
+            int dotinfo = await KiemTraUser(user.userId);
+
+
+            if (!userexist)
+            {
+                _context.Users.Add(user);
+                await Save();
+
+                var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == user.userId);
+                if (userinfo.role != "student")
+                {
+                    var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == user.userId);
+                    var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == user.userId);
+                    var userrequest = new UserRequest
+                    {
+                        code = userinfo.userId,
+                        name = giangvien.tengv,
+                        role = userinfo.role,
+                        email = userinfo.email,
+                        sdt = userinfo.sdt,
+                        makhoa = giangvienkhoa.makhoa,
+                        madot = dot.madot,
+                        dotinfo = dotinfo
+
+                    };
+
+                    return userrequest;
+                }
+                else
+                {
+                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == user.userId);
+                    var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == user.userId);
+
+                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == user.userId && p.status == "true");
+
+                    var userrequest = new UserRequest
+                    {
+                        code = userinfo.userId,
+                        name = sinhvien.ho + sinhvien.ten,
+                        role = userinfo.role,
+                        email = userinfo.email,
+                        sdt = userinfo.sdt,
+                        makhoa = sinhvienkhoa.makhoa,
+                        madot = dot.madot,
+                        maloai = phancong.maloai,
+                        dotinfo = dotinfo
+
+                    };
+                    return userrequest;
+
+                }
+
+            }
+            else
+            {
+                var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == user.userId);
+                if (userinfo.role != "student")
+                {
+                    var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == user.userId);
+                    var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == user.userId);
+                    var userrequest = new UserRequest
+                    {
+                        code = userinfo.userId,
+                        name = giangvien.tengv,
+                        role = userinfo.role,
+                        email = userinfo.email,
+                        sdt = userinfo.sdt,
+                        makhoa = giangvienkhoa.makhoa,
+                        madot = dot.madot,
+                        dotinfo = dotinfo
+
+                    };
+                    return userrequest;
+
+                }
+                else
+                {
+                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == user.userId);
+                    var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == user.userId);
+
+                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == user.userId && p.status == "true");
+
+                    var userrequest = new UserRequest
+                    {
+                        code = userinfo.userId,
+                        name = sinhvien.ho + sinhvien.ten,
+                        role = userinfo.role,
+                        email = userinfo.email,
+                        sdt = userinfo.sdt,
+                        makhoa = sinhvienkhoa.makhoa,
+                        madot = dot.madot,
+                        maloai = phancong.maloai,
+                        dotinfo = dotinfo
+
+                    };
+                    return userrequest;
+
+                }
+
+            }
+
+
         }
     }
 }
