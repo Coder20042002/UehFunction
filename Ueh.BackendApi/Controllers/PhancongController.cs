@@ -79,12 +79,12 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost("formFile")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ImportExcelFile(IFormFile formFile)
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile, string madot)
         {
             try
             {
 
-                bool success = await _PhancongRepository.ImportExcelFile(formFile);
+                bool success = await _PhancongRepository.ImportExcelFile(formFile, madot);
                 if (success)
                 {
                     return Ok("Import thành công"); // Trả về thông báo thành công

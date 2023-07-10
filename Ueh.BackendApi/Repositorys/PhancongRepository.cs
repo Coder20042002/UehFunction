@@ -92,7 +92,7 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> ImportExcelFile(IFormFile formFile)
+        public async Task<bool> ImportExcelFile(IFormFile formFile, string madot)
         {
             if (formFile != null && formFile.Length > 0)
             {
@@ -107,42 +107,44 @@ namespace Ueh.BackendApi.Repositorys
 
                         // Lặp qua các dòng trong tệp Excel và xử lý dữ liệu
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
-                        for (int row = 2; row <= rowCount; row++)
+                        for (int row = 2; row <= rowCount-1; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
-                            var existing = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
+                            var existing = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
                             if (existing != null)
                             {
                                 existing.magv = worksheet.Cells[row, 2].Value?.ToString();
                                 existing.maloai = worksheet.Cells[row, 3].Value?.ToString();
-                                existing.madot = worksheet.Cells[row, 4].Value?.ToString();
+                            }
+                            else
+                            {
+                                var phanconglist = new Phancong
+                                {
+                                    Id = Guid.NewGuid(),
+                                    mssv = mssv,
+                                    magv = worksheet.Cells[row, 2].Value?.ToString(),
+                                    maloai = worksheet.Cells[row, 3].Value?.ToString(),
+                                    madot = madot
+                                };
+
+
+
+                                var ketqua = new Ketqua
+                                {
+                                    mapc = phanconglist.Id,
+                                };
+                                var chitiet = new Chitiet
+                                {
+                                    mapc = phanconglist.Id,
+                                };
+
+                                _context.Add(ketqua);
+                                _context.Add(chitiet);
+
+                                await _context.Phancongs.AddAsync(phanconglist);
                             }
 
-                            var phanconglist = new Phancong
-                            {
-                                Id = Guid.NewGuid(),
-                                mssv = mssv,
-                                magv = worksheet.Cells[row, 2].Value?.ToString(),
-                                maloai = worksheet.Cells[row, 3].Value?.ToString(),
-                                madot = worksheet.Cells[row, 4].Value?.ToString(),
-                            };
-
-
-
-                            var ketqua = new Ketqua
-                            {
-                                mapc = phanconglist.Id,
-                            };
-                            var chitiet = new Chitiet
-                            {
-                                mapc = phanconglist.Id,
-                            };
-
-                            _context.Add(ketqua);
-                            _context.Add(chitiet);
-
-                            await _context.Phancongs.AddAsync(phanconglist);
                         }
 
                         return await Save();
@@ -157,7 +159,9 @@ namespace Ueh.BackendApi.Repositorys
         {
             var Phancongs = await _context.Phancongs
                 .Include(d => d.sinhvien)
+                    .ThenInclude(d => d.sinhvienkhoas)
                 .Include(d => d.giangvien)
+                .Where(d => d.madot == madot && d.sinhvien.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
                 .OrderBy(d => d.giangvien.tengv)
                 .ToListAsync();
 

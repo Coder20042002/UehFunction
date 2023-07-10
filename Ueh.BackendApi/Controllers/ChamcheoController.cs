@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Repositorys;
 using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Controllers
@@ -22,12 +23,34 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpGet("chamcheo")]
-        public async Task<ActionResult<List<ChamcheoRequest>>> GetChamcheoByGiangVien(string makhoa)
+
+        [HttpGet("generate")]
+        public async Task<IActionResult> ExportToExcel(string madot, string makhoa)
         {
             try
             {
-                var chamcheoList = await _chamcheoRepository.GetChamcheoByGiangVien(makhoa);
+                var content = await _chamcheoRepository.ExportToExcel(madot, makhoa);
+                if (content != null)
+                {
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Danhsachchamcheo.xlsx");
+                }
+                else
+                {
+                    return BadRequest("Không có dữ liệu để xuất.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+        }
+
+        [HttpGet("chamcheo")]
+        public async Task<ActionResult<List<ChamcheoRequest>>> GetChamcheoByGiangVien(string madot, string makhoa)
+        {
+            try
+            {
+                var chamcheoList = await _chamcheoRepository.GetChamcheoByGiangVien(madot, makhoa);
                 return Ok(chamcheoList);
             }
             catch (Exception ex)
