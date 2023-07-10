@@ -33,7 +33,7 @@ namespace Ueh.BackendApi.Repositorys
                        Diem = k.phancong.maloai == "HKDN" ?
                        (double)(((k.tieuchi1 ?? 0) + (k.tieuchi2 ?? 0) + (k.tieuchi3 ?? 0) + (k.tieuchi4 ?? 0) + (k.tieuchi5 ?? 0) + (k.tieuchi6 ?? 0) + (k.tieuchi7 ?? 0)) * 0.6 + ((k.diemDN ?? 0) * 0.4))
                            : ((k.tieuchi1 ?? 0) + (k.tieuchi2 ?? 0) + (k.tieuchi3 ?? 0) + (k.tieuchi4 ?? 0) + (k.tieuchi5 ?? 0) + (k.tieuchi6 ?? 0) + (k.tieuchi7 ?? 0))
-                   }).OrderByDescending(t => t.TenSinhVien)
+                   })
 
            .ToListAsync();
 

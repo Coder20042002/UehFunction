@@ -203,5 +203,18 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
+        public async Task<List<Sinhvien>> SearchSinhVien(string keyword)
+        {
+            string lowerKeyword = keyword.ToLower();
+
+            var searchResults = await _context.Sinhviens
+                .Where(sv => sv.ten.ToLower().Contains(lowerKeyword) || sv.mssv.ToLower().Contains(lowerKeyword))
+                .ToListAsync();
+
+            return searchResults;
+        }
+
+
+
     }
 }

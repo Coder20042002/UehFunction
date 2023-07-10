@@ -29,10 +29,25 @@ namespace Ueh.BackendApi.Controllers
             return Ok(files);
         }
 
+        [HttpDelete("DeleteFile")]
+        public async Task<IActionResult> DeleteFile(string fileName)
+        {
+
+            var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(fileName));
+            if (uploadResult != null)
+            {
+                context.Remove(uploadResult);
+                await context.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+
         [HttpGet("{fileName}/{mssv}")]
         public async Task<IActionResult> DownloadFile(string fileName, string mssv)
         {
-            var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(fileName) && u.Mssv == mssv && u.FileType == "baocao");
+            var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(fileName) && u.Mssv == mssv);
             var path = Path.Combine(env.ContentRootPath, "uploads", fileName);
 
             var memory = new MemoryStream();
@@ -44,9 +59,8 @@ namespace Ueh.BackendApi.Controllers
             return File(memory, uploadResult.ContentType, Path.GetFileName(path));
         }
 
-        [HttpPost("{mssv}")]
-        public async Task<ActionResult<List<UploadResult>>> PostFile(
-             [FromForm] IEnumerable<IFormFile> files, string mssv)
+        [HttpPost("AddFile")]
+        public async Task<ActionResult<List<UploadResult>>> PostFile(IEnumerable<IFormFile> files, string mssv, string loai)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             foreach (var file in files)
@@ -63,7 +77,7 @@ namespace Ueh.BackendApi.Controllers
                 await using FileStream fs = new(path, FileMode.Create);
                 await file.CopyToAsync(fs);
                 uploadResult.Id = Guid.NewGuid();
-                uploadResult.FileType = "baocao";
+                uploadResult.FileType = loai;
                 uploadResult.ContentType = file.ContentType;
                 uploadResult.Mssv = mssv;
                 uploadResult.StoredFileName = trustedFileNameForFileStorage;

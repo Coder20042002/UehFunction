@@ -32,7 +32,7 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Chuyennganhs);
         }
 
-        [HttpGet("{macn}")]
+        [HttpGet("GetChuyennganhById")]
         public async Task<IActionResult> GetChuyennganhById(string macn)
         {
             if (!await _chuyennganhRepository.ChuyennganhExists(macn))
@@ -92,7 +92,7 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("CreateChuyennganh")]
         public async Task<IActionResult> CreateChuyennganh([FromBody] ChuyennganhDto ChuyennganhCreate)
         {
             if (ChuyennganhCreate == null)
@@ -121,9 +121,9 @@ namespace Ueh.BackendApi.Controllers
             return Ok(ChuyennganhMap);
         }
 
-        [HttpPut("{macn}")]
+        [HttpPut("UpdateChuyennganh")]
         public async Task<IActionResult> UpdateChuyennganh(string macn,
-            [FromBody] ChuyennganhDto updatedChuyennganh)
+             ChuyennganhDto updatedChuyennganh)
         {
             if (updatedChuyennganh == null)
                 return BadRequest(ModelState);
@@ -148,7 +148,7 @@ namespace Ueh.BackendApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{macn}")]
+        [HttpDelete("DeleteChuyennganh")]
         public async Task<IActionResult> DeleteChuyennganh(string macn)
         {
             if (!await _chuyennganhRepository.ChuyennganhExists(macn))

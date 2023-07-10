@@ -22,6 +22,15 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var searchResults = await _sinhvienRepository.SearchSinhVien(keyword);
+            return Ok(searchResults);
+        }
+
+
+
         [HttpGet("GetGvHuongDanSv")]
         public async Task<IActionResult> GetGvHuongDanSv(string mssv)
         {
