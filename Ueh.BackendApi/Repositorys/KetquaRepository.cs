@@ -3,6 +3,7 @@ using AutoMapper.Execution;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using SelectPdf;
+using ServiceStack;
 using System.IO.Compression;
 using System.Text;
 using Ueh.BackendApi.Data.EF;
@@ -84,121 +85,199 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<byte[]> GeneratePdfByGv(string magv)
+        public async Task<byte[]> GeneratePdfByGv(string madot, string maloai, string magv)
         {
-            // Create a new PDF document
             PdfDocument document = new PdfDocument();
 
-            // Create a new PDF page
             PdfPage page = document.AddPage();
 
-            // Create a new HTML to PDF converter
             HtmlToPdf converter = new HtmlToPdf();
 
-            // Set converter options
             converter.Options.PdfPageSize = PdfPageSize.A4;
             converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
 
-            // Load the HTML content from a string
             StringBuilder htmlBuilder = new StringBuilder();
 
-            // Append the HTML content before the table
-            htmlBuilder.AppendLine(@"<style>
-        .title {
-            display: flex; justify-content: space-between;
-        }
-        .content{
-            text-align: center;
-        }
-        .lable {
-        font-size: 25px;
-        }
+            var dot = await _context.Dots.FirstOrDefaultAsync(d => d.madot == madot);
+            var loai = await _context.Loais.FirstOrDefaultAsync(d => d.maloai == maloai);
+            var chamcheo = await _context.Chamcheos.FirstOrDefaultAsync(c => c.magv1 == magv || c.magv2 == magv);
 
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
+            var giangvien1 = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == chamcheo.magv1);
+            var giangvien2 = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == chamcheo.magv2);
 
-        .table-title{
-        font-size: 18px;
-        background-color: rgb(172, 172, 172);
-        }
-         
-        </style>
-        <div class=""title"">
-             <div>
-                <p><strong>Trường Đại học Kinh tế Tp. Hồ Chí Minh</strong></p>
-                <p><strong>Khoa Công nghệ Thông tin Kinh doanh</strong></p>
-                <p><strong>Chuyên ngành: .............................................</strong></p>
-            </div>
-            <div>
-                <p><strong>Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</strong></p>
-                <p style=""text-align: center;""><strong >Độc lập – Tự do – Hạnh phúc</strong></p>
-                <p><strong>&nbsp;</strong></p>
-            </div>
-        </div>
-        <div class=""content"">
-            <p class=""lable""><strong>BẢNG ĐIỂM TỔNG HỢP - THỰC TẬP TỐT NGHIỆP</strong></p>
-            <p class=""lable""><strong>ĐỢT
-                </strong>..........<strong>
-                    Hình thức:
-                </strong>............
-            </p>
-            <p><em>(Lưu ý: nếu loại hình thức ""học kỳ doanh nghiệp"" thì không có giáo viên chấm 2)</em></p>
-        </div>
-        <div>
-            <table width=""100%"">
-                <tr class=""table-title"">
-                    <td><strong>STT</strong></td>
-                    <td><strong>Mã số sinh viên|Lớp|Khoa</strong></td>
-                    <td><strong>Tên sinh viên</strong></td>
-                    <td><strong>Tên đề tài</strong></td>
-                    <td><strong>Điểm cuối cùng</strong></td>
-                </tr>");
-
-            // Retrieve data from the database
             List<Ketqua> listketqua = await _context.Ketquas
                 .Include(k => k.phancong)
                 .ThenInclude(p => p.sinhvien)
                 .Include(k => k.phancong)
                 .ThenInclude(p => p.chitiets)
-                .Where(k => k.phancong.magv == magv)
+                .Where(k => k.phancong.magv == magv && k.phancong.madot == madot && k.phancong.maloai == maloai)
                 .OrderByDescending(t => t.phancong.sinhvien.ten)
                 .ToListAsync();
 
 
-            // Populate data in the table
-            for (int i = 0; i < listketqua.Count; i++)
+            htmlBuilder.AppendLine(@"<style>
+                .title {
+                    display: flex; justify-content: space-between;
+                }
+                .content{
+                    text-align: center;
+                }
+                .lable {
+                font-size: 25px;
+                }
+
+                table, th, td {
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                }
+
+                .table-title{
+                font-size: 18px;
+                background-color: rgb(172, 172, 172);
+                }
+         
+                </style> ");
+
+            htmlBuilder.AppendLine($@"
+                <div class=""title"">
+                     <div>
+                        <p><strong>Trường Đại học Kinh tế Tp. Hồ Chí Minh</strong></p>
+                        <p><strong>Khoa Công nghệ Thông tin Kinh doanh</strong></p>
+                        <p><strong>Chuyên ngành: .............................................</strong></p>
+                    </div>
+                    <div>
+                        <p><strong>Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</strong></p>
+                        <p style=""text-align: center;""><strong >Độc lập – Tự do – Hạnh phúc</strong></p>
+                        <p><strong>&nbsp;</strong></p>
+                    </div>
+                </div>
+                <div class=""content"">
+                    <p class=""lable""><strong>BẢNG ĐIỂM TỔNG HỢP - THỰC TẬP TỐT NGHIỆP</strong></p>
+                    <p class=""lable""><strong>{dot.name}
+                            Hình thức:{loai.name}
+                    </p>
+                    <p><em>(Lưu ý: nếu loại hình thức ""học kỳ doanh nghiệp"" thì không có giáo viên chấm 2)</em></p>
+                </div>
+                <div>
+                    <table width=""100%"">
+                        <tr class=""table-title"">
+                            <td><strong>STT</strong></td>
+                            <td><strong>Mã số sinh viên|Lớp|Khoa</strong></td>
+                            <td><strong>Tên sinh viên</strong></td>");
+
+            if (loai.maloai == "KLTN")
             {
-                Ketqua ketqua = listketqua[i];
-                string? tendetai = ketqua.phancong.chitiets.FirstOrDefault()?.tendetai;
 
-                double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
-                if (ketqua.phancong.maloai == "HKDN")
+                htmlBuilder.AppendLine(@"<td><strong>Tên đề tài</strong></td>");
+                htmlBuilder.AppendLine(@"<td><strong>Điểm cuối cùng</strong></td>");
+                htmlBuilder.AppendLine(@" </ tr >");
+
+                for (int i = 0; i < listketqua.Count; i++)
                 {
-                    sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
+                    Ketqua ketqua = listketqua[i];
+                    string? tendetai = ketqua.phancong.chitiets.FirstOrDefault()?.tendetai;
+
+                    double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+                    if (ketqua.phancong.maloai == "HKDN")
+                    {
+                        sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
+                    }
+                    if (sum >= 10)
+                    {
+                        sum = 10;
+                    }
+                    htmlBuilder.AppendLine("<tr>");
+                    htmlBuilder.AppendLine($"<td>{i + 1}</td>");
+                    htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.mssv + "|" + ketqua.phancong.sinhvien.malop + "|" + ketqua.phancong.maloai}</td>");
+                    htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.ho + " " + ketqua.phancong.sinhvien.ten}</td>");
+                    htmlBuilder.AppendLine($"<td>{tendetai}</td>");
+                    htmlBuilder.AppendLine($"<td>{Math.Round(sum, 2)}</td>");
+                    htmlBuilder.AppendLine("</tr>");
+
+                    if (giangvien1.magv == magv)
+                    {
+                        htmlBuilder.AppendLine(@"</table></div>");
+                        htmlBuilder.AppendLine($@"
+                        <div>
+                            <p><strong>Ngày chấm :</strong></p>
+                            <p><strong>Giáo viên hướng dẫn và chấm 1:{giangvien1.tengv}</strong></p>
+                            <p><strong>Giáo viên chấm 2:{giangvien2.tengv}</ </strong></p>
+
+                        </div>
+                        ");
+                    }
+                    else
+                    {
+                        htmlBuilder.AppendLine(@"</table></div>");
+                        htmlBuilder.AppendLine($@"
+                        <div>
+                            <p><strong>Ngày chấm :</strong></p>
+                            <p><strong>Giáo viên hướng dẫn và chấm 1:{giangvien2.tengv}</strong></p>
+                            <p><strong>Giáo viên chấm 2:{giangvien1.tengv}</ </strong></p>
+
+                        </div>
+                        ");
+                    }
+
                 }
-                if (sum >= 10)
-                {
-                    sum = 10;
-                }
-                htmlBuilder.AppendLine("<tr>");
-                htmlBuilder.AppendLine($"<td>{i + 1}</td>");
-                htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.mssv + "|" + ketqua.phancong.sinhvien.malop + "|" + ketqua.phancong.maloai}</td>");
-                htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.ho + " " + ketqua.phancong.sinhvien.ten}</td>");
-                htmlBuilder.AppendLine($"<td>{tendetai}</td>");
-                htmlBuilder.AppendLine($"<td>{Math.Round(sum, 2)}</td>");
-                htmlBuilder.AppendLine("</tr>");
+
+
             }
-            htmlBuilder.AppendLine(@"</table></div>");
-            htmlBuilder.AppendLine(@"
-            <div>
-                <p><strong>Ngày chấm :</strong></p>
-                <p><strong>Giáo viên hướng dẫn và chấm 1:</strong></p>
-                <p><strong>Giáo viên chấm 2:</strong></p>
+            else
+            {
+                htmlBuilder.AppendLine(@"<td><strong>Điểm cuối cùng</strong></td>");
+                htmlBuilder.AppendLine(@"</tr>");
 
-            </div>
-            ");
+                for (int i = 0; i < listketqua.Count; i++)
+                {
+                    Ketqua ketqua = listketqua[i];
+                    string? tendetai = ketqua.phancong.chitiets.FirstOrDefault()?.tendetai;
+
+                    double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+                    if (ketqua.phancong.maloai == "HKDN")
+                    {
+                        sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
+                    }
+                    if (sum >= 10)
+                    {
+                        sum = 10;
+                    }
+                    htmlBuilder.AppendLine("<tr>");
+                    htmlBuilder.AppendLine($"<td>{i + 1}</td>");
+                    htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.mssv + "|" + ketqua.phancong.sinhvien.malop + "|" + ketqua.phancong.maloai}</td>");
+                    htmlBuilder.AppendLine($"<td>{ketqua.phancong.sinhvien.ho + " " + ketqua.phancong.sinhvien.ten}</td>");
+                    htmlBuilder.AppendLine($"<td>{Math.Round(sum, 2)}</td>");
+                    htmlBuilder.AppendLine("</tr>");
+                }
+                if (giangvien1.magv == magv)
+                {
+                    htmlBuilder.AppendLine(@"</table></div>");
+                    htmlBuilder.AppendLine($@"
+                        <div>
+                            <p><strong>Ngày chấm :</strong></p>
+                            <p><strong>Giáo viên hướng dẫn và chấm 1:{giangvien1.tengv}</strong></p>
+
+                        </div>
+                        ");
+                }
+                else
+                {
+                    htmlBuilder.AppendLine(@"</table></div>");
+                    htmlBuilder.AppendLine($@"
+                        <div>
+                            <p><strong>Ngày chấm :</strong></p>
+                            <p><strong>Giáo viên hướng dẫn và chấm 1:{giangvien2.tengv}</strong></p>
+
+                        </div>
+                        ");
+                }
+            }
+
+
+
+
+
+
             string htmlString = htmlBuilder.ToString();
 
             // Convert HTML to PDF
@@ -267,11 +346,12 @@ namespace Ueh.BackendApi.Repositorys
             }
 
             // Append the HTML content before the table
-            htmlBuilder.AppendLine(@"  <style>
-            .title {
+            htmlBuilder.AppendLine(@" 
+            <style>
+                   .title {
                 display: flex;
                 justify-content: space-between;
-                margin: 0 50px;
+                margin: 0 50px 0 50px;
 
             }
 
@@ -281,7 +361,6 @@ namespace Ueh.BackendApi.Repositorys
 
             .lable {
                 font-size: 20px;
-                height: 6px;
             }
 
             table,
@@ -289,7 +368,8 @@ namespace Ueh.BackendApi.Repositorys
             td {
                 border: 1px solid black;
                 border-collapse: collapse;
-                margin: 0 50px 0 50px;
+                margin:0 50px;
+        
 
             }
 
@@ -303,8 +383,8 @@ namespace Ueh.BackendApi.Repositorys
                 justify-content: space-between;
                 padding: 0 50px 0 50px;
                 font-weight: 200;
-                font-size: 20px;
                 height: 40px;
+                font-size: 20px;
             }
 
             .content-chitiet {
@@ -318,11 +398,11 @@ namespace Ueh.BackendApi.Repositorys
             }
 
             .footer {
-                margin: 0px 50px;
-                double: right;
+                float: right;
                 text-align: center;
-            }
-        </style>");
+            }    margin: 20px 50px;
+    
+                </style>");
             htmlBuilder.AppendLine($@"
           
 
@@ -586,7 +666,7 @@ namespace Ueh.BackendApi.Repositorys
                 {
                     if (ketqua.phancong.status != "true")
                     {
-                        continue; // Bỏ qua bản ghi không có status bằng "true"
+                        continue;
                     }
 
                     double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
@@ -618,12 +698,12 @@ namespace Ueh.BackendApi.Repositorys
                 return content;
             }
         }
-        public async Task<byte[]?> GenerateZipFileForGv(string magv)
+        public async Task<byte[]?> GenerateZipFileForGv(string madot, string magv)
         {
             var phancongs = await _context.Phancongs
                 .Include(p => p.sinhvien)
                 .Include(p => p.chitiets)
-                .Where(p => p.magv == magv)
+                .Where(p => p.magv == magv && p.madot == madot)
                 .ToListAsync();
 
             if (phancongs.Count == 0)

@@ -88,11 +88,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("generatepdfbygv")]
         [ProducesResponseType(200, Type = typeof(FileContentResult))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GeneratePdfByGv([FromQuery] string magv)
+        public async Task<IActionResult> GeneratePdfByGv(string madot, string maloai, string magv)
         {
             try
             {
-                var content = await _KetquaRepository.GeneratePdfByGv(magv);
+                var content = await _KetquaRepository.GeneratePdfByGv(madot, maloai, magv);
                 if (content != null)
                 {
                     return File(content, "application/pdf", "BaoCao.pdf");
@@ -132,28 +132,7 @@ namespace Ueh.BackendApi.Controllers
                 return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
             }
         }
-        [HttpGet("generate")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> ExportToExcel()
-        {
-            try
-            {
-                var content = await _KetquaRepository.ExportToExcel();
-                if (content != null)
-                {
-                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DSdiemtonghop.xlsx");
-                }
-                else
-                {
-                    return BadRequest("Không có dữ liệu để xuất.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
-            }
-        }
+
 
         [HttpGet("ExportToExcelByKhoa")]
         [ProducesResponseType(204)]
@@ -179,12 +158,12 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("generatezip")]
-        public async Task<IActionResult> GenerateZip([FromQuery] string giangVienId)
+        public async Task<IActionResult> GenerateZip(string madot, string giangVienId)
         {
             try
             {
 
-                byte[]? zipBytes = await _KetquaRepository.GenerateZipFileForGv(giangVienId);
+                byte[]? zipBytes = await _KetquaRepository.GenerateZipFileForGv(madot, giangVienId);
 
                 if (zipBytes == null)
                 {
