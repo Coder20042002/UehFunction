@@ -61,7 +61,7 @@ namespace Ueh.BackendApi.Controllers
             return Ok(Dangkys);
         }
 
-        [HttpGet("{mssv}")]
+        [HttpGet("GetDangky")]
         [ProducesResponseType(200, Type = typeof(Dangky))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetDangky(string mssv)
@@ -125,10 +125,8 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateDangky([FromBody] DangkyDto DangkyCreate)
+        [HttpPost("CreateDangky")]
+        public async Task<IActionResult> CreateDangky(DangkyDto DangkyCreate)
         {
             if (DangkyCreate == null)
                 return BadRequest(ModelState);
@@ -156,7 +154,7 @@ namespace Ueh.BackendApi.Controllers
             return Ok(DangkyMap);
         }
 
-        [HttpPut("{mssv}")]
+        [HttpPut("UpdateDangky")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -186,24 +184,19 @@ namespace Ueh.BackendApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{mssv}")]
+        [HttpDelete("DeleteDangky")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteDangky(string mssv)
         {
-            if (!await _DangkyRepository.DangkyExists(mssv))
-            {
-                return NotFound();
-            }
-            var DangkyToDelete = await _DangkyRepository.GetDangky(mssv);
+
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
 
-
-            if (!await _DangkyRepository.DeleteDangky(DangkyToDelete))
+            if (!await _DangkyRepository.DeleteDangky(mssv))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa");
             }

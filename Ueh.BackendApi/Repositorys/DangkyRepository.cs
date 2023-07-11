@@ -65,10 +65,11 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> DeleteDangky(Dangky dangky)
+        public async Task<bool> DeleteDangky(string mssv)
         {
-            dangky.status = "false";
-            _context.Update(dangky);
+            var dangky = await _context.Dangkys.FirstOrDefaultAsync(d => d.mssv == mssv);
+            if (dangky != null)
+                _context.Remove(dangky);
             return await Save();
         }
 
