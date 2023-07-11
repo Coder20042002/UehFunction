@@ -119,7 +119,7 @@ namespace Ueh.BackendApi.Repositorys
                         var rowCount = worksheet.Dimension.Rows;
 
 
-                        for (int row = 1; row <= rowCount; row++)
+                        for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
                             bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true");

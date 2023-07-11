@@ -226,7 +226,7 @@ namespace Ueh.BackendApi.Repositorys
                         var worksheet = package.Workbook.Worksheets[0];
                         var rowCount = worksheet.Dimension.Rows;
 
-                        for (int row = 1; row <= rowCount; row++)
+                        for (int row = 2; row <= rowCount; row++)
                         {
 
                             var magv = worksheet.Cells[row, 1].Value?.ToString();
@@ -240,8 +240,7 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 magv = magv,
                                 tengv = worksheet.Cells[row, 2].Value?.ToString(),
-                                //sdt = worksheet.Cells[row, 3].Value?.ToString(),
-                                //email = worksheet.Cells[row, 4].Value?.ToString(),
+                               
 
                             };
 
