@@ -29,7 +29,7 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpPost("CreateUser")]
+        [HttpPost("LoginUser")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> CreateUser(string encryptedJson)
@@ -77,17 +77,17 @@ namespace Ueh.BackendApi.Controllers
 
 
 
-        [HttpGet("KiemTraUser")]
-        public async Task<IActionResult> KiemTraUser(string id)
-        {
+        // [HttpGet("KiemTraUser")]
+        // public async Task<IActionResult> KiemTraUser(string id)
+        // {
 
-            int kiemtra = await _userRepository.KiemTraUser(id);
+        //     int kiemtra = await _userRepository.KiemTraUser(id);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //     if (!ModelState.IsValid)
+        //         return BadRequest(ModelState);
 
-            return Ok(kiemtra);
-        }
+        //     return Ok(kiemtra);
+        // }
 
 
         [HttpPut("UpdateInfoUser")]

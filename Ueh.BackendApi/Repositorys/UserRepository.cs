@@ -101,42 +101,39 @@ namespace Ueh.BackendApi.Repositorys
             return await saved > 0 ? true : false;
         }
 
-        public async Task<int> KiemTraUser(string id)
+        public async Task<int> getDotInfo(string userId, string role)
         {
             var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
-            bool phancong = await _context.Phancongs.AnyAsync(p => p.mssv == id || p.magv == id && p.status == "true");
+            bool phancong = await _context.Phancongs.AnyAsync(p => (p.mssv == userId || p.magv == userId) && p.status == "true");
             int phancongCount = await _context.Phancongs.CountAsync(p => p.madot == dot.madot);
 
-            if (dot != null)
+            if (dot == null)
             {
-                if (phancong)
+                // Chưa mở đợt
+                return 0;
+            }
+            else
+            {
+                if (role == "admin")
                 {
-                    return 1;
-
+                    return phancongCount > 0 ? 2 : 1;
                 }
                 else
                 {
-
+                    return phancong ? 2 : 1;
                 }
-
-
-
             }
-            return -1;
-
         }
 
         public async Task<UserRequest> CreateUser(string encryptedJson)
         {
-
+            // Giải mã và lấy thông tin từ token
             var decryptedJson = await Decrypt(encryptedJson);
             var userlogin = JsonConvert.DeserializeObject<UserLoginRequest>(decryptedJson);
 
             bool userexist = await _context.Users.AnyAsync(u => u.userId == userlogin.userId);
-            var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
-            int dotinfo = await KiemTraUser(userlogin.userId);
 
-
+            // Kiểm tra tồn tại user, nếu chưa, thêm vào database
             if (!userexist)
             {
                 var user = new User
@@ -148,152 +145,51 @@ namespace Ueh.BackendApi.Repositorys
                 };
                 _context.Users.Add(user);
                 await Save();
+            }
 
-                var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == user.userId);
-                if (userinfo.role != "student")
+            // Lấy user từ database
+            var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == userlogin.userId);
+
+            var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
+            int dotInfoValue = await getDotInfo(userinfo.userId, userinfo.role);
+
+            // Khởi tạo user ban đầu
+            var userrequest = new UserRequest
+            {
+                code = userinfo.userId,
+                name = userlogin.name,
+                role = userinfo.role,
+                email = userinfo.email,
+                sdt = userinfo.sdt,
+                makhoa = "",
+                madot = dot.madot,
+                maloai = "",
+                dotinfo = dotInfoValue
+            };
+
+            if (userinfo.role == "student")
+            {
+                var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
+                if (sinhvienkhoa != null)
                 {
-                    var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == user.userId);
-                    var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == user.userId);
-                    var userrequest = new UserRequest
-                    {
-                        code = userinfo.userId,
-                        name = userlogin.name,
-                        role = userinfo.role,
-                        email = userinfo.email,
-                        sdt = userinfo.sdt,
-                        makhoa = giangvienkhoa.makhoa,
-                        madot = dot.madot,
-                        dotinfo = dotinfo
+                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.status == "true");
+                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
 
-                    };
-
-                    return userrequest;
+                    userrequest.makhoa = sinhvienkhoa.makhoa;
+                    userrequest.maloai = phancong.maloai;
                 }
-                else
-                {
-                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == user.userId);
-                    var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == user.userId);
-
-                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == user.userId && p.status == "true");
-
-                    if (sinhvienkhoa == null)
-                    {
-                        var userrequest = new UserRequest
-                        {
-                            code = userinfo.userId,
-                            name = userlogin.name,
-                            role = userinfo.role,
-                            email = userinfo.email,
-                            sdt = userinfo.sdt,
-                            makhoa = "",
-                            madot = dot.madot,
-                            maloai = "",
-                            dotinfo = dotinfo
-
-                        };
-                        return userrequest;
-
-                    }
-
-
-
-                    else
-                    {
-                        var userrequest = new UserRequest
-                        {
-                            code = userinfo.userId,
-                            name = userlogin.name,
-                            role = userinfo.role,
-                            email = userinfo.email,
-                            sdt = userinfo.sdt,
-                            makhoa = sinhvienkhoa.makhoa,
-                            madot = dot.madot,
-                            maloai = phancong.maloai,
-                            dotinfo = dotinfo
-
-                        };
-                        return userrequest;
-
-                    }
-
-                }
-
             }
             else
             {
-                var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == userlogin.userId);
-                if (userinfo.role != "student")
+                var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == userlogin.userId);
+                if (giangvienkhoa != null)
                 {
-                    var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == userlogin.userId);
-                    var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == userlogin.userId);
-                    var userrequest = new UserRequest
-                    {
-                        code = userinfo.userId,
-                        name = userlogin.name,
-                        role = userinfo.role,
-                        email = userinfo.email,
-                        sdt = userinfo.sdt,
-                        makhoa = giangvienkhoa.makhoa,
-                        madot = dot.madot,
-                        dotinfo = dotinfo
-
-                    };
-                    return userrequest;
-
-                }
-                else
-                {
-                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
-                    var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
-
-                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.status == "true");
-
-                    if (sinhvienkhoa == null)
-                    {
-                        var userrequest = new UserRequest
-                        {
-                            code = userinfo.userId,
-                            name = userlogin.name,
-                            role = userinfo.role,
-                            email = userinfo.email,
-                            sdt = userinfo.sdt,
-                            makhoa = "",
-                            madot = dot.madot,
-                            maloai = "",
-                            dotinfo = dotinfo
-
-                        };
-                        return userrequest;
-
-                    }
-
-
-
-                    else
-                    {
-                        var userrequest = new UserRequest
-                        {
-                            code = userinfo.userId,
-                            name = userlogin.name,
-                            role = userinfo.role,
-                            email = userinfo.email,
-                            sdt = userinfo.sdt,
-                            makhoa = sinhvienkhoa.makhoa,
-                            madot = dot.madot,
-                            maloai = phancong.maloai,
-                            dotinfo = dotinfo
-
-                        };
-                        return userrequest;
-
-                    }
-
-
-                }
-
+                    userrequest.makhoa = giangvienkhoa.makhoa;
+                };
             }
 
-
+            return userrequest;
+        
         }
     }
 }
