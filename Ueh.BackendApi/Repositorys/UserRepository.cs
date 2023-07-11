@@ -103,12 +103,11 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<int> KiemTraUser(string id)
         {
-            bool dot = await _context.Dots.AnyAsync(d => d.status == "true");
-            bool dangky = await _context.Dangkys.AnyAsync(k => k.mssv == id);
-            bool phancong = await _context.Phancongs.AnyAsync(p => p.mssv == id && p.status == "true");
-            bool sinhvien = await _context.Sinhviens.AnyAsync(s => s.mssv == id && s.status == "true");
+            var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
+            bool phancong = await _context.Phancongs.AnyAsync(p => p.mssv == id || p.magv == id && p.status == "true");
+            int phancongCount = await _context.Phancongs.CountAsync(p => p.madot == dot.madot);
 
-            if (dot)
+            if (dot != null)
             {
                 if (phancong)
                 {
@@ -117,12 +116,7 @@ namespace Ueh.BackendApi.Repositorys
                 }
                 else
                 {
-                    if (dangky && sinhvien)
-                    {
-                        return 2;
-                    }
-                    else
-                        return 0;
+
                 }
 
 
@@ -136,15 +130,22 @@ namespace Ueh.BackendApi.Repositorys
         {
 
             var decryptedJson = await Decrypt(encryptedJson);
-            var user = JsonConvert.DeserializeObject<User>(decryptedJson);
+            var userlogin = JsonConvert.DeserializeObject<UserLoginRequest>(decryptedJson);
 
-            bool userexist = await _context.Users.AnyAsync(u => u.userId == user.userId);
+            bool userexist = await _context.Users.AnyAsync(u => u.userId == userlogin.userId);
             var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
-            int dotinfo = await KiemTraUser(user.userId);
+            int dotinfo = await KiemTraUser(userlogin.userId);
 
 
             if (!userexist)
             {
+                var user = new User
+                {
+                    userId = userlogin.userId,
+                    email = userlogin.email,
+                    sdt = userlogin.sdt,
+                    role = userlogin.role
+                };
                 _context.Users.Add(user);
                 await Save();
 
@@ -156,7 +157,7 @@ namespace Ueh.BackendApi.Repositorys
                     var userrequest = new UserRequest
                     {
                         code = userinfo.userId,
-                        name = giangvien.tengv,
+                        name = userlogin.name,
                         role = userinfo.role,
                         email = userinfo.email,
                         sdt = userinfo.sdt,
@@ -175,35 +176,60 @@ namespace Ueh.BackendApi.Repositorys
 
                     var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == user.userId && p.status == "true");
 
-                    var userrequest = new UserRequest
+                    if (sinhvienkhoa == null)
                     {
-                        code = userinfo.userId,
-                        name = sinhvien.ho + sinhvien.ten,
-                        role = userinfo.role,
-                        email = userinfo.email,
-                        sdt = userinfo.sdt,
-                        makhoa = sinhvienkhoa.makhoa,
-                        madot = dot.madot,
-                        maloai = phancong.maloai,
-                        dotinfo = dotinfo
+                        var userrequest = new UserRequest
+                        {
+                            code = userinfo.userId,
+                            name = userlogin.name,
+                            role = userinfo.role,
+                            email = userinfo.email,
+                            sdt = userinfo.sdt,
+                            makhoa = "",
+                            madot = dot.madot,
+                            maloai = "",
+                            dotinfo = dotinfo
 
-                    };
-                    return userrequest;
+                        };
+                        return userrequest;
+
+                    }
+
+
+
+                    else
+                    {
+                        var userrequest = new UserRequest
+                        {
+                            code = userinfo.userId,
+                            name = userlogin.name,
+                            role = userinfo.role,
+                            email = userinfo.email,
+                            sdt = userinfo.sdt,
+                            makhoa = sinhvienkhoa.makhoa,
+                            madot = dot.madot,
+                            maloai = phancong.maloai,
+                            dotinfo = dotinfo
+
+                        };
+                        return userrequest;
+
+                    }
 
                 }
 
             }
             else
             {
-                var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == user.userId);
+                var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == userlogin.userId);
                 if (userinfo.role != "student")
                 {
-                    var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == user.userId);
-                    var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == user.userId);
+                    var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == userlogin.userId);
+                    var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == userlogin.userId);
                     var userrequest = new UserRequest
                     {
                         code = userinfo.userId,
-                        name = giangvien.tengv,
+                        name = userlogin.name,
                         role = userinfo.role,
                         email = userinfo.email,
                         sdt = userinfo.sdt,
@@ -217,25 +243,51 @@ namespace Ueh.BackendApi.Repositorys
                 }
                 else
                 {
-                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == user.userId);
-                    var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == user.userId);
+                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
+                    var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
 
-                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == user.userId && p.status == "true");
+                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.status == "true");
 
-                    var userrequest = new UserRequest
+                    if (sinhvienkhoa == null)
                     {
-                        code = userinfo.userId,
-                        name = sinhvien.ho + sinhvien.ten,
-                        role = userinfo.role,
-                        email = userinfo.email,
-                        sdt = userinfo.sdt,
-                        makhoa = sinhvienkhoa.makhoa,
-                        madot = dot.madot,
-                        maloai = phancong.maloai,
-                        dotinfo = dotinfo
+                        var userrequest = new UserRequest
+                        {
+                            code = userinfo.userId,
+                            name = userlogin.name,
+                            role = userinfo.role,
+                            email = userinfo.email,
+                            sdt = userinfo.sdt,
+                            makhoa = "",
+                            madot = dot.madot,
+                            maloai = "",
+                            dotinfo = dotinfo
 
-                    };
-                    return userrequest;
+                        };
+                        return userrequest;
+
+                    }
+
+
+
+                    else
+                    {
+                        var userrequest = new UserRequest
+                        {
+                            code = userinfo.userId,
+                            name = userlogin.name,
+                            role = userinfo.role,
+                            email = userinfo.email,
+                            sdt = userinfo.sdt,
+                            makhoa = sinhvienkhoa.makhoa,
+                            madot = dot.madot,
+                            maloai = phancong.maloai,
+                            dotinfo = dotinfo
+
+                        };
+                        return userrequest;
+
+                    }
+
 
                 }
 

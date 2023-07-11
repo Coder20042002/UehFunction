@@ -10,6 +10,8 @@ namespace Ueh.BackendApi.Data.Configuration
         {
             builder.ToTable("Users");
 
+            builder.HasKey(u => u.userId);
+
         }
     }
 }
