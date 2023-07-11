@@ -65,10 +65,11 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> DeleteDangky(Dangky dangky)
+        public async Task<bool> DeleteDangky(string mssv)
         {
-            dangky.status = "false";
-            _context.Update(dangky);
+            var dangky = await _context.Dangkys.FirstOrDefaultAsync(d => d.mssv == mssv);
+            if (dangky != null)
+                _context.Remove(dangky);
             return await Save();
         }
 
@@ -119,7 +120,7 @@ namespace Ueh.BackendApi.Repositorys
                         var rowCount = worksheet.Dimension.Rows;
 
 
-                        for (int row = 1; row <= rowCount; row++)
+                        for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
                             bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true");

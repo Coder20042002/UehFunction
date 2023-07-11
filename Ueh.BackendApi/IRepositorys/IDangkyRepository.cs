@@ -13,7 +13,7 @@ namespace Ueh.BackendApi.IRepositorys
         Task<bool> DangkyExists(string magv);
         Task<bool> CreateDangky(Dangky Dangky);
         Task<bool> UpdateDangky(Dangky Dangky);
-        Task<bool> DeleteDangky(Dangky Dangky);
+        Task<bool> DeleteDangky(string mssv);
         Task<bool> ImportExcelFile(IFormFile formFile, string madot, string makhoa, string magv);
         Task<byte[]> ExportToExcel(string madot, string makhoa);
         Task<bool> Save();

@@ -39,7 +39,7 @@ namespace Ueh.BackendApi.Repositorys
 
                         // Lặp qua các dòng trong tệp Excel và xử lý dữ liệu
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
-                        for (int row = 1; row <= rowCount; row++)
+                        for (int row = 2; row <= rowCount; row++)
                         {
                             string magv1 = worksheet.Cells[row, 1].Value?.ToString();
                             string magv2 = worksheet.Cells[row, 2].Value?.ToString();

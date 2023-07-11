@@ -59,8 +59,11 @@ namespace Ueh.BackendApi.Controllers
             return File(memory, uploadResult.ContentType, Path.GetFileName(path));
         }
 
-        [HttpPost("PostFileBaoCaoTuan")]
-        public async Task<ActionResult<List<UploadResult>>> PostFileBaoCaoTuan(IEnumerable<IFormFile> files, string mssv)
+
+
+
+        [HttpPost("PostFile")]
+        public async Task<ActionResult<List<UploadResult>>> PostFileXacNhan(IEnumerable<IFormFile> files, string mssv, string loai)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             foreach (var file in files)
@@ -77,38 +80,7 @@ namespace Ueh.BackendApi.Controllers
                 await using FileStream fs = new(path, FileMode.Create);
                 await file.CopyToAsync(fs);
                 uploadResult.Id = Guid.NewGuid();
-                uploadResult.FileType = "Báo cáo hàng tuần";
-                uploadResult.ContentType = file.ContentType;
-                uploadResult.Mssv = mssv;
-                uploadResult.StoredFileName = trustedFileNameForFileStorage;
-                uploadResults.Add(uploadResult);
-
-                context.Add(uploadResult);
-            }
-            await context.SaveChangesAsync();
-            return Ok(uploadResults);
-        }
-
-
-        [HttpPost("PostFileXacNhan")]
-        public async Task<ActionResult<List<UploadResult>>> PostFileXacNhan(IEnumerable<IFormFile> files, string mssv)
-        {
-            List<UploadResult> uploadResults = new List<UploadResult>();
-            foreach (var file in files)
-            {
-                var uploadResult = new UploadResult();
-                string trustedFileNameForFileStorage;
-                var untrusteFilename = file.FileName;
-                uploadResult.FileName = untrusteFilename;
-                var trustedFileNameForDisplay = WebUtility.HtmlEncode(untrusteFilename);
-
-                trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var path = Path.Combine(env.ContentRootPath, "uploads", trustedFileNameForFileStorage);
-
-                await using FileStream fs = new(path, FileMode.Create);
-                await file.CopyToAsync(fs);
-                uploadResult.Id = Guid.NewGuid();
-                uploadResult.FileType = "Giấy đăng ký học kỳ doang nghiệp";
+                uploadResult.FileType = loai;
                 uploadResult.ContentType = file.ContentType;
                 uploadResult.Mssv = mssv;
                 uploadResult.StoredFileName = trustedFileNameForFileStorage;
