@@ -111,8 +111,8 @@ namespace Ueh.BackendApi.Repositorys
             }
             else
             {
-                bool phancong = await _context.Phancongs.AnyAsync(p => p.mssv == userId || p.magv == userId && p.status == "true");
-                int phancongCount = await _context.Phancongs.CountAsync(p => p.madot == dot.madot);
+                bool phancong = await _context.Phancongs.AnyAsync(p => (p.mssv == userId || p.magv == userId) && p.madot == dot.madot && p.status == "true");
+                int phancongCount = await _context.Phancongs.CountAsync(p => p.madot == dot.madot && p.status == "true");
 
                 if (role == "admin")
                 {
