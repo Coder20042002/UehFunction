@@ -104,9 +104,6 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<int> getDotInfo(string userId, string role)
         {
             var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
-            bool phancong = await _context.Phancongs.AnyAsync(p => (p.mssv == userId || p.magv == userId) && p.status == "true");
-            int phancongCount = await _context.Phancongs.CountAsync(p => p.madot == dot.madot);
-
             if (dot == null)
             {
                 // Chưa mở đợt
@@ -114,6 +111,9 @@ namespace Ueh.BackendApi.Repositorys
             }
             else
             {
+                bool phancong = await _context.Phancongs.AnyAsync(p => (p.mssv == userId || p.magv == userId) && p.status == "true");
+                int phancongCount = await _context.Phancongs.CountAsync(p => p.madot == dot.madot);
+
                 if (role == "admin")
                 {
                     return phancongCount > 0 ? 2 : 1;
@@ -161,9 +161,7 @@ namespace Ueh.BackendApi.Repositorys
                 role = userinfo.role,
                 email = userinfo.email,
                 sdt = userinfo.sdt,
-                makhoa = "",
-                madot = dot.madot,
-                maloai = "",
+                madot = dotInfoValue == 0 ? null : dot.madot,
                 dotinfo = dotInfoValue
             };
 
