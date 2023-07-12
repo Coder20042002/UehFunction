@@ -11,7 +11,7 @@ namespace Ueh.BackendApi.IRepositorys
         Task<ICollection<Sinhvien>> GetSinhviens();
         Task<Sinhvien> GetSinhvien(string mssv);
         Task<Khoa> GetKhoaBySinhvien(string mssv);
-        Task<List<Sinhvien>> GetDsSinhvienOfKhoa(string makhoa);
+        Task<List<Sinhvien>> GetDsSinhvienOfKhoa(string madot, string makhoa);
         Task<Sinhvien> GetSinhvienName(string name);
         Task<bool> SinhvienExists(string mssv);
         Task<bool> CreateSinhvien(string makhoa, Sinhvien sinhvien);

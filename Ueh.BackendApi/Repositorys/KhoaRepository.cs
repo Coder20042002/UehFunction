@@ -20,9 +20,13 @@ namespace Ueh.BackendApi.Repositorys
 
         }
 
-        public async Task<ICollection<SinhvienKhoa>> GetKhoaBySinhviens(string makhoa)
+        public async Task<ICollection<SinhvienKhoa>> GetKhoaBySinhviens(string madot, string makhoa)
         {
-            return await _context.SinhvienKhoas.Where(k => k.makhoa == makhoa).ToListAsync();
+            return await _context.SinhvienKhoas
+                .Include(sk => sk.sinhvien)
+                .Where(sk => sk.makhoa == makhoa && sk.sinhvien.madot == madot && sk.sinhvien.status == "true")
+                .ToListAsync();
         }
+
     }
 }

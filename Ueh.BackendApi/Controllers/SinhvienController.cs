@@ -66,9 +66,9 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("dssv")]
-        public async Task<IActionResult> GetDsSinhvienOfKhoa(string makhoa)
+        public async Task<IActionResult> GetDsSinhvienOfKhoa(string madot, string makhoa)
         {
-            var sinhvienKhoa = await _sinhvienRepository.GetDsSinhvienOfKhoa(makhoa);
+            var sinhvienKhoa = await _sinhvienRepository.GetDsSinhvienOfKhoa(madot, makhoa);
 
             if (sinhvienKhoa != null)
             {

@@ -19,16 +19,17 @@ namespace Ueh.BackendApi.Controllers
             _khoaRepository = khoaRepository;
             _mapper = mapper;
         }
-        [HttpGet("sinhviens/{makhoa}")]
-        public async Task<IActionResult> GetSinhvienByKhoas(string makhoa)
+        [HttpGet("GetSinhvienByKhoas")]
+        public async Task<IActionResult> GetSinhvienByKhoas(string madot, string makhoa)
         {
-            var Sinhviens = _mapper.Map<List<SinhvienkhoaDto>>(await _khoaRepository.GetKhoaBySinhviens(makhoa));
+            var Sinhviens = _mapper.Map<List<SinhvienkhoaDto>>(await _khoaRepository.GetKhoaBySinhviens(madot, makhoa));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             return Ok(Sinhviens);
         }
+
         [HttpGet("giangviens/{makhoa}")]
         public async Task<IActionResult> GetGiangvienByKhoas(string makhoa)
         {

@@ -6,6 +6,7 @@ using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Migrations;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -165,16 +166,12 @@ namespace Ueh.BackendApi.Repositorys
             return null;
         }
 
-        public async Task<List<Sinhvien>> GetDsSinhvienOfKhoa(string makhoa)
+        public async Task<List<Sinhvien>> GetDsSinhvienOfKhoa(string madot, string makhoa)
         {
-            var sinhvienKhoas = await _context.SinhvienKhoas
-                   .Where(sk => sk.makhoa == makhoa)
-                   .Select(sk => sk.sinhvien)
-                   .OrderByDescending(t => t.ten)
-                   .ToListAsync();
+            return await _context.Sinhviens.Where(s => s.status == "true" && s.sinhvienkhoas.Any(sk => sk.makhoa == makhoa)).OrderBy(s => s.mssv).ToListAsync();
 
-            return sinhvienKhoas;
         }
+
 
         public async Task<Giangvien> GetGvHuongDanSv(string mssv)
         {
