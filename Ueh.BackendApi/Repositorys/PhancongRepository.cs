@@ -107,7 +107,7 @@ namespace Ueh.BackendApi.Repositorys
 
                         // Lặp qua các dòng trong tệp Excel và xử lý dữ liệu
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
-                        for (int row = 2; row <= rowCount-1; row++)
+                        for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
                             var existing = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
