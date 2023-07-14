@@ -174,7 +174,7 @@ namespace Ueh.BackendApi.Repositorys
                     var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
 
                     userrequest.makhoa = sinhvienkhoa.makhoa;
-                    userrequest.maloai = phancong.maloai;
+                    userrequest.maloai = phancong != null ? phancong.maloai : "";
                 }
             }
             else
