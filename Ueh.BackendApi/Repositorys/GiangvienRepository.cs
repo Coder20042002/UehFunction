@@ -20,34 +20,76 @@ namespace Ueh.BackendApi.Repositorys
         }
         public async Task<List<KetquaRequest>> GetDanhSachDiem(string madot, string magv)
         {
-            List<KetquaRequest> ketquaList = await _context.Ketquas
-                   .Include(k => k.phancong)
-                   .ThenInclude(p => p.sinhvien)
-                   .Where(k => k.phancong.magv == magv && k.phancong.madot == madot)
-                   .Select(k => new KetquaRequest
-                   {
-                       TenSinhVien = $"{k.phancong.sinhvien.ho} {k.phancong.sinhvien.ten}",
-                       MaSinhVien = k.phancong.sinhvien.mssv,
-                       Lop = k.phancong.sinhvien.thuoclop,
-                       Khoa = k.phancong.sinhvien.khoagoc,
-                       Diem = k.phancong.maloai == "HKDN" ?
-                       (double)(((k.tieuchi1 ?? 0) + (k.tieuchi2 ?? 0) + (k.tieuchi3 ?? 0) + (k.tieuchi4 ?? 0) + (k.tieuchi5 ?? 0) + (k.tieuchi6 ?? 0) + (k.tieuchi7 ?? 0)) * 0.6 + ((k.diemDN ?? 0) * 0.4))
-                           : ((k.tieuchi1 ?? 0) + (k.tieuchi2 ?? 0) + (k.tieuchi3 ?? 0) + (k.tieuchi4 ?? 0) + (k.tieuchi5 ?? 0) + (k.tieuchi6 ?? 0) + (k.tieuchi7 ?? 0))
-                   })
+            var ketquaList = await _context.Ketquas
+                .Include(k => k.phancong)
+                .ThenInclude(p => p.sinhvien)
+                .Where(k => k.phancong.magv == magv && k.phancong.madot == madot)
+                .Select(k => new
+                {
+                    k.phancong.sinhvien,
+                    k.tieuchi1,
+                    k.tieuchi2,
+                    k.tieuchi3,
+                    k.tieuchi4,
+                    k.tieuchi5,
+                    k.tieuchi6,
+                    k.tieuchi7,
+                    k.diemDN,
+                    k.phancong.maloai
+                })
+                .ToListAsync();
 
-           .ToListAsync();
+            var ketquaRequestList = new List<KetquaRequest>();
 
+            foreach (var ketqua in ketquaList)
+            {
+                var sinhvien = ketqua.sinhvien;
+                var email = GetSinhvienEmail(sinhvien.mssv);
 
-            return ketquaList;
+                var ketquaRequest = new KetquaRequest
+                {
+                    TenSinhVien = $"{sinhvien.ho} {sinhvien.ten}",
+                    MaSinhVien = sinhvien.mssv,
+                    Lop = sinhvien.thuoclop,
+                    Khoa = sinhvien.khoagoc,
+                    Email = email,
+                    Diem = ketqua.maloai == "HKDN" ?
+                        (double)(((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0)) * 0.6 + ((ketqua.diemDN ?? 0) * 0.4))
+                        : ((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0))
+                };
+
+                ketquaRequestList.Add(ketquaRequest);
+            }
+
+            return ketquaRequestList;
         }
-        public async Task<List<Sinhvien>> GetSinhVienByGiangVien(string madot, string magv)
+        public async Task<List<SinhvienInfoRequest>> GetSinhVienByGiangVien(string madot, string magv)
         {
-            return await _context.Phancongs
+            var sinhvienList = await _context.Phancongs
                 .Where(p => p.magv == magv && p.madot == madot)
                 .Select(p => p.sinhvien)
                 .OrderByDescending(t => t.ten)
                 .ToListAsync();
+
+            var sinhvienInfoList = sinhvienList.Select(sv => new SinhvienInfoRequest
+            {
+                mssv = sv.mssv,
+                ho = sv.ho,
+                ten = sv.ten,
+                thuoclop = sv.thuoclop,
+                khoagoc = sv.khoagoc,
+                email = GetSinhvienEmail(sv.mssv)
+            }).ToList();
+
+            return sinhvienInfoList;
         }
+
+        private string GetSinhvienEmail(string mssv)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.userId == mssv);
+            return user != null ? user.email : null;
+        }
+
         public async Task<List<GiangvienRequest>> GetGiangVienAndSinhVienHuongDan(string madot, string makhoa)
         {
             var giangVienList = await _context.Phancongs
@@ -240,7 +282,15 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 magv = magv,
                                 tengv = worksheet.Cells[row, 2].Value?.ToString(),
-                               
+
+                            };
+
+                            var user = new User
+                            {
+                                userId = magv,
+                                email = worksheet.Cells[row, 4].Value?.ToString(),
+                                sdt = worksheet.Cells[row, 3].Value?.ToString(),
+                                role = "teacher"
 
                             };
 
@@ -250,7 +300,9 @@ namespace Ueh.BackendApi.Repositorys
                                 makhoa = makhoa
                             };
 
+                            _context.Add(user);
                             _context.Add(khoagv);
+
                             await _context.Giangviens.AddAsync(giangvien);
                         }
 

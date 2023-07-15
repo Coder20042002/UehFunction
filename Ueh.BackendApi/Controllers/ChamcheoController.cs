@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
@@ -23,6 +24,18 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
+        [HttpDelete("DeleteChamcheos")]
+        public async Task<IActionResult> DeleteChamcheos(string madot, string makhoa)
+        {
+            bool delete = await _chamcheoRepository.DeleteChamcheos(madot, makhoa);
+
+            if (delete)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
 
         [HttpGet("generate")]
         public async Task<IActionResult> ExportToExcel(string madot, string makhoa)

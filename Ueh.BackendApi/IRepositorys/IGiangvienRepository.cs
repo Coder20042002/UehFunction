@@ -8,7 +8,7 @@ namespace Ueh.BackendApi.IRepositorys
     {
         Task<List<KetquaRequest>> GetDanhSachDiem(string madot, string magv);
 
-        Task<List<Sinhvien>> GetSinhVienByGiangVien(string dot, string magv);
+        Task<List<SinhvienInfoRequest>> GetSinhVienByGiangVien(string dot, string magv);
         Task<List<GiangvienUpdateRequest>> GetGiangvienByKhoa(string makhoa);
         Task<GiangvienUpdateRequest> GetThongtinGiangvien(string magv);
         Task<Giangvien> GetGiangvienName(string name);

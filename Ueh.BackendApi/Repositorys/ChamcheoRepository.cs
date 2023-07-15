@@ -30,7 +30,7 @@ namespace Ueh.BackendApi.Repositorys
             {
                 using (var stream = new MemoryStream())
                 {
-                    formFile.CopyTo(stream);
+                    await formFile.CopyToAsync(stream);
 
                     using (var package = new ExcelPackage(stream))
                     {
@@ -41,13 +41,16 @@ namespace Ueh.BackendApi.Repositorys
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
                         for (int row = 2; row <= rowCount; row++)
                         {
-                            string magv1 = worksheet.Cells[row, 1].Value?.ToString();
-                            string magv2 = worksheet.Cells[row, 2].Value?.ToString();
-                            if (magv1 == magv2)
+                            string magv1 = worksheet.Cells[row, 1]?.Value?.ToString();
+                            string magv2 = worksheet.Cells[row, 2]?.Value?.ToString();
+                            var existingChamcheo = await _context.Chamcheos.FirstOrDefaultAsync(c => (c.magv1 == magv1 && c.magv2 == magv2 && c.madot == madot) || (c.magv1 == magv2 && c.magv2 == c.magv1 && c.madot == madot));
+
+                            if (magv1 == magv2 || existingChamcheo != null)
                             {
                                 continue;
                             }
-                            var chamcheolist = new Chamcheo
+
+                            var chamcheo = new Chamcheo
                             {
                                 id = Guid.NewGuid(),
                                 magv1 = magv1,
@@ -56,17 +59,31 @@ namespace Ueh.BackendApi.Repositorys
                                 madot = madot
                             };
 
-                            await _context.Chamcheos.AddAsync(chamcheolist);
+                            _context.Chamcheos.Add(chamcheo);
                         }
 
-                        return await Save();
+                        await _context.SaveChangesAsync();
                     }
                 }
 
+                return true;
             }
+
             return false;
         }
 
+        public async Task<bool> DeleteChamcheos( string madot, string makhoa)
+        {
+            var chamcheos = await _context.Chamcheos.Where(c => c.makhoa == makhoa && c.madot == madot).ToListAsync();
+
+            if (chamcheos != null && chamcheos.Any())
+            {
+                _context.Chamcheos.RemoveRange(chamcheos);
+               
+            }
+
+            return await Save();
+        }
 
         public async Task<bool> Save()
         {

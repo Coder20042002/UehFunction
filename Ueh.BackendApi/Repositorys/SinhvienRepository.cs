@@ -7,6 +7,7 @@ using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Migrations;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -166,11 +167,38 @@ namespace Ueh.BackendApi.Repositorys
             return null;
         }
 
-        public async Task<List<Sinhvien>> GetDsSinhvienOfKhoa(string madot, string makhoa)
+        public async Task<List<SinhvienInfoRequest>> GetDsSinhvienOfKhoa(string madot, string makhoa)
         {
-            return await _context.Sinhviens.Where(s => s.status == "true" && s.sinhvienkhoas.Any(sk => sk.makhoa == makhoa)).OrderBy(s => s.mssv).ToListAsync();
+            var sinhvienList = await _context.Sinhviens
+                .Where(s => s.status == "true" && s.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
+                .OrderBy(s => s.mssv)
+                .ToListAsync();
 
+            var sinhvienInfoList = sinhvienList.Select(s => new SinhvienInfoRequest
+            {
+                mssv = s.mssv,
+                ho = s.ho,
+                ten = s.ten,
+                thuoclop = s.thuoclop,
+                khoagoc = s.khoagoc,
+                email = GetSinhvienEmail(s.mssv)
+            }).ToList();
+
+            return sinhvienInfoList;
         }
+
+        private string GetSinhvienEmail(string mssv)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.userId == mssv);
+            return user != null ? user.email : null;
+        }
+
+
+
+
+
+
+
 
 
         public async Task<Giangvien> GetGvHuongDanSv(string mssv)
@@ -200,7 +228,7 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<List<Sinhvien>> SearchSinhVien(string keyword)
+        public async Task<List<SinhvienInfoRequest>> SearchSinhVien(string keyword)
         {
             string lowerKeyword = keyword.ToLower();
 
@@ -208,7 +236,17 @@ namespace Ueh.BackendApi.Repositorys
                 .Where(sv => sv.ten.ToLower().Contains(lowerKeyword) || sv.mssv.ToLower().Contains(lowerKeyword))
                 .ToListAsync();
 
-            return searchResults;
+            var sinhvienInfoList = searchResults.Select(sv => new SinhvienInfoRequest
+            {
+                mssv = sv.mssv,
+                ho = sv.ho,
+                ten = sv.ten,
+                thuoclop = sv.thuoclop,
+                khoagoc = sv.khoagoc,
+                email = GetSinhvienEmail(sv.mssv)
+            }).ToList();
+
+            return sinhvienInfoList;
         }
 
 

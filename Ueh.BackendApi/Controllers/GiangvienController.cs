@@ -23,7 +23,7 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("SinhVienByGiangVien")]
-        public async Task<ActionResult<List<Sinhvien>>> GetSinhVienByGiangVien(string madot, string magv)
+        public async Task<ActionResult<List<SinhvienInfoRequest>>> GetSinhVienByGiangVien(string madot, string magv)
         {
             var sinhviens = await _giangvienRepository.GetSinhVienByGiangVien(madot, magv);
             if (sinhviens == null || sinhviens.Count == 0)

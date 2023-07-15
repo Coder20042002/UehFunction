@@ -110,12 +110,12 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
-                            var existing = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
+                            var magv = worksheet.Cells[row, 2].Value?.ToString();
+                            bool kiemtra = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot );
 
-                            if (existing != null)
+                            if (kiemtra != false)
                             {
-                                existing.magv = worksheet.Cells[row, 2].Value?.ToString();
-                                existing.maloai = worksheet.Cells[row, 3].Value?.ToString();
+                                continue;
                             }
                             else
                             {
@@ -123,7 +123,7 @@ namespace Ueh.BackendApi.Repositorys
                                 {
                                     Id = Guid.NewGuid(),
                                     mssv = mssv,
-                                    magv = worksheet.Cells[row, 2].Value?.ToString(),
+                                    magv = magv,
                                     maloai = worksheet.Cells[row, 3].Value?.ToString(),
                                     madot = madot
                                 };

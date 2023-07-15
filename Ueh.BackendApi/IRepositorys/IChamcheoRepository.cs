@@ -5,6 +5,7 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IChamcheoRepository
     {
+        Task<bool> DeleteChamcheos(string madot, string makhoa);
         Task<byte[]> ExportToExcel(string madot, string makhoa);
         Task<List<ChamcheoRequest>> GetChamcheoByGiangVien(string madot, string makhoa);
         Task<bool> ImportExcelFile(IFormFile formFile, string madot, string makhoa);
