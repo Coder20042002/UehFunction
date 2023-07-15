@@ -35,21 +35,21 @@ namespace Ueh.BackendApi.Repositorys
             var phanCongIds = await _context.Phancongs.FirstOrDefaultAsync(ct => ct.status == "true" && ct.mssv == mssv);
             var chitiet = await _context.Chitiets.FirstOrDefaultAsync(kq => kq.mapc == phanCongIds.Id);
             var user = await _context.Users.FirstOrDefaultAsync(c => c.userId == mssv);
-            
+
             var request = new ChitietRequest
             {
-                emailsv = user.email,
-                sdtsv = user.sdt,
-                chucvu = chitiet.chucvu,
-                huongdan = chitiet.huongdan,
-                emailhd = chitiet.emailhd,
-                sdthd = chitiet.sdthd,
-                tencty = chitiet.tencty,
-                vitri = chitiet.vitri,
-                website = chitiet.website,
-                tendetai = chitiet.tendetai
-
+                emailsv = user?.email,
+                sdtsv = user?.sdt,
+                chucvu = chitiet?.chucvu,
+                huongdan = chitiet?.huongdan,
+                emailhd = chitiet?.emailhd,
+                sdthd = chitiet?.sdthd,
+                tencty = chitiet?.tencty,
+                vitri = chitiet?.vitri,
+                website = chitiet?.website,
+                tendetai = chitiet?.tendetai
             };
+
             return request;
         }
 
