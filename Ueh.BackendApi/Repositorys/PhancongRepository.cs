@@ -5,6 +5,7 @@ using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Migrations;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -25,9 +26,18 @@ namespace Ueh.BackendApi.Repositorys
             return hasHKDN;
         }
 
-        public async Task<bool> CreatePhancong(Phancong phancong)
+        public async Task<bool> CreatePhancong(PhancongRequest phancongrequest)
         {
-            var Phancongkhoa = await _context.Phancongs.Where(a => a.mssv == phancong.mssv).FirstOrDefaultAsync();
+            var kiemtra = await _context.Phancongs.Where(a => a.mssv == phancongrequest.mssv).FirstOrDefaultAsync();
+            var phancong = new Phancong
+            {
+                Id = Guid.NewGuid(),
+                mssv = phancongrequest.mssv,
+                magv = phancongrequest.magv,
+                maloai = phancongrequest.maloai,
+                madot = phancongrequest.madot
+            };
+
             var ketqua = new Ketqua
             {
                 mapc = phancong.Id,
@@ -38,7 +48,7 @@ namespace Ueh.BackendApi.Repositorys
             };
 
 
-            if (Phancongkhoa == null)
+            if (kiemtra == null)
             {
                 _context.Add(phancong);
                 _context.Add(ketqua);
@@ -51,10 +61,16 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> DeletePhancong(Phancong phancong)
+        public async Task<bool> DeletePhancong(string mssv)
         {
-            phancong.status = "false";
-            _context.Update(phancong);
+            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
+
+            if (kiemtra != null)
+            {
+                kiemtra.status = "false";
+                _context.Update(kiemtra);
+            }
+
             return await Save();
         }
 
@@ -83,12 +99,16 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<bool> UpdatePhancong(Phancong Phancong)
+        public async Task<bool> UpdatePhancong(string mssv, string magv)
         {
-            bool PhancongExists = await _context.Phancongs.AnyAsync(s => s.mssv == Phancong.mssv && s.status == "true");
+            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
 
-            if (PhancongExists != false)
-                _context.Update(Phancong);
+            if (kiemtra != null)
+            {
+                kiemtra.magv = magv;
+                _context.Update(kiemtra);
+            }
+
             return await Save();
         }
 
@@ -111,7 +131,7 @@ namespace Ueh.BackendApi.Repositorys
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
                             var magv = worksheet.Cells[row, 2].Value?.ToString();
-                            bool kiemtra = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot );
+                            bool kiemtra = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
                             if (kiemtra != false)
                             {

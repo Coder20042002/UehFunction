@@ -66,7 +66,7 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<List<SinhvienInfoRequest>> GetSinhVienByGiangVien(string madot, string magv)
         {
             var sinhvienList = await _context.Phancongs
-                .Where(p => p.magv == magv && p.madot == madot)
+                .Where(p => p.magv == magv && p.madot == madot && p.status == "true")
                 .Select(p => p.sinhvien)
                 .OrderByDescending(t => t.ten)
                 .ToListAsync();
