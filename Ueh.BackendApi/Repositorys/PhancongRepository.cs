@@ -112,6 +112,19 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
+        public async Task<bool> UpdateLoaiHinhThucTap(string mssv, string maloai)
+        {
+            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
+
+            if (kiemtra != null)
+            {
+                kiemtra.maloai = maloai;
+                _context.Update(kiemtra);
+            }
+
+            return await Save();
+        }
+
         public async Task<bool> ImportExcelFile(IFormFile formFile, string madot)
         {
             if (formFile != null && formFile.Length > 0)

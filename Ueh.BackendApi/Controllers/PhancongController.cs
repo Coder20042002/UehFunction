@@ -164,6 +164,31 @@ namespace Ueh.BackendApi.Controllers
 
         }
 
+        [HttpPut("UpdateLoaiHinhThucTap")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateLoaiHinhThucTap(string mssv, string maloai)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                if (!await _PhancongRepository.UpdateLoaiHinhThucTap(mssv, maloai))
+                {
+                    ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
+                    return StatusCode(500, ModelState);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+
+        }
+
         [HttpPut("UpdatePhancong")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]

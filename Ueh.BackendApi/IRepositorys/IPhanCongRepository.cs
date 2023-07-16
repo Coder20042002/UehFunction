@@ -5,6 +5,7 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IPhancongRepository
     {
+        Task<bool> UpdateLoaiHinhThucTap(string mssv, string maloai);
         Task<bool> KiemTraMaloai(string mssv);
         Task<ICollection<Phancong>> GetPhancongs();
         Task<Phancong> GetPhancong(string magv);
