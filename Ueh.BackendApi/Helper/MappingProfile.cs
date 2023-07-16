@@ -33,6 +33,7 @@ namespace Ueh.BackendApi.Helper
             CreateMap<GiangvienKhoa, GiangvienkhoaDto>();
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            CreateMap<UploadResultDto, UploadResult>();
 
         }
     }

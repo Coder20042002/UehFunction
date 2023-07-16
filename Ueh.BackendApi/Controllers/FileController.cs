@@ -5,6 +5,7 @@ using ServiceStack.Text;
 using System.Net;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
+using Ueh.BackendApi.Dtos;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -25,18 +26,19 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFiles(string mssv)
         {
-            List<UploadResult> files = await context.UploadResults.Where(u => u.Mssv == mssv).ToListAsync(); ;
+            List<UploadResult> files = await context.UploadResults.Where(u => u.Mssv == mssv && u.Status == "true").ToListAsync(); ;
             return Ok(files);
         }
 
-        [HttpDelete("DeleteFile")]
+        [HttpPut("DeleteFile")]
         public async Task<IActionResult> DeleteFile(string fileName)
         {
 
             var uploadResult = await context.UploadResults.FirstOrDefaultAsync(u => u.StoredFileName.Equals(fileName));
             if (uploadResult != null)
             {
-                context.Remove(uploadResult);
+                uploadResult.Status = "false";
+                context.Update(uploadResult);
                 await context.SaveChangesAsync();
             }
 
@@ -63,27 +65,18 @@ namespace Ueh.BackendApi.Controllers
 
 
         [HttpPost("PostFile")]
-        public async Task<ActionResult<List<UploadResult>>> PostFileXacNhan(IEnumerable<IFormFile> files, string mssv, string loai)
+        public async Task<ActionResult> PostFileXacNhan(List<UploadResultDto> files, string mssv, string loai)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             foreach (var file in files)
             {
                 var uploadResult = new UploadResult();
-                string trustedFileNameForFileStorage;
-                var untrusteFilename = file.FileName;
-                uploadResult.FileName = untrusteFilename;
-                var trustedFileNameForDisplay = WebUtility.HtmlEncode(untrusteFilename);
-
-                trustedFileNameForFileStorage = Path.GetRandomFileName();
-                var path = Path.Combine(env.ContentRootPath, "uploads", trustedFileNameForFileStorage);
-
-                await using FileStream fs = new(path, FileMode.Create);
-                await file.CopyToAsync(fs);
                 uploadResult.Id = Guid.NewGuid();
+                uploadResult.FileName = file.FileName;
                 uploadResult.FileType = loai;
                 uploadResult.ContentType = file.ContentType;
                 uploadResult.Mssv = mssv;
-                uploadResult.StoredFileName = trustedFileNameForFileStorage;
+                uploadResult.StoredFileName = file.StoredFileName;
                 uploadResults.Add(uploadResult);
 
                 context.Add(uploadResult);
