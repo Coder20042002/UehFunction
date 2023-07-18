@@ -23,18 +23,30 @@ namespace Ueh.BackendApi.Controllers
         }
 
         [HttpGet("Search")]
-        public async Task<IActionResult> Search(string keyword)
+        public async Task<IActionResult> Search(string madot, string keyword)
         {
-            var searchResults = await _sinhvienRepository.SearchSinhVien(keyword);
+            var searchResults = await _sinhvienRepository.SearchSinhVien(madot, keyword);
             return Ok(searchResults);
         }
 
 
 
         [HttpGet("GetGvHuongDanSv")]
-        public async Task<IActionResult> GetGvHuongDanSv(string mssv)
+        public async Task<IActionResult> GetGvHuongDanSv(string madot, string mssv)
         {
-            var giangvien = await _sinhvienRepository.GetGvHuongDanSv(mssv);
+            var giangvien = await _sinhvienRepository.GetGvHuongDanSv(madot, mssv);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(giangvien);
+        }
+
+
+        [HttpGet("GetDangkyGvHuongDanSv")]
+        public async Task<IActionResult> GetDangkyGvHuongDanSv(string madot, string mssv)
+        {
+            var giangvien = await _sinhvienRepository.GetDangkyGvHuongDanSv(madot, mssv);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

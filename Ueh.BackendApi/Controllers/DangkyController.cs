@@ -64,12 +64,12 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("GetDangky")]
         [ProducesResponseType(200, Type = typeof(Dangky))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetDangky(string mssv)
+        public async Task<IActionResult> GetDangky(string madot, string mssv)
         {
             if (!await _DangkyRepository.DangkyExists(mssv))
                 return NotFound();
 
-            var Dangky = _mapper.Map<DangkyDto>(await _DangkyRepository.GetDangky(mssv));
+            var Dangky = _mapper.Map<DangkyDto>(await _DangkyRepository.GetDangky(madot, mssv));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -125,19 +125,11 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpPost("CreateDangky")]
+        [HttpPost("createdangky")]
         public async Task<IActionResult> CreateDangky(DangkyDto DangkyCreate)
         {
             if (DangkyCreate == null)
                 return BadRequest(ModelState);
-
-            bool Dangkys = await _DangkyRepository.DangkyExists(DangkyCreate.mssv);
-
-            if (Dangkys == true)
-            {
-                ModelState.AddModelError("", " Sinh vien đã được đăng ký");
-                return StatusCode(422, ModelState);
-            }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -188,7 +180,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> DeleteDangky(string mssv)
+        public async Task<IActionResult> DeleteDangky(string madot, string mssv)
         {
 
 
@@ -196,7 +188,7 @@ namespace Ueh.BackendApi.Controllers
                 return BadRequest(ModelState);
 
 
-            if (!await _DangkyRepository.DeleteDangky(mssv))
+            if (!await _DangkyRepository.DeleteDangky(madot, mssv))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi xóa");
             }

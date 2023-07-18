@@ -34,13 +34,13 @@ namespace Ueh.BackendApi.Controllers
             return hasHKDN;
         }
 
-        [HttpGet]
+        [HttpGet("getphancongkhoas")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Phancong>))]
-        public async Task<IActionResult> GetPhancongs()
+        public async Task<IActionResult> GetPhancongKhoas(string madot, string makhoa)
         {
             try
             {
-                var Phancongs = _mapper.Map<List<PhancongDto>>(await _PhancongRepository.GetPhancongs());
+                var Phancongs = _mapper.Map<List<PhancongDto>>(await _PhancongRepository.GetPhancongKhoas(madot, makhoa));
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);

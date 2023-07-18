@@ -170,7 +170,7 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<List<SinhvienInfoRequest>> GetDsSinhvienOfKhoa(string madot, string makhoa)
         {
             var sinhvienList = await _context.Sinhviens
-                .Where(s => s.status == "true" && s.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
+                .Where(s => s.status == "true" && s.madot == madot && s.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
                 .OrderBy(s => s.mssv)
                 .ToListAsync();
 
@@ -200,12 +200,22 @@ namespace Ueh.BackendApi.Repositorys
 
 
 
+        public async Task<Giangvien> GetDangkyGvHuongDanSv(string madot, string mssv)
+        {
+            var giangvien = await _context.Dangkys
+                 .Include(p => p.giangvien)
+                 .Where(p => p.mssv == mssv && p.madot == madot && p.status == "true")
+                 .Select(p => p.giangvien)
+                 .FirstOrDefaultAsync();
 
-        public async Task<Giangvien> GetGvHuongDanSv(string mssv)
+            return giangvien;
+        }
+
+        public async Task<Giangvien> GetGvHuongDanSv(string madot, string mssv)
         {
             var giangvien = await _context.Phancongs
                 .Include(p => p.giangvien)
-                .Where(p => p.mssv == mssv)
+                .Where(p => p.mssv == mssv && p.madot == madot && p.status == "true")
                 .Select(p => p.giangvien)
                 .FirstOrDefaultAsync();
 
@@ -228,12 +238,12 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<List<SinhvienInfoRequest>> SearchSinhVien(string keyword)
+        public async Task<List<SinhvienInfoRequest>> SearchSinhVien(string madot, string keyword)
         {
             string lowerKeyword = keyword.ToLower();
 
             var searchResults = await _context.Sinhviens
-                .Where(sv => sv.ten.ToLower().Contains(lowerKeyword) || sv.mssv.ToLower().Contains(lowerKeyword))
+                .Where(sv => sv.madot.Contains(madot) && sv.status.Contains("true") && sv.ten.ToLower().Contains(lowerKeyword) || sv.mssv.ToLower().Contains(lowerKeyword))
                 .ToListAsync();
 
             var sinhvienInfoList = searchResults.Select(sv => new SinhvienInfoRequest

@@ -82,10 +82,16 @@ namespace Ueh.BackendApi.Repositorys
 
 
 
-        public async Task<ICollection<Phancong>> GetPhancongs()
+        public async Task<ICollection<Phancong>> GetPhancongKhoas(string madot, string makhoa)
         {
-            return await _context.Phancongs.Where(s => s.status == "true").OrderBy(s => s.mssv).ToListAsync();
+            var phancongs = await _context.Phancongs
+                .Include(p => p.sinhvien.sinhvienkhoas)
+                .Where(p => p.madot == madot && p.status == "true" && p.sinhvien.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
+                .ToListAsync();
+
+            return phancongs;
         }
+
 
         public async Task<bool> Save()
         {

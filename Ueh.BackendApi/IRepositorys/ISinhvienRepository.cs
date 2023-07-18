@@ -6,9 +6,10 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface ISinhvienRepository
     {
-        Task<List<SinhvienInfoRequest>> SearchSinhVien(string keyword);
+        Task<Giangvien> GetDangkyGvHuongDanSv(string madot, string mssv);
+        Task<List<SinhvienInfoRequest>> SearchSinhVien(string madot, string keyword);
         Task<string> GetLoaiHinhThucTap(string mssv);
-        Task<Giangvien> GetGvHuongDanSv(string mssv);
+        Task<Giangvien> GetGvHuongDanSv(string madot, string mssv);
         Task<ICollection<Sinhvien>> GetSinhviens();
         Task<Sinhvien> GetSinhvien(string mssv);
         Task<Khoa> GetKhoaBySinhvien(string mssv);

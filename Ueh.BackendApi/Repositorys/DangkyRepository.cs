@@ -58,25 +58,25 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> CreateDangky(Dangky Dangky)
         {
-            var Dangkykhoa = await _context.Dangkys.Where(a => a.mssv == Dangky.mssv).FirstOrDefaultAsync();
+            var Dangkykhoa = await _context.Dangkys.Where(a => a.mssv == Dangky.mssv && a.madot == Dangky.madot).FirstOrDefaultAsync();
 
             if (Dangkykhoa == null)
                 _context.Add(Dangky);
             return await Save();
         }
 
-        public async Task<bool> DeleteDangky(string mssv)
+        public async Task<bool> DeleteDangky(string madot,string mssv)
         {
-            var dangky = await _context.Dangkys.FirstOrDefaultAsync(d => d.mssv == mssv);
+            var dangky = await _context.Dangkys.FirstOrDefaultAsync(d => d.mssv == mssv && d.madot == madot);
             if (dangky != null)
                 _context.Remove(dangky);
             return await Save();
         }
 
 
-        public async Task<Dangky> GetDangky(string mssv)
+        public async Task<Dangky> GetDangky(string madot, string mssv)
         {
-            return await _context.Dangkys.Where(s => s.mssv == mssv && s.status == "true").FirstOrDefaultAsync();
+            return await _context.Dangkys.Where(s => s.madot == madot && s.mssv == mssv && s.status == "true").FirstOrDefaultAsync();
         }
 
 
