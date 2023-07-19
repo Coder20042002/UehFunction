@@ -9,6 +9,8 @@ using System.Text;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
+using Ueh.BackendApi.Migrations;
+using Ueh.BackendApi.Request;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace Ueh.BackendApi.Repositorys
@@ -745,6 +747,124 @@ namespace Ueh.BackendApi.Repositorys
             zipStream.Dispose();
 
             return zipBytes;
+        }
+
+        public async Task<DiemchitietRequest> DiemChiTietSv(string mssv)
+        {
+
+            var sinhvienKhoa = await _context.SinhvienKhoas
+              .Include(sk => sk.khoa)
+              .FirstOrDefaultAsync(sk => sk.mssv == mssv);
+
+            var phancong = await _context.Phancongs
+                .Include(p => p.sinhvien)
+                .ThenInclude(s => s.chuyennganh)
+                .Include(p => p.chitiets)
+                .Include(p => p.giangvien)
+                .Include(p => p.dot)
+                .FirstOrDefaultAsync(p => p.mssv == mssv);
+
+            if (phancong == null)
+            {
+                return null;
+            }
+
+            var ketqua = await _context.Ketquas
+                .Include(k => k.phancong)
+                .FirstOrDefaultAsync(k => k.mapc == phancong.Id);
+
+            if (ketqua == null)
+            {
+                return null;
+            }
+
+            double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+            if (sum >= 10)
+            {
+                sum = 10;
+            }
+
+            var diemChiTietRequest = new DiemchitietRequest
+            {
+                tenkhoa = sinhvienKhoa.khoa.tenkhoa,
+                tencn = phancong.sinhvien.chuyennganh.tencn,
+                tendot = phancong.dot.name,
+                hotensv = phancong.sinhvien.ho + " " + phancong.sinhvien.ten,
+                mssv = phancong.mssv,
+                tenkl = phancong.chitiets.FirstOrDefault()?.tendetai,
+                tengv = phancong.giangvien.tengv,
+                tieuchi1 = ketqua.tieuchi1,
+                tieuchi2 = ketqua.tieuchi2,
+                tieuchi3 = ketqua.tieuchi3,
+                tieuchi4 = ketqua.tieuchi4,
+                tieuchi5 = ketqua.tieuchi5,
+                tieuchi6 = ketqua.tieuchi6,
+                tieuchi7 = ketqua.tieuchi7,
+                diemDN = ketqua.diemDN,
+                diemtong = sum
+            };
+
+            return diemChiTietRequest;
+        }
+
+        public async Task<ICollection<DsDiemGvHuongDanRequest>> DsDiemGvHuongDanRequest(string madot, string maloai, string magv)
+        {
+            // Lấy thông tin giảng viên từ mã giảng viên
+            var giangvien = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == magv);
+            if (giangvien == null)
+            {
+                return null;
+            }
+
+            // Lấy thông tin khoa từ mã giảng viên
+            var khoa = await _context.GiangvienKhoas
+                .Include(sk => sk.khoa)
+                .FirstOrDefaultAsync(sk => sk.magv == magv);
+
+            // Lấy thông tin đợt từ mã đợt
+            var dot = await _context.Dots.FirstOrDefaultAsync(d => d.madot == madot);
+
+            // Lấy thông tin loại từ mã loại
+            var loai = await _context.Loais.FirstOrDefaultAsync(d => d.maloai == maloai);
+
+            // Lấy thông tin chấm chéo giảng viên từ mã giảng viên
+            var chamcheo = await _context.Chamcheos.FirstOrDefaultAsync(c => c.magv1 == magv || c.magv2 == magv);
+
+            // Lấy thông tin giảng viên chấm chéo từ mã giảng viên
+            var giangvien1 = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == chamcheo.magv1);
+            var giangvien2 = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == chamcheo.magv2);
+
+            // Lấy danh sách các bản ghi kết quả từ truy vấn
+            List<Ketqua> listketqua = await _context.Ketquas
+                .Include(k => k.phancong)
+                .ThenInclude(p => p.sinhvien)
+                .Include(k => k.phancong)
+                .ThenInclude(p => p.chitiets)
+                .Where(k => k.phancong.magv == magv && k.phancong.madot == madot && k.phancong.maloai == maloai)
+                .OrderByDescending(t => t.phancong.sinhvien.ten)
+                .ToListAsync();
+
+            // Tạo danh sách kết quả DsDiemGvHuongDanRequest và điền thông tin
+            var dsDiemGvHuongDan = new List<DsDiemGvHuongDanRequest>();
+
+            foreach (var ketqua in listketqua)
+            {
+                var dsDiemGvHuongDanRequest = new DsDiemGvHuongDanRequest
+                {
+                    tenkhoa = khoa?.khoa?.tenkhoa,
+                    tendot = dot?.name,
+                    tenloai = loai?.name,
+                    hotensv = ketqua?.phancong?.sinhvien?.ho + " " + ketqua?.phancong?.sinhvien?.ten,
+                    mssv = ketqua?.phancong?.sinhvien?.mssv,
+                    tendetai = ketqua?.phancong?.chitiets?.FirstOrDefault()?.tendetai,
+                    malop = ketqua?.phancong?.sinhvien?.thuoclop,
+                    khoahoc = ketqua.phancong.sinhvien?.khoahoc
+                };
+
+                dsDiemGvHuongDan.Add(dsDiemGvHuongDanRequest);
+            }
+
+            return dsDiemGvHuongDan;
         }
 
     }

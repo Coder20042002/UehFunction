@@ -6,6 +6,7 @@ using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
+using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Controllers
 {
@@ -20,6 +21,31 @@ namespace Ueh.BackendApi.Controllers
         {
             _KetquaRepository = KetquaRepository;
             _mapper = mapper;
+        }
+
+
+        [HttpGet("DiemChiTietSv")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<DiemchitietRequest>))]
+        public async Task<IActionResult> DiemChiTietSv(string mssv)
+        {
+            var Ketquas = await _KetquaRepository.DiemChiTietSv(mssv);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Ketquas);
+        }
+
+        [HttpGet("DsDiemTong")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<DsDiemGvHuongDanRequest>))]
+        public async Task<IActionResult> DsDiemTong(string madot, string maloai, string magv)
+        {
+            var Ketquas = await _KetquaRepository.DsDiemGvHuongDanRequest(madot, maloai, magv);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Ketquas);
         }
 
         [HttpGet]

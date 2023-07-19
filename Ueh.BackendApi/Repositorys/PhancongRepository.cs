@@ -144,6 +144,9 @@ namespace Ueh.BackendApi.Repositorys
                         var worksheet = package.Workbook.Worksheets[0];
                         var rowCount = worksheet.Dimension.Rows;
 
+                        // Trước khi bắt đầu vòng lặp, tạo một từ điển lưu trữ maloai tương ứng với mssv
+                        var maloaiDict = await _context.Sinhviens.ToDictionaryAsync(s => s.mssv, s => s.malop);
+
                         // Lặp qua các dòng trong tệp Excel và xử lý dữ liệu
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
                         for (int row = 2; row <= rowCount; row++)
@@ -163,7 +166,7 @@ namespace Ueh.BackendApi.Repositorys
                                     Id = Guid.NewGuid(),
                                     mssv = mssv,
                                     magv = magv,
-                                    maloai = worksheet.Cells[row, 3].Value?.ToString(),
+                                    maloai = maloaiDict.GetValueOrDefault(mssv).Substring(1, 4), // Lấy maloai từ từ điển,
                                     madot = madot
                                 };
 

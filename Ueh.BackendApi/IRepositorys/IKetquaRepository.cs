@@ -6,6 +6,7 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IKetquaRepository
     {
+
         Task<ICollection<Ketqua>> GetScores();
         Task<Ketqua> GetDiemByMssv(string mssv);
         Task<bool> ScoresExists(Guid mapc);
@@ -16,6 +17,8 @@ namespace Ueh.BackendApi.IRepositorys
         Task<byte[]> GeneratePdfByGv(string madot, string maloai, string magv);
         Task<byte[]> GeneratePdfBySv(string mssv);
         Task<byte[]> GenerateZipFileForGv(string madot, string magv);
+        Task<DiemchitietRequest> DiemChiTietSv(string mssv);
+        Task<ICollection<DsDiemGvHuongDanRequest>> DsDiemGvHuongDanRequest(string madot, string maloai, string magv);
         Task<bool> Save();
     }
 }
