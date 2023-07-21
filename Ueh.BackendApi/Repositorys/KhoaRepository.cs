@@ -14,17 +14,16 @@ namespace Ueh.BackendApi.Repositorys
             _context = context;
         }
 
-        public async Task<ICollection<GiangvienKhoa>> GetKhoaByGiangviens(string makhoa)
+        public async Task<ICollection<Giangvien>> GetKhoaByGiangviens(string makhoa)
         {
-            return await _context.GiangvienKhoas.Where(k => k.makhoa == makhoa).ToListAsync();
+            return await _context.Giangviens.Where(k => k.makhoa == makhoa).ToListAsync();
 
         }
 
-        public async Task<ICollection<SinhvienKhoa>> GetKhoaBySinhviens(string madot, string makhoa)
+        public async Task<ICollection<Sinhvien>> GetKhoaBySinhviens(string madot, string makhoa)
         {
-            return await _context.SinhvienKhoas
-                .Include(sk => sk.sinhvien)
-                .Where(sk => sk.makhoa == makhoa && sk.sinhvien.madot == madot && sk.sinhvien.status == "true")
+            return await _context.Sinhviens
+                .Where(sk => sk.makhoa == makhoa && sk.madot == madot && sk.status == "true")
                 .ToListAsync();
         }
 

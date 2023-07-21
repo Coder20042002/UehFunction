@@ -5,119 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ueh.BackendApi.Migrations
 {
-    public partial class DB : Migration
+    public partial class Db : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AppRole",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppRole", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppRoleClaims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUser",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUser", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserClaims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserLogins",
-                columns: table => new
-                {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProviderKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserLogins", x => x.UserId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserRoles", x => new { x.UserId, x.RoleId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppUserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserTokens", x => x.UserId);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Chamcheos",
                 columns: table => new
@@ -159,22 +50,6 @@ namespace Ueh.BackendApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dots", x => x.madot);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Giangviens",
-                columns: table => new
-                {
-                    magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    tengv = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sdt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    chuyenmon = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Giangviens", x => x.magv);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,10 +95,45 @@ namespace Ueh.BackendApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    userId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    sdt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    role = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.userId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Giangviens",
+                columns: table => new
+                {
+                    magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    tengv = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    chuyenmon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Giangviens", x => x.magv);
+                    table.ForeignKey(
+                        name: "FK_Giangviens_Khoas_makhoa",
+                        column: x => x.makhoa,
+                        principalTable: "Khoas",
+                        principalColumn: "makhoa");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sinhviens",
                 columns: table => new
                 {
                     mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ho = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     thuoclop = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -236,17 +146,25 @@ namespace Ueh.BackendApi.Migrations
                     malop = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     bacdt = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     loaihinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     macn = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sinhviens", x => x.mssv);
+                    table.PrimaryKey("PK_Sinhviens", x => new { x.mssv, x.madot });
+                    table.UniqueConstraint("AK_Sinhviens_mssv", x => x.mssv);
                     table.ForeignKey(
                         name: "FK_Sinhviens_Chuyennganhs_macn",
                         column: x => x.macn,
                         principalTable: "Chuyennganhs",
                         principalColumn: "macn");
+                    table.ForeignKey(
+                        name: "FK_Sinhviens_Khoas_makhoa",
+                        column: x => x.makhoa,
+                        principalTable: "Khoas",
+                        principalColumn: "makhoa",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -254,6 +172,7 @@ namespace Ueh.BackendApi.Migrations
                 columns: table => new
                 {
                     mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ho = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     lop = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -264,43 +183,17 @@ namespace Ueh.BackendApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Dangkys", x => x.mssv);
+                    table.PrimaryKey("PK_Dangkys", x => new { x.mssv, x.madot });
                     table.ForeignKey(
                         name: "FK_Dangkys_Giangviens_magv",
                         column: x => x.magv,
                         principalTable: "Giangviens",
-                        principalColumn: "magv",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "magv");
                     table.ForeignKey(
                         name: "FK_Dangkys_Khoas_makhoa",
                         column: x => x.makhoa,
                         principalTable: "Khoas",
-                        principalColumn: "makhoa",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GiangvienKhoas",
-                columns: table => new
-                {
-                    magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GiangvienKhoas", x => new { x.magv, x.makhoa });
-                    table.ForeignKey(
-                        name: "FK_GiangvienKhoas_Giangviens_magv",
-                        column: x => x.magv,
-                        principalTable: "Giangviens",
-                        principalColumn: "magv",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GiangvienKhoas_Khoas_makhoa",
-                        column: x => x.makhoa,
-                        principalTable: "Khoas",
-                        principalColumn: "makhoa",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "makhoa");
                 });
 
             migrationBuilder.CreateTable(
@@ -336,55 +229,8 @@ namespace Ueh.BackendApi.Migrations
                         name: "FK_Phancongs_Sinhviens_mssv",
                         column: x => x.mssv,
                         principalTable: "Sinhviens",
-                        principalColumn: "mssv");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SinhvienDots",
-                columns: table => new
-                {
-                    mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    madot = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SinhvienDots", x => new { x.mssv, x.madot });
-                    table.ForeignKey(
-                        name: "FK_SinhvienDots_Dots_madot",
-                        column: x => x.madot,
-                        principalTable: "Dots",
-                        principalColumn: "madot",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_SinhvienDots_Sinhviens_mssv",
-                        column: x => x.mssv,
-                        principalTable: "Sinhviens",
                         principalColumn: "mssv",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SinhvienKhoas",
-                columns: table => new
-                {
-                    mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SinhvienKhoas", x => new { x.mssv, x.makhoa });
-                    table.ForeignKey(
-                        name: "FK_SinhvienKhoas_Khoas_makhoa",
-                        column: x => x.makhoa,
-                        principalTable: "Khoas",
-                        principalColumn: "makhoa",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_SinhvienKhoas_Sinhviens_mssv",
-                        column: x => x.mssv,
-                        principalTable: "Sinhviens",
-                        principalColumn: "mssv",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -394,12 +240,11 @@ namespace Ueh.BackendApi.Migrations
                     mapc = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     tencty = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     vitri = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     website = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     huongdan = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     chucvu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    stdhd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    emailhd = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    sdthd = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     tendetai = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -469,8 +314,8 @@ namespace Ueh.BackendApi.Migrations
                 column: "makhoa");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GiangvienKhoas_makhoa",
-                table: "GiangvienKhoas",
+                name: "IX_Giangviens_makhoa",
+                table: "Giangviens",
                 column: "makhoa");
 
             migrationBuilder.CreateIndex(
@@ -494,44 +339,18 @@ namespace Ueh.BackendApi.Migrations
                 column: "mssv");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SinhvienDots_madot",
-                table: "SinhvienDots",
-                column: "madot");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SinhvienKhoas_makhoa",
-                table: "SinhvienKhoas",
-                column: "makhoa");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Sinhviens_macn",
                 table: "Sinhviens",
                 column: "macn");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sinhviens_makhoa",
+                table: "Sinhviens",
+                column: "makhoa");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AppRole");
-
-            migrationBuilder.DropTable(
-                name: "AppRoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "AppUser");
-
-            migrationBuilder.DropTable(
-                name: "AppUserClaims");
-
-            migrationBuilder.DropTable(
-                name: "AppUserLogins");
-
-            migrationBuilder.DropTable(
-                name: "AppUserRoles");
-
-            migrationBuilder.DropTable(
-                name: "AppUserTokens");
-
             migrationBuilder.DropTable(
                 name: "Chamcheos");
 
@@ -542,28 +361,19 @@ namespace Ueh.BackendApi.Migrations
                 name: "Dangkys");
 
             migrationBuilder.DropTable(
-                name: "GiangvienKhoas");
-
-            migrationBuilder.DropTable(
                 name: "Ketquas");
 
             migrationBuilder.DropTable(
                 name: "Lichsus");
 
             migrationBuilder.DropTable(
-                name: "SinhvienDots");
-
-            migrationBuilder.DropTable(
-                name: "SinhvienKhoas");
-
-            migrationBuilder.DropTable(
                 name: "UploadResults");
 
             migrationBuilder.DropTable(
-                name: "Phancongs");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Khoas");
+                name: "Phancongs");
 
             migrationBuilder.DropTable(
                 name: "Dots");
@@ -579,6 +389,9 @@ namespace Ueh.BackendApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Chuyennganhs");
+
+            migrationBuilder.DropTable(
+                name: "Khoas");
         }
     }
 }

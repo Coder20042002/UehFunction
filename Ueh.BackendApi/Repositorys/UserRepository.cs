@@ -84,7 +84,7 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<bool> UpdateInfoUser(User userupdate, string id)
+        public async Task<bool> UpdateInfoUser(UpdateUserRequest userupdate, string id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.userId == id);
             user.email = userupdate.email;
@@ -167,22 +167,20 @@ namespace Ueh.BackendApi.Repositorys
 
             if (userinfo.role == "student")
             {
-                var sinhvienkhoa = await _context.SinhvienKhoas.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
-                if (sinhvienkhoa != null)
+                var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
+                if (sinhvien != null)
                 {
                     var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.status == "true");
-                    var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
-
-                    userrequest.makhoa = sinhvienkhoa.makhoa;
+                    userrequest.makhoa = sinhvien.makhoa;
                     userrequest.maloai = phancong != null ? phancong.maloai : "";
                 }
             }
             else
             {
-                var giangvienkhoa = await _context.GiangvienKhoas.FirstOrDefaultAsync(k => k.magv == userlogin.userId);
-                if (giangvienkhoa != null)
+                var giangvien = await _context.Giangviens.FirstOrDefaultAsync(k => k.magv == userlogin.userId);
+                if (giangvien != null)
                 {
-                    userrequest.makhoa = giangvienkhoa.makhoa;
+                    userrequest.makhoa = giangvien.makhoa;
                 };
             }
 

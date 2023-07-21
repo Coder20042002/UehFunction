@@ -29,8 +29,6 @@ namespace Ueh.BackendApi.Helper
             CreateMap<Ketqua, KetquaDto>();
             CreateMap<KetquaDto, Ketqua>();
             CreateMap<ChamcheoDto, Chamcheo>();
-            CreateMap<SinhvienKhoa, SinhvienkhoaDto>();
-            CreateMap<GiangvienKhoa, GiangvienkhoaDto>();
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<UploadResultDto, UploadResult>();

@@ -22,7 +22,7 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("GetSinhvienByKhoas")]
         public async Task<IActionResult> GetSinhvienByKhoas(string madot, string makhoa)
         {
-            var Sinhviens = _mapper.Map<List<SinhvienkhoaDto>>(await _khoaRepository.GetKhoaBySinhviens(madot, makhoa));
+            var Sinhviens = _mapper.Map<List<SinhvienDto>>(await _khoaRepository.GetKhoaBySinhviens(madot, makhoa));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -33,7 +33,7 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("giangviens/{makhoa}")]
         public async Task<IActionResult> GetGiangvienByKhoas(string makhoa)
         {
-            var giangviens = _mapper.Map<List<GiangvienkhoaDto>>(await _khoaRepository.GetKhoaByGiangviens(makhoa));
+            var giangviens = _mapper.Map<List<GiangvienDto>>(await _khoaRepository.GetKhoaByGiangviens(makhoa));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

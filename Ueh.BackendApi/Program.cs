@@ -48,7 +48,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 
 builder.Services.AddDbContext<UehDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("UehDb")));
+                
+options.UseSqlServer(builder.Configuration.GetConnectionString("UehDb")));
 
 //builder.Services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>()
 //              .AddEntityFrameworkStores<UehDbContext>()

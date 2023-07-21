@@ -4,7 +4,6 @@ using OfficeOpenXml;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
-using Ueh.BackendApi.Migrations;
 using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
@@ -85,8 +84,8 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<ICollection<Phancong>> GetPhancongKhoas(string madot, string makhoa)
         {
             var phancongs = await _context.Phancongs
-                .Include(p => p.sinhvien.sinhvienkhoas)
-                .Where(p => p.madot == madot && p.status == "true" && p.sinhvien.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
+                .Include(p => p.sinhvien)
+                .Where(p => p.madot == madot && p.status == "true" && p.sinhvien.makhoa == makhoa)
                 .ToListAsync();
 
             return phancongs;
@@ -201,9 +200,8 @@ namespace Ueh.BackendApi.Repositorys
         {
             var Phancongs = await _context.Phancongs
                 .Include(d => d.sinhvien)
-                    .ThenInclude(d => d.sinhvienkhoas)
                 .Include(d => d.giangvien)
-                .Where(d => d.madot == madot && d.sinhvien.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
+                .Where(d => d.madot == madot && d.sinhvien.makhoa == makhoa)
                 .OrderBy(d => d.giangvien.tengv)
                 .ToListAsync();
 

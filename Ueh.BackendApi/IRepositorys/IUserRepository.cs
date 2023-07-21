@@ -10,7 +10,7 @@ namespace Ueh.BackendApi.IRepositorys
         Task<string> Encrypt(string json, string key, string iv);
         Task<string> Decrypt(string encryptedJson);
         Task<User> GetInfoUser(string id);
-        Task<bool> UpdateInfoUser(User user, string id);
+        Task<bool> UpdateInfoUser(UpdateUserRequest user, string id);
         Task<int> getDotInfo(string userId, string role);
         Task<bool> Save();
 

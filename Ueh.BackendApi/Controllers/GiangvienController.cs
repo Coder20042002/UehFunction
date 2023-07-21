@@ -95,12 +95,11 @@ namespace Ueh.BackendApi.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> CreateGiangvien([FromQuery] string makhoa, GiangvienDto GiangvienCreate)
+        public async Task<IActionResult> CreateGiangvien([FromQuery] string makhoa, GiangvienUpdateRequest giangvienCreate)
         {
-            if (GiangvienCreate == null)
-                return BadRequest(ModelState);
 
-            bool Giangviens = await _giangvienRepository.GiangvienExists(GiangvienCreate.magv);
+
+            bool Giangviens = await _giangvienRepository.GiangvienExists(giangvienCreate.magv);
 
             if (Giangviens == true)
             {
@@ -111,16 +110,15 @@ namespace Ueh.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var GiangvienMap = _mapper.Map<Giangvien>(GiangvienCreate);
 
 
-            if (!await _giangvienRepository.CreateGiangvien(makhoa, GiangvienMap))
+            if (!await _giangvienRepository.CreateGiangvien(makhoa, giangvienCreate))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok(GiangvienMap);
+            return Ok(giangvienCreate);
         }
 
         [HttpPut("UpdateThongTin")]

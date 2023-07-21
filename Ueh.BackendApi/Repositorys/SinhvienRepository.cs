@@ -6,7 +6,6 @@ using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
-using Ueh.BackendApi.Migrations;
 using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
@@ -22,16 +21,9 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<bool> CreateSinhvien(string makhoa, Sinhvien sinhvien)
         {
             bool sinhvienkhoa = await _context.Khoas.AnyAsync(a => a.makhoa == makhoa);
-            //var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
-            var gvkhoa = new SinhvienKhoa
-            {
-                makhoa = makhoa,
-                mssv = sinhvien.mssv
-            };
 
             if (sinhvienkhoa)
-                _context.Add(gvkhoa);
-            _context.Add(sinhvien);
+                _context.Add(sinhvien);
 
             return await Save();
         }
@@ -77,7 +69,7 @@ namespace Ueh.BackendApi.Repositorys
             _context.Update(sinhvien);
             return Save();
         }
-        public async Task<bool> ImportExcelFile(IFormFile formFile, string dot, string makhoa)
+        public async Task<bool> ImportExcelFile(IFormFile formFile, string madot, string makhoa)
         {
 
             if (formFile != null && formFile.Length > 0)
@@ -96,7 +88,7 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
-                            bool existing = await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true");
+                            bool existing = await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
                             // Kiểm tra sự trùng lặp trong danh sách tạm thời
                             if (existingMssv.Contains(mssv) || existing)
@@ -129,19 +121,15 @@ namespace Ueh.BackendApi.Repositorys
                                 bacdt = worksheet.Cells[row, 12].Value?.ToString(),
                                 loaihinh = worksheet.Cells[row, 13].Value?.ToString(),
                                 macn = macn,
-                                madot = dot,
+                                madot = madot,
+                                makhoa = makhoa,
                                 status = "true"
                             };
 
 
 
-                            var svkhoa = new SinhvienKhoa()
-                            {
-                                makhoa = makhoa,
-                                mssv = mssv,
-                            };
 
-                            _context.Add(svkhoa);
+
                             await _context.Sinhviens.AddAsync(sinhvien);
 
                         }
@@ -155,7 +143,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<Khoa> GetKhoaBySinhvien(string mssv)
         {
-            var sinhvienKhoa = await _context.SinhvienKhoas
+            var sinhvienKhoa = await _context.Sinhviens
                 .Include(sk => sk.khoa)
                 .FirstOrDefaultAsync(sk => sk.mssv == mssv);
 
@@ -170,7 +158,7 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<List<SinhvienInfoRequest>> GetDsSinhvienOfKhoa(string madot, string makhoa)
         {
             var sinhvienList = await _context.Sinhviens
-                .Where(s => s.status == "true" && s.madot == madot && s.sinhvienkhoas.Any(sk => sk.makhoa == makhoa))
+                .Where(s => s.status == "true" && s.madot == madot && s.makhoa == makhoa)
                 .OrderBy(s => s.mssv)
                 .ToListAsync();
 

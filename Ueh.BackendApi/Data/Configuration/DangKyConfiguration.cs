@@ -15,8 +15,8 @@ namespace Ueh.BackendApi.Data.Configuration
             builder.ToTable("Dangkys");
             builder.HasKey(dk => new { dk.mssv, dk.madot });
 
-            builder.HasOne(dk => dk.giangvien).WithMany(gv => gv.dangkys).HasForeignKey(dk => dk.magv);
-            builder.HasOne(dk => dk.khoa).WithMany(l => l.dangkis).HasForeignKey(dk => dk.makhoa);
+            builder.HasOne(dk => dk.giangvien).WithMany(gv => gv.dangkys).HasForeignKey(dk => dk.magv).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(dk => dk.khoa).WithMany(l => l.dangkis).HasForeignKey(dk => dk.makhoa).OnDelete(DeleteBehavior.NoAction);
 
         }
     }

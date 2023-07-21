@@ -4,7 +4,6 @@ using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.Dtos;
 using Ueh.BackendApi.IRepositorys;
-using Ueh.BackendApi.Migrations;
 using Ueh.BackendApi.Request;
 
 namespace Ueh.BackendApi.Repositorys
@@ -23,8 +22,8 @@ namespace Ueh.BackendApi.Repositorys
         {
             var giangVienList = await _context.Dangkys
                 .Where(p => p.status == "true" && p.madot == madot)
-                .Join(_context.GiangvienKhoas, p => p.magv, gk => gk.magv, (p, gk) => new { Phancong = p, GiangvienKhoa = gk })
-                .Where(pgk => pgk.GiangvienKhoa.makhoa == makhoa)
+                .Join(_context.Giangviens, p => p.magv, gk => gk.magv, (p, gk) => new { Phancong = p, Giangviens = gk })
+                .Where(pgk => pgk.Giangviens.makhoa == makhoa)
                 .GroupBy(pgk => pgk.Phancong.magv)
                 .Select(g => new GiangvienRequest
                 {
@@ -65,7 +64,7 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> DeleteDangky(string madot,string mssv)
+        public async Task<bool> DeleteDangky(string madot, string mssv)
         {
             var dangky = await _context.Dangkys.FirstOrDefaultAsync(d => d.mssv == mssv && d.madot == madot);
             if (dangky != null)

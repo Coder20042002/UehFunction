@@ -25,26 +25,15 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new LichsuConfiguration());
             modelBuilder.ApplyConfiguration(new ChuyenNganhConfiguration());
             modelBuilder.ApplyConfiguration(new PhancongConfiguration());
-            modelBuilder.ApplyConfiguration(new SinhvienKhoaConfiguration());
             modelBuilder.ApplyConfiguration(new ChitietConfiguration());
             modelBuilder.ApplyConfiguration(new KetquaConfiguration());
-            modelBuilder.ApplyConfiguration(new GiangvienKhoaConfiguration());
             modelBuilder.ApplyConfiguration(new UploadResultConfiguration());
             modelBuilder.ApplyConfiguration(new ChamcheoConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
 
 
 
-            //modelBuilder.Entity<IdentityUser<Guid>>().ToTable("AppUser").HasKey(x => x.Id);
-            //modelBuilder.Entity<IdentityRole<Guid>>().ToTable("AppRole").HasKey(x => x.Id);
-            //modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
-            //modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
-            //modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
 
-            //modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
-            //modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
-
-            //base.OnModelCreating(modelBuilder);
         }
         public DbSet<Sinhvien> Sinhviens { get; set; }
         public DbSet<Dot> Dots { get; set; }
@@ -55,10 +44,8 @@ namespace Ueh.BackendApi.Data.EF
         public DbSet<Lichsu> Lichsus { get; set; }
         public DbSet<Chuyennganh> Chuyennganhs { get; set; }
         public DbSet<Phancong> Phancongs { get; set; }
-        public DbSet<SinhvienKhoa> SinhvienKhoas { get; set; }
         public DbSet<Chitiet> Chitiets { get; set; }
         public DbSet<Ketqua> Ketquas { get; set; }
-        public DbSet<GiangvienKhoa> GiangvienKhoas { get; set; }
         public DbSet<UploadResult> UploadResults { get; set; }
         public DbSet<Chamcheo> Chamcheos { get; set; }
         public DbSet<User> Users { get; set; }
