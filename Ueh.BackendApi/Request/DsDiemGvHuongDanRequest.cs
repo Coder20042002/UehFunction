@@ -10,5 +10,8 @@
         public string? tendetai { get; set; }
         public string malop { get; set; }
         public string khoahoc { get; set; }
+        public string? hotengv1 { get; set; }
+        public string? hotengv2 { get; set; }
+
     }
 }
