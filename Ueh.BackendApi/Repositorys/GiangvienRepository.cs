@@ -94,8 +94,8 @@ namespace Ueh.BackendApi.Repositorys
         {
             var giangVienList = await _context.Phancongs
                 .Where(p => p.status == "true" && p.madot == madot)
-                .Join(_context.GiangvienKhoas, p => p.magv, gk => gk.magv, (p, gk) => new { Phancong = p, GiangvienKhoa = gk })
-                .Where(pgk => pgk.GiangvienKhoa.makhoa == makhoa)
+                .Join(_context.Giangviens, p => p.magv, gk => gk.magv, (p, gk) => new { Phancong = p, Giangvien = gk })
+                .Where(pgk => pgk.Giangvien.makhoa == makhoa)
                 .GroupBy(pgk => pgk.Phancong.magv)
                 .Select(g => new GiangvienRequest
                 {
@@ -124,13 +124,12 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<List<GiangvienUpdateRequest>> GetGiangvienByKhoa(string makhoa)
         {
-            List<GiangvienUpdateRequest> giangviens = await _context.GiangvienKhoas
-                .Include(gvk => gvk.giangvien)
-                .Where(gvk => gvk.makhoa == makhoa && gvk.giangvien.status == "true")
+            List<GiangvienUpdateRequest> giangviens = await _context.Giangviens
+                .Where(gvk => gvk.makhoa == makhoa && gvk.status == "true")
                 .Select(gvk => new GiangvienUpdateRequest
                 {
-                    magv = gvk.giangvien.magv,
-                    tengv = gvk.giangvien.tengv,
+                    magv = gvk.magv,
+                    tengv = gvk.tengv,
                 }).OrderByDescending(t => t.tengv)
 
                 .ToListAsync();
@@ -149,21 +148,39 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<bool> CreateGiangvien(string makhoa, Giangvien Giangvien)
+        public async Task<bool> CreateGiangvien(string makhoa, GiangvienUpdateRequest giangvienupdate)
         {
-            bool giangvienkhoa = await _context.Khoas.AnyAsync(a => a.makhoa == makhoa);
-            //var giangvienchuyennganh = _context.Chuyennganhs.Where(a => a.macn == Giangvien.macn).FirstOrDefault();
-            var gvkhoa = new GiangvienKhoa
+
+            var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == giangvienupdate.magv);
+
+            if (kiemtrauser == false)
             {
+                var user = new User
+                {
+                    userId = giangvienupdate.magv,
+                    email = giangvienupdate.email,
+                    sdt = giangvienupdate.sdt,
+                    role = "teacher"
+
+                };
+                _context.Add(user);
+
+            }
+
+            var giangvien = new Giangvien
+            {
+                magv = giangvienupdate.magv,
                 makhoa = makhoa,
-                magv = Giangvien.magv,
+                tengv = giangvienupdate.tengv,
+                status = "true"
+
             };
 
-            if (giangvienkhoa)
-                _context.Add(gvkhoa);
-            _context.Add(Giangvien);
-
+            await _context.Giangviens.AddAsync(giangvien);
             return await Save();
+
+
+
         }
 
         public async Task<bool> DeleteGiangvien(string magv)
@@ -282,26 +299,28 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 magv = magv,
                                 tengv = worksheet.Cells[row, 2].Value?.ToString(),
-
-                            };
-
-                            var user = new User
-                            {
-                                userId = magv,
-                                email = worksheet.Cells[row, 4].Value?.ToString(),
-                                sdt = worksheet.Cells[row, 3].Value?.ToString(),
-                                role = "teacher"
-
-                            };
-
-                            var khoagv = new GiangvienKhoa
-                            {
-                                magv = magv,
                                 makhoa = makhoa
                             };
 
-                            _context.Add(user);
-                            _context.Add(khoagv);
+                            var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == magv);
+
+                            if (kiemtrauser == false)
+                            {
+                                var user = new User
+                                {
+                                    userId = magv,
+                                    email = worksheet.Cells[row, 4].Value?.ToString(),
+                                    sdt = worksheet.Cells[row, 3].Value?.ToString(),
+                                    role = "teacher"
+
+                                };
+                                _context.Add(user);
+
+                            }
+
+
+
+
 
                             await _context.Giangviens.AddAsync(giangvien);
                         }

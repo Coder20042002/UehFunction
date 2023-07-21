@@ -4,8 +4,8 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IKhoaRepository
     {
-        Task<ICollection<SinhvienKhoa>> GetKhoaBySinhviens(string madot, string makhoa);
-        Task<ICollection<GiangvienKhoa>> GetKhoaByGiangviens(string makhoa);
+        Task<ICollection<Sinhvien>> GetKhoaBySinhviens(string madot, string makhoa);
+        Task<ICollection<Giangvien>> GetKhoaByGiangviens(string makhoa);
 
     }
 }

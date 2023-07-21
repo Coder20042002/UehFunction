@@ -91,7 +91,7 @@ namespace Ueh.BackendApi.Controllers
 
 
         [HttpPut("UpdateInfoUser")]
-        public async Task<IActionResult> UpdateInfoUser(UserDto updateUser, string id)
+        public async Task<IActionResult> UpdateInfoUser(UpdateUserRequest updateUser, string id)
         {
             if (updateUser == null)
                 return BadRequest(ModelState);
@@ -99,9 +99,8 @@ namespace Ueh.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var user = _mapper.Map<User>(updateUser);
 
-            if (!await _userRepository.UpdateInfoUser(user, id))
+            if (!await _userRepository.UpdateInfoUser(updateUser, id))
             {
                 ModelState.AddModelError("", "Xảy ra lỗi khi update ");
                 return StatusCode(500, ModelState);

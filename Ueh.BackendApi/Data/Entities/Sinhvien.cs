@@ -21,13 +21,14 @@ namespace Ueh.BackendApi.Data.Entities
         public string malop { get; set; }
         public string bacdt { get; set; }
         public string loaihinh { get; set; }
+        public string makhoa { get; set; }
         public string? macn { get; set; }
         public string madot { get; set; }
 
         public string status { get; set; }
         public Chuyennganh chuyennganh { get; set; }
+        public Khoa khoa { get; set; }
         public ICollection<Phancong> phancongs { get; set; }
-        public ICollection<SinhvienKhoa> sinhvienkhoas { get; set; }
 
 
     }

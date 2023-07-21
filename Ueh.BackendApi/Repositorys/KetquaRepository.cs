@@ -9,7 +9,6 @@ using System.Text;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
-using Ueh.BackendApi.Migrations;
 using Ueh.BackendApi.Request;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 
@@ -643,9 +642,7 @@ namespace Ueh.BackendApi.Repositorys
                              .ThenInclude(p => p.sinhvien)
                          .Include(k => k.phancong)
                              .ThenInclude(p => p.giangvien)
-                                 .ThenInclude(g => g.giangvienkhoas)
-                                     .ThenInclude(gk => gk.khoa)
-                         .Where(k => k.phancong.giangvien.giangvienkhoas.Any(gk => gk.khoa.makhoa == makhoa) && k.phancong.madot == madot)
+                         .Where(k => k.phancong.giangvien.makhoa == makhoa && k.phancong.madot == madot)
                          .OrderBy(k => k.phancong.giangvien.tengv)
                          .ToListAsync();
             // Tạo một package Excel
@@ -752,7 +749,7 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<DiemchitietRequest> DiemChiTietSv(string mssv)
         {
 
-            var sinhvienKhoa = await _context.SinhvienKhoas
+            var sinhvienKhoa = await _context.Sinhviens
               .Include(sk => sk.khoa)
               .FirstOrDefaultAsync(sk => sk.mssv == mssv);
 
@@ -817,7 +814,7 @@ namespace Ueh.BackendApi.Repositorys
             }
 
             // Lấy thông tin khoa từ mã giảng viên
-            var khoa = await _context.GiangvienKhoas
+            var khoa = await _context.Giangviens
                 .Include(sk => sk.khoa)
                 .FirstOrDefaultAsync(sk => sk.magv == magv);
 

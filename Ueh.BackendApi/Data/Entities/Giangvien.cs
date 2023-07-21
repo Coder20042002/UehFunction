@@ -12,9 +12,11 @@ namespace Ueh.BackendApi.Data.Entities
         public string tengv { get; set; }
         public string status { get; set; } = "true";
         public string? chuyenmon { get; set; }
+        public string? makhoa { get; set; }
+
         public ICollection<Dangky> dangkys { get; set; }
         public ICollection<Phancong> phancongs { get; set; }
-        public ICollection<GiangvienKhoa> giangvienkhoas { get; set; }
+        public Khoa khoa { get; set; }
 
 
     }

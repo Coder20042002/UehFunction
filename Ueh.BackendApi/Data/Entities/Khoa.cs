@@ -10,8 +10,8 @@ namespace Ueh.BackendApi.Data.Entities
     {
         public string makhoa { get; set; }
         public string tenkhoa { get; set; }
-        public ICollection<SinhvienKhoa> sinhvienkhoas { get; set; }
-        public ICollection<GiangvienKhoa> giangvienkhoas { get; set; }
+        public ICollection<Giangvien> giangviens { get; set; }
+        public ICollection<Sinhvien> sinhviens { get; set; }
         public ICollection<Dangky> dangkis { get; set; }
 
     }
