@@ -788,6 +788,8 @@ namespace Ueh.BackendApi.Repositorys
                 tendot = phancong.dot.name,
                 hotensv = phancong.sinhvien.ho + " " + phancong.sinhvien.ten,
                 mssv = phancong.mssv,
+                lop = phancong.sinhvien.thuoclop,
+                khoahoc = phancong.sinhvien.khoahoc,
                 tenkl = phancong.chitiets.FirstOrDefault()?.tendetai,
                 tengv = phancong.giangvien.tengv,
                 tieuchi1 = ketqua.tieuchi1,
@@ -842,7 +844,36 @@ namespace Ueh.BackendApi.Repositorys
                 .ToListAsync();
 
             // Tạo danh sách kết quả DsDiemGvHuongDanRequest và điền thông tin
+            string hotengv1 = "";
+            string hotengv2 = "";
             var dsDiemGvHuongDan = new List<DsDiemGvHuongDanRequest>();
+
+            if (loai.maloai == "KLTN")
+            {
+                if (giangvien1.magv == magv)
+                {
+                    hotengv1 = giangvien1.tengv;
+                    hotengv2 = giangvien2.tengv;
+                }
+                else
+                {
+                    hotengv1 = giangvien2.tengv;
+                    hotengv2 = giangvien1.tengv;
+                }
+            }
+            else
+            {
+                if (giangvien1.magv == magv)
+                {
+                    hotengv1 = giangvien1.tengv;
+                }
+                else
+                {
+                    hotengv1 = giangvien2.tengv;
+
+                }
+
+            }
 
             foreach (var ketqua in listketqua)
             {
@@ -855,7 +886,9 @@ namespace Ueh.BackendApi.Repositorys
                     mssv = ketqua?.phancong?.sinhvien?.mssv,
                     tendetai = ketqua?.phancong?.chitiets?.FirstOrDefault()?.tendetai,
                     malop = ketqua?.phancong?.sinhvien?.thuoclop,
-                    khoahoc = ketqua.phancong.sinhvien?.khoahoc
+                    khoahoc = ketqua.phancong.sinhvien?.khoahoc,
+                    hotengv1 = hotengv1,
+                    hotengv2 = hotengv2,
                 };
 
                 dsDiemGvHuongDan.Add(dsDiemGvHuongDanRequest);
