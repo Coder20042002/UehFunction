@@ -24,6 +24,30 @@ namespace Ueh.BackendApi.Repositorys
             _context = context;
         }
 
+        public async Task<List<UserRoleAdminRequest>> GetUserRoleAdminRequests()
+        {
+            var userRoleAdminRequests = await _context.Users
+                .Where(user => user.role == "admin")
+                .Select(user => new UserRoleAdminRequest
+                {
+                    userId = user.userId,
+                    email = user.email,
+                    sdt = user.sdt,
+                    role = user.role,
+                    name = _context.Giangviens
+                        .Where(gv => gv.magv == user.userId && gv.status == "true")
+                        .Select(gv => gv.tengv)
+                        .FirstOrDefault() ?? "", // Nếu giảng viên không tồn tại, giá trị mặc định là ""
+                    tenkhoa = _context.Giangviens
+                        .Where(gv => gv.magv == user.userId && gv.status == "true")
+                        .Select(gv => gv.khoa.tenkhoa)
+                        .FirstOrDefault() ?? "" // Nếu khoa không tồn tại, giá trị mặc định là ""
+                })
+                .ToListAsync();
+
+            return userRoleAdminRequests;
+        }
+
 
         public async Task<string> Decrypt(string encryptedJson)
         {

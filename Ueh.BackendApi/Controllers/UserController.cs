@@ -75,7 +75,17 @@ namespace Ueh.BackendApi.Controllers
             return Ok(user);
         }
 
+        [HttpGet("GetUserRoleAdminRequests")]
+        public async Task<IActionResult> GetUserRoleAdminRequests()
+        {
 
+            var user = await _userRepository.GetUserRoleAdminRequests();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(user);
+        }
 
         // [HttpGet("KiemTraUser")]
         // public async Task<IActionResult> KiemTraUser(string id)

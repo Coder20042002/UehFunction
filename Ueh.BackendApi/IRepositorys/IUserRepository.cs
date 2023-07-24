@@ -6,6 +6,7 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IUserRepository
     {
+        Task<List<UserRoleAdminRequest>> GetUserRoleAdminRequests();
         Task<UserRequest> CreateUser(string encryptedJson);
         Task<string> Encrypt(string json, string key, string iv);
         Task<string> Decrypt(string encryptedJson);

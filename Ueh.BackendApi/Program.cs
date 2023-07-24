@@ -9,7 +9,6 @@ using System.Configuration;
 using System.Text;
 using System.Text.Json.Serialization;
 using Ueh.BackendApi.Data.EF;
-using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Repositorys;
 
@@ -48,12 +47,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 
 builder.Services.AddDbContext<UehDbContext>(options =>
-                
+
 options.UseSqlServer(builder.Configuration.GetConnectionString("UehDb")));
 
-//builder.Services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>()
-//              .AddEntityFrameworkStores<UehDbContext>()
-//              .AddDefaultTokenProviders();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

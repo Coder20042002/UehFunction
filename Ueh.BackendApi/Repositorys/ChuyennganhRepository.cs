@@ -16,9 +16,9 @@ namespace Ueh.BackendApi.Repositorys
         }
         public async Task<bool> CreateChuyennganh(Chuyennganh Chuyennganh)
         {
-            var chuyennganhExist = await _context.Chuyennganhs.Where(a => a.macn == Chuyennganh.macn).FirstOrDefaultAsync();
+            var khoaExist = await _context.Chuyennganhs.Where(a => a.macn == Chuyennganh.macn).FirstOrDefaultAsync();
 
-            if (chuyennganhExist == null)
+            if (khoaExist == null)
                 _context.Add(Chuyennganh);
 
             return await Save();
@@ -86,14 +86,14 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 continue;
                             }
-                            var chuyennganh = new Chuyennganh
+                            var khoa = new Chuyennganh
                             {
                                 macn = worksheet.Cells[row, 1].Value?.ToString(),
                                 tencn = worksheet.Cells[row, 2].Value?.ToString(),
                                 makhoa = makhoa
                             };
 
-                            await _context.Chuyennganhs.AddAsync(chuyennganh);
+                            await _context.Chuyennganhs.AddAsync(khoa);
                         }
 
                         return await Save();
