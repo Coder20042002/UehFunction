@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using ServiceStack;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
@@ -17,52 +18,56 @@ namespace Ueh.BackendApi.Repositorys
             _context = context;
         }
 
-        public async Task<bool> KiemTraMaloai(string mssv)
+        public async Task<bool> KiemTraMaloai(string madot, string mssv)
         {
             bool hasHKDN = await _context.Phancongs
-                .AnyAsync(p => p.mssv == mssv && p.maloai == "HKDN");
+                .AnyAsync(p => p.mssv == mssv && p.maloai == "HKDN" && p.madot == madot);
 
             return hasHKDN;
         }
 
         public async Task<bool> CreatePhancong(PhancongRequest phancongrequest)
         {
-            var kiemtra = await _context.Phancongs.Where(a => a.mssv == phancongrequest.mssv).FirstOrDefaultAsync();
-            var phancong = new Phancong
+            bool sinvien = await _context.Sinhviens.AnyAsync(s => s.mssv == phancongrequest.mssv && s.status == "true" && s.madot == phancongrequest.madot);
+            if (sinvien)
             {
-                Id = Guid.NewGuid(),
-                mssv = phancongrequest.mssv,
-                magv = phancongrequest.magv,
-                maloai = phancongrequest.maloai,
-                madot = phancongrequest.madot
-            };
+                bool kiemtra = await _context.Phancongs.AnyAsync(s => s.mssv == phancongrequest.mssv && s.status == "true" && s.madot == phancongrequest.madot);
+                if (!kiemtra)
+                {
+                    var phancong = new Phancong
+                    {
+                        Id = Guid.NewGuid(),
+                        mssv = phancongrequest.mssv,
+                        magv = phancongrequest.magv,
+                        maloai = phancongrequest.maloai,
+                        madot = phancongrequest.madot,
+                        status = "true"
+                    };
 
-            var ketqua = new Ketqua
-            {
-                mapc = phancong.Id,
-            };
-            var chitiet = new Chitiet
-            {
-                mapc = phancong.Id,
-            };
+                    var ketqua = new Ketqua
+                    {
+                        mapc = phancong.Id,
+                    };
+                    var chitiet = new Chitiet
+                    {
+                        mapc = phancong.Id,
+                    };
 
 
-            if (kiemtra == null)
-            {
-                _context.Add(phancong);
-                _context.Add(ketqua);
-                _context.Add(chitiet);
+                    _context.Add(phancong);
+                    _context.Add(ketqua);
+                    _context.Add(chitiet);
+
+                }
             }
-
-
 
 
             return await Save();
         }
 
-        public async Task<bool> DeletePhancong(string mssv)
+        public async Task<bool> DeletePhancong(string madot, string mssv)
         {
-            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
+            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
             if (kiemtra != null)
             {
@@ -104,9 +109,9 @@ namespace Ueh.BackendApi.Repositorys
         }
 
 
-        public async Task<bool> UpdatePhancong(string mssv, string magv)
+        public async Task<bool> UpdatePhancong(string madot, string mssv, string magv)
         {
-            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
+            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
             if (kiemtra != null)
             {
@@ -117,9 +122,9 @@ namespace Ueh.BackendApi.Repositorys
             return await Save();
         }
 
-        public async Task<bool> UpdateLoaiHinhThucTap(string mssv, string maloai)
+        public async Task<bool> UpdateLoaiHinhThucTap(string madot, string mssv, string maloai)
         {
-            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true");
+            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
             if (kiemtra != null)
             {
@@ -144,47 +149,55 @@ namespace Ueh.BackendApi.Repositorys
                         var rowCount = worksheet.Dimension.Rows;
 
                         // Trước khi bắt đầu vòng lặp, tạo một từ điển lưu trữ maloai tương ứng với mssv
-                        var maloaiDict = await _context.Sinhviens.ToDictionaryAsync(s => s.mssv, s => s.malop);
-
+                        var maloaiDict = await _context.Sinhviens
+                                        .Where(sv => sv.madot == madot) // Lọc sinh viên dựa vào đợt (madot)
+                                        .ToDictionaryAsync(sv => sv.mssv, sv => sv.malop);
                         // Lặp qua các dòng trong tệp Excel và xử lý dữ liệu
                         // Bắt đầu từ dòng thứ 2 (loại bỏ header)
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
                             var magv = worksheet.Cells[row, 2].Value?.ToString();
-                            bool kiemtra = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
-                            if (kiemtra != false)
+                            bool sinvien = await _context.Sinhviens.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
+                            if (sinvien)
                             {
-                                continue;
+                                bool kiemtra = await _context.Phancongs.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
+                                if (kiemtra != false)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    var phanconglist = new Phancong
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        mssv = mssv,
+                                        magv = magv,
+                                        maloai = maloaiDict.GetValueOrDefault(mssv).Substring(1, 4), // Lấy maloai từ từ điển,
+                                        madot = madot,
+                                        status = "true"
+                                    };
+
+
+
+                                    var ketqua = new Ketqua
+                                    {
+                                        mapc = phanconglist.Id,
+                                    };
+                                    var chitiet = new Chitiet
+                                    {
+                                        mapc = phanconglist.Id,
+                                    };
+
+                                    _context.Add(ketqua);
+                                    _context.Add(chitiet);
+
+                                    await _context.Phancongs.AddAsync(phanconglist);
+                                }
                             }
-                            else
-                            {
-                                var phanconglist = new Phancong
-                                {
-                                    Id = Guid.NewGuid(),
-                                    mssv = mssv,
-                                    magv = magv,
-                                    maloai = maloaiDict.GetValueOrDefault(mssv).Substring(1, 4), // Lấy maloai từ từ điển,
-                                    madot = madot
-                                };
 
 
-
-                                var ketqua = new Ketqua
-                                {
-                                    mapc = phanconglist.Id,
-                                };
-                                var chitiet = new Chitiet
-                                {
-                                    mapc = phanconglist.Id,
-                                };
-
-                                _context.Add(ketqua);
-                                _context.Add(chitiet);
-
-                                await _context.Phancongs.AddAsync(phanconglist);
-                            }
 
                         }
 

@@ -5,14 +5,14 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IPhancongRepository
     {
-        Task<bool> UpdateLoaiHinhThucTap(string mssv, string maloai);
-        Task<bool> KiemTraMaloai(string mssv);
+        Task<bool> UpdateLoaiHinhThucTap(string madot,string mssv, string maloai);
+        Task<bool> KiemTraMaloai(string madot, string mssv);
         Task<ICollection<Phancong>> GetPhancongKhoas(string madot, string makhoa);
         Task<Phancong> GetPhancong(string magv);
         Task<bool> PhancongExists(string mssv);
         Task<bool> CreatePhancong(PhancongRequest Phancong);
-        Task<bool> UpdatePhancong(string mssv, string magv);
-        Task<bool> DeletePhancong(string mssv);
+        Task<bool> UpdatePhancong(string madot, string mssv, string magv);
+        Task<bool> DeletePhancong(string madot, string mssv);
         Task<bool> ImportExcelFile(IFormFile formFile, string madot);
         Task<byte[]> ExportToExcel(string madot, string makhoa);
         Task<ICollection<Phancong>> SearchByTenSinhVien(string tenSinhVien);

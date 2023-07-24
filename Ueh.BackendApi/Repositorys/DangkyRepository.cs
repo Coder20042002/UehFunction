@@ -122,7 +122,7 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
-                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true");
+                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
                             if (existing != false)
                             {
@@ -137,7 +137,8 @@ namespace Ueh.BackendApi.Repositorys
                                 email = worksheet.Cells[row, 5].Value?.ToString(),
                                 madot = madot,
                                 magv = magv,
-                                makhoa = makhoa
+                                makhoa = makhoa,
+                                status = "true"
                             };
 
                             await _context.Dangkys.AddAsync(dangky);
