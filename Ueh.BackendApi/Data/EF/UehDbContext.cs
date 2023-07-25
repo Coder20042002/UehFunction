@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ueh.BackendApi.Data.Configuration;
 using Ueh.BackendApi.Data.Entities;
+using Ueh.BackendApi.Data.Extensions;
 
 namespace Ueh.BackendApi.Data.EF
 {
@@ -31,7 +32,7 @@ namespace Ueh.BackendApi.Data.EF
             modelBuilder.ApplyConfiguration(new ChamcheoConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
 
-
+            modelBuilder.Seed();
 
 
         }

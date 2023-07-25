@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 using ServiceStack.Web;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,6 +23,42 @@ namespace Ueh.BackendApi.Repositorys
         public UserRepository(UehDbContext context)
         {
             _context = context;
+        }
+
+
+        public async Task<bool> CreateUserRoleAdmin(string makhoa, GiangvienUpdateRequest giangvienupdate)
+        {
+
+            var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == giangvienupdate.magv);
+
+            if (kiemtrauser == false)
+            {
+                var user = new User
+                {
+                    userId = giangvienupdate.magv,
+                    email = giangvienupdate.email,
+                    sdt = giangvienupdate.sdt,
+                    role = "admin"
+
+                };
+                _context.Add(user);
+
+            }
+
+            var giangvien = new Giangvien
+            {
+                magv = giangvienupdate.magv,
+                makhoa = makhoa,
+                tengv = giangvienupdate.tengv,
+                status = "true"
+
+            };
+
+            await _context.Giangviens.AddAsync(giangvien);
+            return await Save();
+
+
+
         }
 
         public async Task<List<UserRoleAdminRequest>> GetUserRoleAdminRequests()
@@ -210,6 +247,72 @@ namespace Ueh.BackendApi.Repositorys
 
             return userrequest;
 
+        }
+
+        public async Task<bool> ImportExcelFile(IFormFile formFile)
+        {
+            if (formFile != null && formFile.Length > 0)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    formFile.CopyTo(stream);
+
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        var worksheet = package.Workbook.Worksheets[0];
+                        var rowCount = worksheet.Dimension.Rows;
+
+                        for (int row = 2; row <= rowCount; row++)
+                        {
+
+                            var magv = worksheet.Cells[row, 1].Value?.ToString();
+                            bool existing = await _context.Giangviens.AnyAsync(g => g.magv == magv && g.status == "true");
+
+                            if (existing == true)
+                            {
+                                continue;
+                            }
+                            var giangvien = new Giangvien
+                            {
+                                magv = magv,
+                                tengv = worksheet.Cells[row, 2].Value?.ToString(),
+                                makhoa = worksheet.Cells[row, 5].Value?.ToString()
+                            };
+
+                            var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == magv);
+
+                            if (kiemtrauser == false)
+                            {
+                                var user = new User
+                                {
+                                    userId = magv,
+                                    email = worksheet.Cells[row, 4].Value?.ToString(),
+                                    sdt = worksheet.Cells[row, 3].Value?.ToString(),
+                                    role = "admin"
+
+                                };
+                                _context.Add(user);
+
+                            }
+
+
+
+
+
+                            await _context.Giangviens.AddAsync(giangvien);
+                        }
+
+                        return await Save();
+                    }
+                }
+
+            }
+            return false;
+        }
+
+        public async Task<bool> UserExists(string userId)
+        {
+            return await _context.Users.AnyAsync(s => s.userId == userId);
         }
     }
 }
