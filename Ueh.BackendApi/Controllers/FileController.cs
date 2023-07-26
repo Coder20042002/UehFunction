@@ -24,9 +24,9 @@ namespace Ueh.BackendApi.Controllers
 
         // GET api/files?mssv={mssv}
         [HttpGet]
-        public async Task<IActionResult> GetFiles(string mssv)
+        public async Task<IActionResult> GetFiles(string madot, string mssv)
         {
-            List<UploadResult> files = await context.UploadResults.Where(u => u.Mssv == mssv && u.Status == "true").ToListAsync(); ;
+            List<UploadResult> files = await context.UploadResults.Where(u => u.Mssv == mssv && u.Madot == madot && u.Status == "true").ToListAsync(); ;
             return Ok(files);
         }
 
@@ -65,7 +65,7 @@ namespace Ueh.BackendApi.Controllers
 
 
         [HttpPost("PostFile")]
-        public async Task<ActionResult> PostFileXacNhan(List<UploadResultDto> files, string mssv, string loai)
+        public async Task<ActionResult> PostFileXacNhan(List<UploadResultDto> files, string madot, string mssv, string loai)
         {
             List<UploadResult> uploadResults = new List<UploadResult>();
             foreach (var file in files)
@@ -77,6 +77,7 @@ namespace Ueh.BackendApi.Controllers
                 uploadResult.ContentType = file.ContentType;
                 uploadResult.Mssv = mssv;
                 uploadResult.StoredFileName = file.StoredFileName;
+                uploadResult.Madot = madot;
                 uploadResults.Add(uploadResult);
 
                 context.Add(uploadResult);

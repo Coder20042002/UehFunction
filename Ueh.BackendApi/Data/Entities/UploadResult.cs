@@ -9,6 +9,7 @@
         public string? StoredFileName { get; set; }
         public string? ContentType { get; set; }
         public DateTime DateTime { get; set; } = DateTime.Now;
+        public string Madot { get; set; }
         public string Status { get; set; } = "true";
 
     }
