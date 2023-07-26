@@ -23,7 +23,7 @@ namespace Ueh.BackendApi.Repositorys
             var ketquaList = await _context.Ketquas
                 .Include(k => k.phancong)
                 .ThenInclude(p => p.sinhvien)
-                .Where(k => k.phancong.magv == magv && k.phancong.madot == madot)
+                .Where(k => k.phancong.magv == magv && k.phancong.madot == madot && k.phancong.status == "true")
                 .Select(k => new
                 {
                     k.phancong.sinhvien,

@@ -28,6 +28,62 @@ namespace Ueh.BackendApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost("formFile")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> ImportExcelFile(IFormFile formFile)
+        { 
+            try
+            {
+
+                bool success = await _userRepository.ImportExcelFile(formFile);
+                if (success)
+                {
+                    return Ok("Import thành công"); // Trả về thông báo thành công
+                }
+                else
+                {
+                    return BadRequest("Import thất bại"); // Trả về thông báo lỗi
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
+            }
+
+            // Trường hợp không xử lý được, trả về BadRequest
+            return BadRequest("Xảy ra lỗi không xác định được");
+        }
+    
+
+        [HttpPost("CreateUserRoleAdmin")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateUserRoleAdmin([FromQuery] string makhoa, GiangvienUpdateRequest giangvienCreate)
+        {
+
+
+            bool Giangviens = await _userRepository.UserExists(giangvienCreate.magv);
+
+            if (Giangviens == true)
+            {
+                ModelState.AddModelError("", "User đã tồn tại");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+
+
+            if (!await _userRepository.CreateUserRoleAdmin(makhoa, giangvienCreate))
+            {
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(giangvienCreate);
+        }
 
         [HttpPost("LoginUser")]
         [ProducesResponseType(204)]
@@ -75,7 +131,17 @@ namespace Ueh.BackendApi.Controllers
             return Ok(user);
         }
 
+        [HttpGet("GetUserRoleAdminRequests")]
+        public async Task<IActionResult> GetUserRoleAdminRequests()
+        {
 
+            var user = await _userRepository.GetUserRoleAdminRequests();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(user);
+        }
 
         // [HttpGet("KiemTraUser")]
         // public async Task<IActionResult> KiemTraUser(string id)

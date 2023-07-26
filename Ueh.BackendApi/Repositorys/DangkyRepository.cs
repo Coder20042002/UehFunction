@@ -122,7 +122,7 @@ namespace Ueh.BackendApi.Repositorys
                         for (int row = 2; row <= rowCount; row++)
                         {
                             var mssv = worksheet.Cells[row, 1].Value?.ToString();
-                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true");
+                            bool existing = await _context.Dangkys.AnyAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
                             if (existing != false)
                             {
@@ -137,7 +137,8 @@ namespace Ueh.BackendApi.Repositorys
                                 email = worksheet.Cells[row, 5].Value?.ToString(),
                                 madot = madot,
                                 magv = magv,
-                                makhoa = makhoa
+                                makhoa = makhoa,
+                                status = "true"
                             };
 
                             await _context.Dangkys.AddAsync(dangky);
@@ -153,16 +154,14 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<byte[]> ExportToExcel(string madot, string makhoa)
         {
-            var dangkys = await _context.Dangkys
-                .Include(d => d.giangvien)
-                .Where(d => d.madot == madot && d.makhoa == makhoa)
-                .OrderByDescending(d => d.giangvien.tengv)
+            var sinhviens = await _context.Sinhviens
+                .Where(sv => sv.madot == madot && sv.makhoa == makhoa)
+                .OrderBy(sv => sv.mssv)
                 .ToListAsync();
 
-            // Tạo một package Excel
+            // Tạo một package Excel và ghi dữ liệu vào worksheet
             using (var package = new ExcelPackage())
             {
-                // Tạo một worksheet trong package
                 var worksheet = package.Workbook.Worksheets.Add("DangKy");
 
                 // Đặt tiêu đề cho các cột
@@ -170,29 +169,28 @@ namespace Ueh.BackendApi.Repositorys
                 worksheet.Cells["B1"].Value = "Họ tên sinh viên";
                 worksheet.Cells["C1"].Value = "Lớp";
                 worksheet.Cells["D1"].Value = "Email sinh viên";
-                worksheet.Cells["E1"].Value = "magv";
+                worksheet.Cells["E1"].Value = "Magv";
                 worksheet.Cells["F1"].Value = "Tên giáo viên";
 
                 // Ghi dữ liệu vào worksheet
                 int rowIndex = 2;
-                int count = 0;
-                foreach (var dangky in dangkys)
+                foreach (var sinhvien in sinhviens)
                 {
-                    if (dangky.status != "true")
-                    {
-                        continue;
-                    }
-                    worksheet.Cells[$"A{rowIndex}"].Value = dangky.mssv;
-                    worksheet.Cells[$"B{rowIndex}"].Value = dangky.ho + " " + dangky.ten;
-                    worksheet.Cells[$"C{rowIndex}"].Value = dangky.lop;
-                    worksheet.Cells[$"D{rowIndex}"].Value = dangky.email;
-                    worksheet.Cells[$"E{rowIndex}"].Value = dangky.magv;
-                    worksheet.Cells[$"F{rowIndex}"].Value = dangky.giangvien?.tengv;
+                    worksheet.Cells[$"A{rowIndex}"].Value = sinhvien.mssv;
+                    worksheet.Cells[$"B{rowIndex}"].Value = sinhvien.ho + " " + sinhvien.ten;
+                    worksheet.Cells[$"C{rowIndex}"].Value = sinhvien.thuoclop;
+
+                    var dangky = await _context.Dangkys
+                        .Include(d => d.giangvien)
+                        .FirstOrDefaultAsync(d => d.mssv == sinhvien.mssv && d.madot == madot && d.makhoa == makhoa && d.status == "true");
+
+                    worksheet.Cells[$"D{rowIndex}"].Value = dangky?.email ?? "";
+                    worksheet.Cells[$"E{rowIndex}"].Value = dangky?.magv ?? ""; // Nếu không có bản ghi "Dangky" tương ứng, giá trị "magv" sẽ được để trống
+                    worksheet.Cells[$"F{rowIndex}"].Value = dangky?.giangvien?.tengv ?? "";
 
                     rowIndex++;
                 }
 
-                // Tự động điều chỉnh kích thước các cột
                 worksheet.Cells.AutoFitColumns();
 
                 // Xuất file Excel

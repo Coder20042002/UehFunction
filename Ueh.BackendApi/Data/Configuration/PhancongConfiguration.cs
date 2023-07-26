@@ -11,7 +11,7 @@ namespace Ueh.BackendApi.Data.Configuration
             builder.ToTable("Phancongs");
             builder.HasKey(pc => pc.Id);
 
-            builder.HasOne(pc => pc.sinhvien).WithMany(sv => sv.phancongs).HasForeignKey(pc => pc.mssv).HasPrincipalKey(sv => sv.mssv);
+            builder.HasOne(pc => pc.sinhvien).WithMany(sv => sv.phancongs).HasForeignKey(pc => new { pc.mssv, pc.madot }).HasPrincipalKey(sv => new { sv.mssv, sv.madot });
             builder.HasOne(pc => pc.loai).WithMany(l => l.phanCongs).HasForeignKey(pc => pc.maloai).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(pc => pc.giangvien).WithMany(gv => gv.phancongs).HasForeignKey(pc => pc.magv).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(pc => pc.dot).WithMany(d => d.phanCongs).HasForeignKey(pc => pc.madot).OnDelete(DeleteBehavior.NoAction);

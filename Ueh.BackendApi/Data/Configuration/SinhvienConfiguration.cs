@@ -15,7 +15,7 @@ namespace Ueh.BackendApi.Data.Configuration
         public void Configure(EntityTypeBuilder<Sinhvien> builder)
         {
             builder.ToTable("Sinhviens");
-            builder.HasKey(x => new { x.mssv, x.madot });
+            builder.HasKey(s => new { s.mssv, s.madot });
 
             builder.HasOne(s => s.chuyennganh).WithMany(k => k.sinhviens).HasForeignKey(s => s.macn);
             builder.HasOne(dk => dk.khoa).WithMany(gv => gv.sinhviens).HasForeignKey(dk => dk.makhoa);

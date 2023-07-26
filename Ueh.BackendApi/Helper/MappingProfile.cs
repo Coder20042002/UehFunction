@@ -12,6 +12,7 @@ namespace Ueh.BackendApi.Helper
             CreateMap<Dot, DotDto>();
             CreateMap<DotDto, Dot>();
             CreateMap<Khoa, KhoaDto>();
+            CreateMap<KhoaDto, Khoa>();
             CreateMap<Sinhvien, SinhvienDto>();
             CreateMap<SinhvienDto, Sinhvien>();
             CreateMap<Giangvien, GiangvienDto>();

@@ -26,10 +26,10 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpGet("kiemtra/{mssv}")]
-        public async Task<bool> KiemTraMaloai(string mssv)
+        [HttpGet("kiemtra")]
+        public async Task<bool> KiemTraMaloai(string madot, string mssv)
         {
-            bool hasHKDN = await _PhancongRepository.KiemTraMaloai(mssv);
+            bool hasHKDN = await _PhancongRepository.KiemTraMaloai(madot, mssv);
 
             return hasHKDN;
         }
@@ -138,14 +138,6 @@ namespace Ueh.BackendApi.Controllers
                 if (PhancongCreate == null)
                     return BadRequest(ModelState);
 
-                bool Phancongs = await _PhancongRepository.PhancongExists(PhancongCreate.mssv);
-
-                if (Phancongs == true)
-                {
-                    ModelState.AddModelError("", " Sinh vien đã được đăng ký");
-                    return StatusCode(422, ModelState);
-                }
-
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
@@ -167,14 +159,14 @@ namespace Ueh.BackendApi.Controllers
         [HttpPut("UpdateLoaiHinhThucTap")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateLoaiHinhThucTap(string mssv, string maloai)
+        public async Task<IActionResult> UpdateLoaiHinhThucTap(string madot, string mssv, string maloai)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                if (!await _PhancongRepository.UpdateLoaiHinhThucTap(mssv, maloai))
+                if (!await _PhancongRepository.UpdateLoaiHinhThucTap(madot, mssv, maloai))
                 {
                     ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                     return StatusCode(500, ModelState);
@@ -192,14 +184,14 @@ namespace Ueh.BackendApi.Controllers
         [HttpPut("UpdatePhancong")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdatePhancong(string mssv, string magv)
+        public async Task<IActionResult> UpdatePhancong(string madot, string mssv, string magv)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                if (!await _PhancongRepository.UpdatePhancong(mssv, magv))
+                if (!await _PhancongRepository.UpdatePhancong(madot, mssv, magv))
                 {
                     ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                     return StatusCode(500, ModelState);
@@ -217,14 +209,14 @@ namespace Ueh.BackendApi.Controllers
         [HttpPut("DeletePhancong")]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> DeletePhancong(string mssv)
+        public async Task<IActionResult> DeletePhancong(string madot, string mssv)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                if (!await _PhancongRepository.DeletePhancong(mssv))
+                if (!await _PhancongRepository.DeletePhancong(madot, mssv))
                 {
                     ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                     return StatusCode(500, ModelState);
