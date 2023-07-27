@@ -264,11 +264,13 @@ namespace Ueh.BackendApi.Repositorys
 
                         for (int row = 2; row <= rowCount; row++)
                         {
+                            var makhoa = worksheet.Cells[row, 5].Value?.ToString();
+                            bool existingkhoa = await _context.Khoas.AnyAsync(s => s.makhoa == makhoa);
 
                             var magv = worksheet.Cells[row, 1].Value?.ToString();
                             bool existing = await _context.Giangviens.AnyAsync(g => g.magv == magv && g.status == "true");
 
-                            if (existing == true)
+                            if (existing == true || existingkhoa == false)
                             {
                                 continue;
                             }
@@ -276,7 +278,7 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 magv = magv,
                                 tengv = worksheet.Cells[row, 2].Value?.ToString(),
-                                makhoa = worksheet.Cells[row, 5].Value?.ToString()
+                                makhoa = makhoa
                             };
 
                             var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == magv);
