@@ -899,7 +899,7 @@ namespace Ueh.BackendApi.Repositorys
                     hotengv1 = hotengv1,
                     hotengv2 = hotengv2,
                     diemtong = Math.Round(sum, 2).ToString(),
-                    ngaycham = DateTime.Today.ToString("dd/MM/yyyyy"),
+                    ngaycham = DateTime.Today.ToString("dd-MM-yyyy"),
                 };
 
                 dsDiemGvHuongDan.Add(dsDiemGvHuongDanRequest);
