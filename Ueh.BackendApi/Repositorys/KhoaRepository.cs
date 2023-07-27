@@ -33,6 +33,16 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Khoas.ToListAsync();
         }
 
+
+        public async Task<ICollection<Khoa>> GetListKhoaNoAdmin()
+        {
+            var khoas = await _context.Khoas
+                .Where(k => !k.giangviens.Any(gv => _context.Users.Any(u => u.userId == gv.magv && u.role == "admin")))
+                .ToListAsync();
+
+            return khoas;
+        }
+
         public async Task<Khoa> GetKhoaById(string makhoa)
         {
             return await _context.Khoas.Where(s => s.makhoa == makhoa).FirstOrDefaultAsync();

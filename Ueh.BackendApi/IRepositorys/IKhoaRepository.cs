@@ -4,6 +4,7 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface IKhoaRepository
     {
+        Task<ICollection<Khoa>> GetListKhoaNoAdmin();
         Task<bool> CreateKhoa(Khoa khoa);
         Task<bool> UpdateKhoa(Khoa khoa);
         Task<bool> DeleteKhoa(Khoa khoa);

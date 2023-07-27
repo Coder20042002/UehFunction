@@ -42,6 +42,19 @@ namespace Ueh.BackendApi.Controllers
             return Ok(giangviens);
         }
 
+
+        [HttpGet("GetListKhoaNoAdmin")]
+        public async Task<IActionResult> GetListKhoaNoAdmin()
+        {
+            var khoas = _mapper.Map<List<KhoaDto>>(await _khoaRepository.GetListKhoaNoAdmin());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(khoas);
+        }
+
+
         [HttpGet("GetListKhoa")]
         public async Task<IActionResult> GetListKhoa()
         {
