@@ -12,6 +12,8 @@
         public string khoahoc { get; set; }
         public string? hotengv1 { get; set; }
         public string? hotengv2 { get; set; }
+        public string? diemtong { get; set; }
+        public string? ngaycham { get; set; }
 
     }
 }

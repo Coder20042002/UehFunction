@@ -877,6 +877,15 @@ namespace Ueh.BackendApi.Repositorys
 
             foreach (var ketqua in listketqua)
             {
+                double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+                if (ketqua.phancong.maloai == "HKDN")
+                {
+                    sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
+                }
+                if (sum >= 10)
+                {
+                    sum = 10;
+                }
                 var dsDiemGvHuongDanRequest = new DsDiemGvHuongDanRequest
                 {
                     tenkhoa = khoa?.khoa?.tenkhoa,
@@ -889,6 +898,8 @@ namespace Ueh.BackendApi.Repositorys
                     khoahoc = ketqua.phancong.sinhvien?.khoahoc,
                     hotengv1 = hotengv1,
                     hotengv2 = hotengv2,
+                    diemtong = Math.Round(sum, 2).ToString(),
+                    ngaycham = DateTime.Today.ToString("dd/MM/yyyyy"),
                 };
 
                 dsDiemGvHuongDan.Add(dsDiemGvHuongDanRequest);
