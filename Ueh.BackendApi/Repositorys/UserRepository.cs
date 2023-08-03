@@ -209,7 +209,7 @@ namespace Ueh.BackendApi.Repositorys
             }
         }
 
-        public async Task<UserRequest> Login(string encryptedJson)
+        public async Task<UserRequest> CreateUser(string encryptedJson)
         {
             // Giải mã và lấy thông tin từ token
             var decryptedJson = await Decrypt(encryptedJson);
