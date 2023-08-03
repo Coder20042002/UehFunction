@@ -14,7 +14,8 @@ namespace Ueh.BackendApi.IRepositorys
         Task<string> Decrypt(string encryptedJson);
         Task<User> GetInfoUser(string id);
         Task<bool> UpdateInfoUser(UpdateUserRequest user, string id);
-        Task<int> getDotInfo(string userId, string role);
+        Task<bool> DeleteRoleAdmin(string id);
+        Task<int> GetDotInfo(string userId, string role);
         Task<bool> Save();
         Task<bool> UserExists(string userId);
     }

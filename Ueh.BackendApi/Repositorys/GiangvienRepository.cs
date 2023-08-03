@@ -35,7 +35,7 @@ namespace Ueh.BackendApi.Repositorys
                     k.tieuchi6,
                     k.tieuchi7,
                     k.diemDN,
-                    k.phancong.maloai
+                    k.phancong.sinhvien.maloai
                 })
                 .ToListAsync();
 
@@ -50,8 +50,8 @@ namespace Ueh.BackendApi.Repositorys
                 {
                     TenSinhVien = $"{sinhvien.ho} {sinhvien.ten}",
                     MaSinhVien = sinhvien.mssv,
-                    Lop = sinhvien.thuoclop,
-                    Khoa = sinhvien.khoagoc,
+                    Lop = sinhvien.malop,
+                    Khoa = sinhvien.malop.Substring(2, 2) ?? "",
                     Email = email,
                     Diem = ketqua.maloai == "HKDN" ?
                         (double)(((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0)) * 0.6 + ((ketqua.diemDN ?? 0) * 0.4))
@@ -76,8 +76,7 @@ namespace Ueh.BackendApi.Repositorys
                 mssv = sv.mssv,
                 ho = sv.ho,
                 ten = sv.ten,
-                thuoclop = sv.thuoclop,
-                khoagoc = sv.khoagoc,
+                thuoclop = sv.malop,
                 email = GetSinhvienEmail(sv.mssv)
             }).ToList();
 

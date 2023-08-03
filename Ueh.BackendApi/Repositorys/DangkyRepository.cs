@@ -166,27 +166,33 @@ namespace Ueh.BackendApi.Repositorys
 
                 // Đặt tiêu đề cho các cột
                 worksheet.Cells["A1"].Value = "MSSV";
-                worksheet.Cells["B1"].Value = "Họ tên sinh viên";
-                worksheet.Cells["C1"].Value = "Lớp";
-                worksheet.Cells["D1"].Value = "Email sinh viên";
-                worksheet.Cells["E1"].Value = "Magv";
-                worksheet.Cells["F1"].Value = "Tên giáo viên";
+                worksheet.Cells["B1"].Value = "Họ";
+                worksheet.Cells["C1"].Value = "Tên ";
+                worksheet.Cells["D1"].Value = "Ngày sinh";
+                worksheet.Cells["E1"].Value = "Mã Lớp";
+                worksheet.Cells["F1"].Value = "Mã Loại";
+                worksheet.Cells["G1"].Value = "Chuyên ngành";
+                worksheet.Cells["H1"].Value = "Mã Gvhd";
+                worksheet.Cells["I1"].Value = "Giáo viên hướng dẫn";
 
                 // Ghi dữ liệu vào worksheet
                 int rowIndex = 2;
                 foreach (var sinhvien in sinhviens)
                 {
                     worksheet.Cells[$"A{rowIndex}"].Value = sinhvien.mssv;
-                    worksheet.Cells[$"B{rowIndex}"].Value = sinhvien.ho + " " + sinhvien.ten;
-                    worksheet.Cells[$"C{rowIndex}"].Value = sinhvien.thuoclop;
+                    worksheet.Cells[$"B{rowIndex}"].Value = sinhvien.ho;
+                    worksheet.Cells[$"C{rowIndex}"].Value = sinhvien.ten;
+                    worksheet.Cells[$"D{rowIndex}"].Value = sinhvien.ngaysinh ?? "";
+                    worksheet.Cells[$"E{rowIndex}"].Value = sinhvien.malop ?? "";
+                    worksheet.Cells[$"F{rowIndex}"].Value = sinhvien.maloai;
+                    worksheet.Cells[$"G{rowIndex}"].Value = sinhvien.macn;
 
                     var dangky = await _context.Dangkys
                         .Include(d => d.giangvien)
                         .FirstOrDefaultAsync(d => d.mssv == sinhvien.mssv && d.madot == madot && d.makhoa == makhoa && d.status == "true");
 
-                    worksheet.Cells[$"D{rowIndex}"].Value = dangky?.email ?? "";
-                    worksheet.Cells[$"E{rowIndex}"].Value = dangky?.magv ?? ""; // Nếu không có bản ghi "Dangky" tương ứng, giá trị "magv" sẽ được để trống
-                    worksheet.Cells[$"F{rowIndex}"].Value = dangky?.giangvien?.tengv ?? "";
+                    worksheet.Cells[$"H{rowIndex}"].Value = dangky?.magv ?? ""; // Nếu không có bản ghi "Dangky" tương ứng, giá trị "magv" sẽ được để trống
+                    worksheet.Cells[$"I{rowIndex}"].Value = dangky?.giangvien?.tengv ?? "";
 
                     rowIndex++;
                 }

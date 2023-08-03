@@ -10,7 +10,7 @@ namespace Ueh.BackendApi.Data.Entities
     {
         public string magv { get; set; }
         public string tengv { get; set; }
-        public string status { get; set; } = "true";
+        public string status { get; set; }
         public string? chuyenmon { get; set; }
         public string? makhoa { get; set; }
 

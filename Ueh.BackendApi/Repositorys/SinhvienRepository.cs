@@ -110,17 +110,10 @@ namespace Ueh.BackendApi.Repositorys
                                 mssv = mssv,
                                 ho = worksheet.Cells[row, 2].Value?.ToString(),
                                 ten = worksheet.Cells[row, 3].Value?.ToString(),
-                                thuoclop = worksheet.Cells[row, 4].Value?.ToString(),
-                                khoagoc = worksheet.Cells[row, 5].Value?.ToString(),
-                                khoahoc = worksheet.Cells[row, 6].Value?.ToString(),
-                                mahp = worksheet.Cells[row, 7].Value?.ToString(),
-                                malhp = worksheet.Cells[row, 8].Value?.ToString(),
-                                tenhp = worksheet.Cells[row, 9].Value?.ToString(),
-                                soct = worksheet.Cells[row, 10].Value?.ToString(),
-                                malop = worksheet.Cells[row, 11].Value?.ToString(),
-                                bacdt = worksheet.Cells[row, 12].Value?.ToString(),
-                                loaihinh = worksheet.Cells[row, 13].Value?.ToString(),
-                                macn = macn,
+                                ngaysinh = worksheet.Cells[row, 4].Value?.ToString(),
+                                malop = worksheet.Cells[row, 5].Value?.ToString(),
+                                maloai = worksheet.Cells[row, 6].Value?.ToString(),
+                                macn = worksheet.Cells[row, 7].Value?.ToString(),
                                 madot = madot,
                                 makhoa = makhoa,
                                 status = "true"
@@ -167,8 +160,7 @@ namespace Ueh.BackendApi.Repositorys
                 mssv = s.mssv,
                 ho = s.ho,
                 ten = s.ten,
-                thuoclop = s.thuoclop,
-                khoagoc = s.khoagoc,
+                thuoclop = s.malop,
                 email = GetSinhvienEmail(s.mssv)
             }).ToList();
 
@@ -213,13 +205,11 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<string> GetLoaiHinhThucTap(string mssv)
         {
-            var phancong = await _context.Phancongs
-                .Include(p => p.loai)
-                .FirstOrDefaultAsync(p => p.mssv == mssv);
+            var kiemtra = await _context.Sinhviens.FirstOrDefaultAsync(p => p.mssv == mssv);
 
-            if (phancong != null)
+            if (kiemtra != null)
             {
-                return phancong.loai?.name;
+                return kiemtra.maloai;
             }
 
             return null;
@@ -239,8 +229,7 @@ namespace Ueh.BackendApi.Repositorys
                 mssv = sv.mssv,
                 ho = sv.ho,
                 ten = sv.ten,
-                thuoclop = sv.thuoclop,
-                khoagoc = sv.khoagoc,
+                thuoclop = sv.malop,
                 email = GetSinhvienEmail(sv.mssv)
             }).ToList();
 

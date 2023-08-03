@@ -111,53 +111,9 @@ namespace Ueh.BackendApi.Controllers
             return NoContent();
         }
 
-        [HttpGet("generatepdfbygv")]
-        [ProducesResponseType(200, Type = typeof(FileContentResult))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GeneratePdfByGv(string madot, string maloai, string magv)
-        {
-            try
-            {
-                var content = await _KetquaRepository.GeneratePdfByGv(madot, maloai, magv);
-                if (content != null)
-                {
-                    return File(content, "application/pdf", "BaoCao.pdf");
-                }
-                else
-                {
-                    return BadRequest("Không có dữ liệu để xuất.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
-            }
-        }
 
-        [HttpGet("generatepdfbysv")]
-        [ProducesResponseType(200, Type = typeof(FileContentResult))]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> GeneratePdfBySv([FromQuery] string mssv)
-        {
-            try
-            {
-                var content = await _KetquaRepository.GeneratePdfBySv(mssv);
-                if (content != null)
-                {
-                    string fileName = $"BaoCaoChitiet_{mssv}.pdf";
 
-                    return File(content, "application/pdf", fileName);
-                }
-                else
-                {
-                    return BadRequest("Không có dữ liệu để xuất.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Đã xảy ra sự cố: {ex.Message}");
-            }
-        }
+
 
 
         [HttpGet("ExportToExcelByKhoa")]
@@ -183,28 +139,7 @@ namespace Ueh.BackendApi.Controllers
             }
         }
 
-        [HttpGet("generatezip")]
-        public async Task<IActionResult> GenerateZip(string madot, string giangVienId)
-        {
-            try
-            {
 
-                byte[]? zipBytes = await _KetquaRepository.GenerateZipFileForGv(madot, giangVienId);
-
-                if (zipBytes == null)
-                {
-                    return NotFound("Không có dữ liệu để tạo tệp tin nén.");
-                }
-
-                string fileName = $"Dsbaocaobangdiemchitiet_{giangVienId}.zip";
-
-                return File(zipBytes, "application/zip", fileName);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Đã xảy ra lỗi: {ex.Message}");
-            }
-        }
     }
 }
 

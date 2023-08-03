@@ -32,7 +32,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> ImportExcelFile(IFormFile formFile)
-        { 
+        {
             try
             {
 
@@ -54,7 +54,7 @@ namespace Ueh.BackendApi.Controllers
             // Trường hợp không xử lý được, trả về BadRequest
             return BadRequest("Xảy ra lỗi không xác định được");
         }
-    
+
 
         [HttpPost("CreateUserRoleAdmin")]
         [ProducesResponseType(204)]
@@ -155,6 +155,22 @@ namespace Ueh.BackendApi.Controllers
         //     return Ok(kiemtra);
         // }
 
+        [HttpPut("DeleteRoleAdmin")]
+        public async Task<IActionResult> DeleteRoleAdmin(string id)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+
+            if (!await _userRepository.DeleteRoleAdmin(id))
+            {
+                ModelState.AddModelError("", "Xảy ra lỗi khi update ");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
 
         [HttpPut("UpdateInfoUser")]
         public async Task<IActionResult> UpdateInfoUser(UpdateUserRequest updateUser, string id)

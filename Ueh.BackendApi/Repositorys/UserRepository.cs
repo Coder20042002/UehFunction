@@ -29,32 +29,45 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<bool> CreateUserRoleAdmin(string makhoa, GiangvienUpdateRequest giangvienupdate)
         {
 
-            var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == giangvienupdate.magv);
+            var kiemtrauser = await _context.Users.FirstOrDefaultAsync(g => g.userId == giangvienupdate.magv);
+            var kiemtragv = await _context.Giangviens.FirstOrDefaultAsync(g => g.magv == giangvienupdate.magv);
 
-            if (kiemtrauser == false)
+            if (kiemtragv == null)
             {
-                var user = new User
+
+
+                var giangvien = new Giangvien
                 {
-                    userId = giangvienupdate.magv,
-                    email = giangvienupdate.email,
-                    sdt = giangvienupdate.sdt,
-                    role = "admin"
+                    magv = giangvienupdate.magv,
+                    makhoa = makhoa,
+                    tengv = giangvienupdate.tengv,
+                    status = "true"
 
                 };
-                _context.Add(user);
+                await _context.Giangviens.AddAsync(giangvien);
+                if (kiemtrauser == null)
+                {
+                    var user = new User
+                    {
+                        userId = giangvienupdate.magv,
+                        email = giangvienupdate.email,
+                        sdt = giangvienupdate.sdt,
+                        role = "admin"
+
+                    };
+                    _context.Add(user);
+                }
 
             }
-
-            var giangvien = new Giangvien
+            else
             {
-                magv = giangvienupdate.magv,
-                makhoa = makhoa,
-                tengv = giangvienupdate.tengv,
-                status = "true"
+                kiemtrauser.role = "admin";
+                _context.Users.Update(kiemtrauser);
+            }
 
-            };
 
-            await _context.Giangviens.AddAsync(giangvien);
+
+
             return await Save();
 
 
@@ -156,13 +169,23 @@ namespace Ueh.BackendApi.Repositorys
 
         }
 
+        public async Task<bool> DeleteRoleAdmin(string id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.userId == id);
+            user.role = "teacher";
+
+            _context.Users.Update(user);
+            return await Save();
+
+        }
+
         public async Task<bool> Save()
         {
             var saved = _context.SaveChangesAsync();
             return await saved > 0 ? true : false;
         }
 
-        public async Task<int> getDotInfo(string userId, string role)
+        public async Task<int> GetDotInfo(string userId, string role)
         {
             var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
             if (dot == null)
@@ -186,7 +209,7 @@ namespace Ueh.BackendApi.Repositorys
             }
         }
 
-        public async Task<UserRequest> CreateUser(string encryptedJson)
+        public async Task<UserRequest> Login(string encryptedJson)
         {
             // Giải mã và lấy thông tin từ token
             var decryptedJson = await Decrypt(encryptedJson);
@@ -212,7 +235,7 @@ namespace Ueh.BackendApi.Repositorys
             var userinfo = await _context.Users.FirstOrDefaultAsync(u => u.userId == userlogin.userId);
 
             var dot = await _context.Dots.FirstOrDefaultAsync(d => d.status == "true");
-            int dotInfoValue = await getDotInfo(userinfo.userId, userinfo.role);
+            int dotInfoValue = await GetDotInfo(userinfo.userId, userinfo.role);
 
             // Khởi tạo user ban đầu
             var userrequest = new UserRequest
@@ -231,9 +254,9 @@ namespace Ueh.BackendApi.Repositorys
                 var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
                 if (sinhvien != null)
                 {
-                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.status == "true");
+                    var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.madot == dot.madot && p.status == "true");
                     userrequest.makhoa = sinhvien.makhoa;
-                    userrequest.maloai = phancong != null ? phancong.maloai : "";
+                    userrequest.maloai = phancong != null ? phancong.sinhvien.maloai : "";
                 }
             }
             else

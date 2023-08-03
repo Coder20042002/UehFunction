@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ueh.BackendApi.Migrations
 {
-    public partial class Db : Migration
+    public partial class db : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,7 @@ namespace Ueh.BackendApi.Migrations
                 columns: table => new
                 {
                     madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    tendot = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ngaybatdau = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ngayketthuc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -69,7 +69,7 @@ namespace Ueh.BackendApi.Migrations
                 columns: table => new
                 {
                     maloai = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    tenloai = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,6 +87,7 @@ namespace Ueh.BackendApi.Migrations
                     StoredFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Madot = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -134,18 +135,11 @@ namespace Ueh.BackendApi.Migrations
                 {
                     mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    malop = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ho = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    thuoclop = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    khoagoc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    khoahoc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    mahp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    malhp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    tenhp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    soct = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    malop = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    bacdt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    loaihinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ngaysinh = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    maloai = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     makhoa = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     macn = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -153,7 +147,6 @@ namespace Ueh.BackendApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sinhviens", x => new { x.mssv, x.madot });
-                    table.UniqueConstraint("AK_Sinhviens_mssv", x => x.mssv);
                     table.ForeignKey(
                         name: "FK_Sinhviens_Chuyennganhs_macn",
                         column: x => x.macn,
@@ -204,7 +197,6 @@ namespace Ueh.BackendApi.Migrations
                     mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     magv = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    maloai = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -221,15 +213,10 @@ namespace Ueh.BackendApi.Migrations
                         principalTable: "Giangviens",
                         principalColumn: "magv");
                     table.ForeignKey(
-                        name: "FK_Phancongs_Loais_maloai",
-                        column: x => x.maloai,
-                        principalTable: "Loais",
-                        principalColumn: "maloai");
-                    table.ForeignKey(
-                        name: "FK_Phancongs_Sinhviens_mssv",
-                        column: x => x.mssv,
+                        name: "FK_Phancongs_Sinhviens_mssv_madot",
+                        columns: x => new { x.mssv, x.madot },
                         principalTable: "Sinhviens",
-                        principalColumn: "mssv",
+                        principalColumns: new[] { "mssv", "madot" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -303,6 +290,16 @@ namespace Ueh.BackendApi.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Loais",
+                columns: new[] { "maloai", "tenloai" },
+                values: new object[] { "HKDN", "Học kỳ doanh nghiệp" });
+
+            migrationBuilder.InsertData(
+                table: "Loais",
+                columns: new[] { "maloai", "tenloai" },
+                values: new object[] { "KLTN", "Khoá luận tốt nghiệp" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Dangkys_magv",
                 table: "Dangkys",
@@ -329,14 +326,9 @@ namespace Ueh.BackendApi.Migrations
                 column: "magv");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phancongs_maloai",
+                name: "IX_Phancongs_mssv_madot",
                 table: "Phancongs",
-                column: "maloai");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Phancongs_mssv",
-                table: "Phancongs",
-                column: "mssv");
+                columns: new[] { "mssv", "madot" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sinhviens_macn",
@@ -367,6 +359,9 @@ namespace Ueh.BackendApi.Migrations
                 name: "Lichsus");
 
             migrationBuilder.DropTable(
+                name: "Loais");
+
+            migrationBuilder.DropTable(
                 name: "UploadResults");
 
             migrationBuilder.DropTable(
@@ -380,9 +375,6 @@ namespace Ueh.BackendApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Giangviens");
-
-            migrationBuilder.DropTable(
-                name: "Loais");
 
             migrationBuilder.DropTable(
                 name: "Sinhviens");

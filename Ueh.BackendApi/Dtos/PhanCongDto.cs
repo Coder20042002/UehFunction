@@ -6,6 +6,5 @@
         public string mssv { get; set; }
         public string magv { get; set; }
         public string madot { get; set; }
-        public string maloai { get; set; }
     }
 }

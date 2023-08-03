@@ -21,7 +21,8 @@ namespace Ueh.BackendApi.Repositorys
         public async Task<bool> KiemTraMaloai(string madot, string mssv)
         {
             bool hasHKDN = await _context.Phancongs
-                .AnyAsync(p => p.mssv == mssv && p.maloai == "HKDN" && p.madot == madot);
+                .Include(p => p.sinhvien)
+                .AnyAsync(p => p.mssv == mssv && p.sinhvien.maloai == "HKDN" && p.madot == madot);
 
             return hasHKDN;
         }
@@ -39,7 +40,6 @@ namespace Ueh.BackendApi.Repositorys
                         Id = Guid.NewGuid(),
                         mssv = phancongrequest.mssv,
                         magv = phancongrequest.magv,
-                        maloai = phancongrequest.maloai,
                         madot = phancongrequest.madot,
                         status = "true"
                     };
@@ -124,7 +124,7 @@ namespace Ueh.BackendApi.Repositorys
 
         public async Task<bool> UpdateLoaiHinhThucTap(string madot, string mssv, string maloai)
         {
-            var kiemtra = await _context.Phancongs.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
+            var kiemtra = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == mssv && s.status == "true" && s.madot == madot);
 
             if (kiemtra != null)
             {
@@ -174,7 +174,6 @@ namespace Ueh.BackendApi.Repositorys
                                         Id = Guid.NewGuid(),
                                         mssv = mssv,
                                         magv = magv,
-                                        maloai = maloaiDict.GetValueOrDefault(mssv).Substring(1, 4), // Lấy maloai từ từ điển,
                                         madot = madot,
                                         status = "true"
                                     };
@@ -225,12 +224,14 @@ namespace Ueh.BackendApi.Repositorys
                 var worksheet = package.Workbook.Worksheets.Add("Phancong");
 
                 // Đặt tiêu đề cho các cột
-                worksheet.Cells["A1"].Value = "STT";
-                worksheet.Cells["B1"].Value = "MSSV";
-                worksheet.Cells["C1"].Value = "Lớp Sinh Viên";
-                worksheet.Cells["D1"].Value = "Họ";
-                worksheet.Cells["E1"].Value = "Tên";
-                worksheet.Cells["F1"].Value = "Giáo Viên Hướng Dẫn";
+                worksheet.Cells["A1"].Value = "MSSV";
+                worksheet.Cells["B1"].Value = "Họ";
+                worksheet.Cells["C1"].Value = "Tên ";
+                worksheet.Cells["D1"].Value = "Ngày sinh";
+                worksheet.Cells["E1"].Value = "Mã Lớp";
+                worksheet.Cells["F1"].Value = "Mã Loại";
+                worksheet.Cells["G1"].Value = "Chuyên ngành";
+                worksheet.Cells["I1"].Value = "Giáo viên hướng dẫn";
 
                 // Ghi dữ liệu vào worksheet
                 int rowIndex = 2;
@@ -241,12 +242,14 @@ namespace Ueh.BackendApi.Repositorys
                     {
                         continue; // Bỏ qua bản ghi không có status bằng "true"
                     }
-                    worksheet.Cells[$"A{rowIndex}"].Value = count++;
-                    worksheet.Cells[$"B{rowIndex}"].Value = Phancong.mssv;
-                    worksheet.Cells[$"C{rowIndex}"].Value = Phancong.sinhvien?.thuoclop;
-                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.sinhvien?.ho;
-                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.sinhvien?.ten;
-                    worksheet.Cells[$"F{rowIndex}"].Value = Phancong.giangvien?.tengv;
+                    worksheet.Cells[$"A{rowIndex}"].Value = Phancong.mssv;
+                    worksheet.Cells[$"B{rowIndex}"].Value = Phancong.sinhvien?.ho;
+                    worksheet.Cells[$"C{rowIndex}"].Value = Phancong.sinhvien?.ten;
+                    worksheet.Cells[$"D{rowIndex}"].Value = Phancong.sinhvien?.ngaysinh;
+                    worksheet.Cells[$"E{rowIndex}"].Value = Phancong.sinhvien?.malop;
+                    worksheet.Cells[$"F{rowIndex}"].Value = Phancong.sinhvien?.maloai;
+                    worksheet.Cells[$"G{rowIndex}"].Value = Phancong.sinhvien?.macn;
+                    worksheet.Cells[$"H{rowIndex}"].Value = Phancong.giangvien?.tengv;
 
                     rowIndex++;
                 }
