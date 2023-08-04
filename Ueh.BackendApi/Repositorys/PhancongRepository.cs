@@ -231,7 +231,7 @@ namespace Ueh.BackendApi.Repositorys
                 worksheet.Cells["E1"].Value = "Mã Lớp";
                 worksheet.Cells["F1"].Value = "Mã Loại";
                 worksheet.Cells["G1"].Value = "Chuyên ngành";
-                worksheet.Cells["I1"].Value = "Giáo viên hướng dẫn";
+                worksheet.Cells["H1"].Value = "Giáo viên hướng dẫn";
 
                 // Ghi dữ liệu vào worksheet
                 int rowIndex = 2;

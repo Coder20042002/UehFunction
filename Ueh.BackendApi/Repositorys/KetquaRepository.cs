@@ -312,7 +312,7 @@ namespace Ueh.BackendApi.Repositorys
             string hotengv2 = "";
             var dsDiemGvHuongDan = new List<DsDiemGvHuongDanRequest>();
 
-            if (loai.maloai == "KLTN")
+            if (loai.maloai == "KL")
             {
                 if (giangvien1.magv == magv)
                 {

@@ -298,7 +298,8 @@ namespace Ueh.BackendApi.Repositorys
                             {
                                 magv = magv,
                                 tengv = worksheet.Cells[row, 2].Value?.ToString(),
-                                makhoa = makhoa
+                                makhoa = makhoa,
+                                status = "true"
                             };
 
                             var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == magv);

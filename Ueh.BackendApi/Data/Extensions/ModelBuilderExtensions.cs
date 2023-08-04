@@ -11,7 +11,7 @@ namespace Ueh.BackendApi.Data.Extensions
 
             modelBuilder.Entity<Loai>().HasData(
                 new Loai() { maloai = "HKDN", tenloai = "Học kỳ doanh nghiệp" },
-                new Loai() { maloai = "KLTN", tenloai = "Khoá luận tốt nghiệp" });
+                new Loai() { maloai = "KL", tenloai = "Khoá luận tốt nghiệp" });
 
         }
     }

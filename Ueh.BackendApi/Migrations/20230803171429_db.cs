@@ -298,7 +298,7 @@ namespace Ueh.BackendApi.Migrations
             migrationBuilder.InsertData(
                 table: "Loais",
                 columns: new[] { "maloai", "tenloai" },
-                values: new object[] { "KLTN", "Khoá luận tốt nghiệp" });
+                values: new object[] { "KL", "Khoá luận tốt nghiệp" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Dangkys_magv",
