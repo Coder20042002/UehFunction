@@ -8,6 +8,7 @@
         public string hotensv { get; set; }
         public string mssv { get; set; }
         public string lop { get; set; }
+        public string maloai { get; set; }
         public string tenkl { get; set; }
         public string tengv { get; set; }
         public float? tieuchi1 { get; set; }

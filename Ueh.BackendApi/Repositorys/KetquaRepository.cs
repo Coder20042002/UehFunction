@@ -254,6 +254,7 @@ namespace Ueh.BackendApi.Repositorys
                 hotensv = phancong.sinhvien.ho + " " + phancong.sinhvien.ten,
                 mssv = phancong.mssv,
                 lop = phancong.sinhvien.malop,
+                maloai = phancong.sinhvien.maloai,
                 tenkl = phancong.chitiets.FirstOrDefault()?.tendetai,
                 tengv = phancong.giangvien.tengv,
                 tieuchi1 = ketqua.tieuchi1,
