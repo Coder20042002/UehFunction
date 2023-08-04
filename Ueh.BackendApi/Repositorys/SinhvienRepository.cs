@@ -160,7 +160,7 @@ namespace Ueh.BackendApi.Repositorys
                 mssv = s.mssv,
                 ho = s.ho,
                 ten = s.ten,
-                thuoclop = s.malop,
+                malop = s.malop,
                 email = GetSinhvienEmail(s.mssv)
             }).ToList();
 
@@ -229,7 +229,7 @@ namespace Ueh.BackendApi.Repositorys
                 mssv = sv.mssv,
                 ho = sv.ho,
                 ten = sv.ten,
-                thuoclop = sv.malop,
+                malop = sv.malop,
                 email = GetSinhvienEmail(sv.mssv)
             }).ToList();
 

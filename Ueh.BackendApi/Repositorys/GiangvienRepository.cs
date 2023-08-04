@@ -76,7 +76,7 @@ namespace Ueh.BackendApi.Repositorys
                 mssv = sv.mssv,
                 ho = sv.ho,
                 ten = sv.ten,
-                thuoclop = sv.malop,
+                malop = sv.malop,
                 email = GetSinhvienEmail(sv.mssv)
             }).ToList();
 

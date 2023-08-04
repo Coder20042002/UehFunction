@@ -293,6 +293,25 @@ namespace Ueh.BackendApi.Repositorys
                             var magv = worksheet.Cells[row, 1].Value?.ToString();
                             bool existing = await _context.Giangviens.AnyAsync(g => g.magv == magv && g.status == "true");
 
+                            var kiemtrauser = await _context.Users.FirstOrDefaultAsync(g => g.userId == magv);
+
+                            if (kiemtrauser == null)
+                            {
+                                var user = new User
+                                {
+                                    userId = magv,
+                                    email = worksheet.Cells[row, 4].Value?.ToString(),
+                                    sdt = worksheet.Cells[row, 3].Value?.ToString(),
+                                    role = "admin"
+
+                                };
+                                _context.Add(user);
+
+                            } else
+                            {
+                                kiemtrauser.role = "admin";
+                            }
+
                             if (existing == true || existingkhoa == false)
                             {
                                 continue;
@@ -305,21 +324,7 @@ namespace Ueh.BackendApi.Repositorys
                                 status = "true"
                             };
 
-                            var kiemtrauser = await _context.Users.AnyAsync(g => g.userId == magv);
-
-                            if (kiemtrauser == false)
-                            {
-                                var user = new User
-                                {
-                                    userId = magv,
-                                    email = worksheet.Cells[row, 4].Value?.ToString(),
-                                    sdt = worksheet.Cells[row, 3].Value?.ToString(),
-                                    role = "admin"
-
-                                };
-                                _context.Add(user);
-
-                            }
+                          
 
 
 
