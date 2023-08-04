@@ -14,7 +14,7 @@ namespace Ueh.BackendApi.IRepositorys
         Task<ICollection<Ketqua>> GetKetQuaByMaGV(string magv);
         Task<byte[]> ExportToExcel();
         Task<byte[]> ExportToExcelByKhoa(string madot, string makhoa);
-
+        Task<List<DiemchitietRequest>> GetDanhSachDiemChiTietSv(string madot,string magv);
         Task<DiemchitietRequest> DiemChiTietSv(string mssv);
         Task<ICollection<DsDiemGvHuongDanRequest>> DsDiemGvHuongDanRequest(string madot, string maloai, string magv);
         Task<bool> Save();

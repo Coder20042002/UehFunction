@@ -269,6 +269,31 @@ namespace Ueh.BackendApi.Repositorys
 
             return diemChiTietRequest;
         }
+        public async Task<List<DiemchitietRequest>> GetDanhSachDiemChiTietSv(string madot,string magv)
+        {
+            // Truy vấn danh sách sinh viên từ bảng phân công
+
+            var danhSachSinhVien = await _context.Phancongs
+               .Where(p => p.magv == magv && p.madot == madot && p.status == "true")
+               .Select(p => p.sinhvien)
+               .OrderByDescending(t => t.ten)
+               .ToListAsync();
+
+            List<DiemchitietRequest> danhSachDiemChiTiet = new List<DiemchitietRequest>();
+
+
+            // Duyệt qua từng sinh viên trong danh sách để lấy thông tin điểm chi tiết
+            foreach (Sinhvien sinhvien in danhSachSinhVien)
+            {
+                DiemchitietRequest diemChiTiet = await DiemChiTietSv(sinhvien.mssv);
+                if (diemChiTiet != null)
+                {
+                    danhSachDiemChiTiet.Add(diemChiTiet);
+                }
+            }
+
+            return danhSachDiemChiTiet;
+        }
 
         public async Task<ICollection<DsDiemGvHuongDanRequest>> DsDiemGvHuongDanRequest(string madot, string maloai, string magv)
         {

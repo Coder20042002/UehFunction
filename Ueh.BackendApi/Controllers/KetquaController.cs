@@ -24,6 +24,19 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
+        [HttpGet("GetDanhSachDiemChiTietSv")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<DiemchitietRequest>))]
+        public async Task<IActionResult> GetDanhSachDiemChiTietSv(string madot,string magv)
+        {
+            var Ketquas = await _KetquaRepository.GetDanhSachDiemChiTietSv(madot,magv);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(Ketquas);
+        }
+
+
         [HttpGet("DiemChiTietSv")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<DiemchitietRequest>))]
         public async Task<IActionResult> DiemChiTietSv(string mssv)
