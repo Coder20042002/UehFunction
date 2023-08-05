@@ -5,7 +5,7 @@ namespace Ueh.BackendApi.IRepositorys
 {
     public interface ILichsuRepository
     {
-        Task<ICollection<Lichsu>> GetLichSuByMssv(string mssv);
+        Task<ICollection<Lichsu>> GetLichSuByMssv(string madot, string mssv);
         Task<ICollection<Lichsu>> GetLichsus();
         Task<Lichsu> GetLichsu(Guid mapc);
         Task<ICollection<Lichsu>> GetLichsusOfASinhvien(Guid mapc);

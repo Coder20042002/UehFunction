@@ -24,10 +24,10 @@ namespace Ueh.BackendApi.Controllers
         }
 
 
-        [HttpGet("lichsu/{mssv}")]
-        public async Task<IActionResult> GetLichSuByMssv(string mssv)
+        [HttpGet("sinhvien")]
+        public async Task<IActionResult> GetLichSuByMssv(string madot,string mssv)
         {
-            var lichsus = _mapper.Map<List<LichsuDto>>(await _lichsuRepository.GetLichSuByMssv(mssv));
+            var lichsus = _mapper.Map<List<LichsuDto>>(await _lichsuRepository.GetLichSuByMssv(madot,mssv));
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

@@ -42,9 +42,9 @@ namespace Ueh.BackendApi.Repositorys
             return _context.Lichsus.Where(r => r.Id == mapc && r.phancong.status == "true").FirstOrDefaultAsync();
         }
 
-        public async Task<ICollection<Lichsu>> GetLichSuByMssv(string mssv)
+        public async Task<ICollection<Lichsu>> GetLichSuByMssv(string madot,string mssv)
         {
-            var phanCong = await _context.Phancongs.FirstOrDefaultAsync(pc => pc.mssv == mssv);
+            var phanCong = await _context.Phancongs.FirstOrDefaultAsync(pc => pc.mssv == mssv && pc.madot == madot && pc.status == "true");
 
             var lichSu = await _context.Lichsus.Where(ls => ls.Id == phanCong.Id).ToListAsync();
             return  lichSu;
