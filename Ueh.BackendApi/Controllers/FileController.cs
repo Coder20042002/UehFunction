@@ -30,6 +30,23 @@ namespace Ueh.BackendApi.Controllers
             return Ok(files);
         }
 
+        [HttpGet("GetDsFileGvhd")]
+        public async Task<IActionResult> GetDsFileGvhd(string madot, string magv)
+        {
+            var phancong = await context.Phancongs
+                .Where(p => p.madot == madot && p.magv == magv && p.status == "true")
+                .ToListAsync();
+
+            var mssvList = phancong.Select(p => p.mssv).ToList();
+
+            List<UploadResult> files = await context.UploadResults
+                .Where(u => mssvList.Contains(u.Mssv) && u.Madot == madot && u.Status == "true")
+                .ToListAsync();
+
+            return Ok(files);
+        }
+
+
         [HttpPut("DeleteFile")]
         public async Task<IActionResult> DeleteFile(string fileName)
         {
@@ -60,6 +77,8 @@ namespace Ueh.BackendApi.Controllers
             memory.Position = 0;
             return File(memory, uploadResult.ContentType, Path.GetFileName(path));
         }
+
+
 
 
 
