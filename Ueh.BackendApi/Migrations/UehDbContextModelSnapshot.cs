@@ -251,8 +251,8 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ngay")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("ngay")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("noidung")
                         .IsRequired()
@@ -284,7 +284,7 @@ namespace Ueh.BackendApi.Migrations
                         },
                         new
                         {
-                            maloai = "KLTN",
+                            maloai = "KL",
                             tenloai = "Khoá luận tốt nghiệp"
                         });
                 });

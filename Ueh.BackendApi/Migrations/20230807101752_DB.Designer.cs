@@ -12,8 +12,8 @@ using Ueh.BackendApi.Data.EF;
 namespace Ueh.BackendApi.Migrations
 {
     [DbContext(typeof(UehDbContext))]
-    [Migration("20230803171429_db")]
-    partial class db
+    [Migration("20230807101752_DB")]
+    partial class DB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -253,8 +253,8 @@ namespace Ueh.BackendApi.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ngay")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("ngay")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("noidung")
                         .IsRequired()
@@ -286,7 +286,7 @@ namespace Ueh.BackendApi.Migrations
                         },
                         new
                         {
-                            maloai = "KLTN",
+                            maloai = "KL",
                             tenloai = "Khoá luận tốt nghiệp"
                         });
                 });
@@ -348,7 +348,6 @@ namespace Ueh.BackendApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("malop")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ngaysinh")

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ueh.BackendApi.Migrations
 {
-    public partial class db : Migration
+    public partial class DB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -135,7 +135,7 @@ namespace Ueh.BackendApi.Migrations
                 {
                     mssv = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     madot = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    malop = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    malop = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ho = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ngaysinh = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -276,7 +276,7 @@ namespace Ueh.BackendApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ngay = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ngay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     noidung = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>

@@ -25,9 +25,9 @@ namespace Ueh.BackendApi.Controllers
 
 
         [HttpGet("sinhvien")]
-        public async Task<IActionResult> GetLichSuByMssv(string madot,string mssv)
+        public async Task<IActionResult> GetLichSuByMssv(string madot, string mssv)
         {
-            var lichsus = _mapper.Map<List<LichsuDto>>(await _lichsuRepository.GetLichSuByMssv(madot,mssv));
+            var lichsus = _mapper.Map<List<LichsuDto>>(await _lichsuRepository.GetLichSuByMssv(madot, mssv));
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -51,8 +51,6 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> Getsinhvien(Guid mapc, string date)
         {
-            if (!await _lichsuRepository.LichsuExists(mapc, date))
-                return NotFound();
 
             var lichsu = _mapper.Map<LichsuDto>(_lichsuRepository.GetLichsu(mapc));
 
@@ -98,18 +96,15 @@ namespace Ueh.BackendApi.Controllers
             return Ok(lichsuRequest);
         }
 
-        [HttpPut("{mapc}")]
+        [HttpPut("UpdateLichsu")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateLichsu(Guid mapc, string dateTime, [FromBody] LichsuDto updatedLichsu)
+        public async Task<IActionResult> UpdateLichsu(LichsuDto updatedLichsu)
         {
             if (updatedLichsu == null)
                 return BadRequest(ModelState);
 
-
-            if (!await _lichsuRepository.LichsuExists(mapc, dateTime))
-                return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -131,10 +126,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteLichsu(Guid mapc, string dateTime)
         {
-            if (!await _lichsuRepository.LichsuExists(mapc, dateTime))
-            {
-                return NotFound();
-            }
+
 
             var lichsuToDelete = await _lichsuRepository.GetLichsu(mapc);
 

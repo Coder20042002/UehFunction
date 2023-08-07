@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
@@ -20,13 +21,22 @@ namespace Ueh.BackendApi.Repositorys
             var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == mssv);
             if (phancong != null)
             {
-                var lichsu = new Lichsu
+                DateTime ngay;
+                if (DateTime.TryParseExact(lichsurequest.ngay, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out ngay))
                 {
-                    Id = phancong.Id,
-                    ngay = lichsurequest.ngay,
-                    noidung = lichsurequest.noidung
-                };
-                _context.Add(lichsu);
+                    var lichsu = new Lichsu
+                    {
+                        Id = phancong.Id,
+                        ngay = ngay,
+                        noidung = lichsurequest.noidung
+                    };
+                    _context.Add(lichsu);
+                }
+                else
+                {
+                    // Xử lý khi không thể chuyển đổi chuỗi thành DateTime
+
+                }
             }
             return await Save();
         }
@@ -42,13 +52,13 @@ namespace Ueh.BackendApi.Repositorys
             return _context.Lichsus.Where(r => r.Id == mapc && r.phancong.status == "true").FirstOrDefaultAsync();
         }
 
-        public async Task<ICollection<Lichsu>> GetLichSuByMssv(string madot,string mssv)
+        public async Task<ICollection<Lichsu>> GetLichSuByMssv(string madot, string mssv)
         {
             var phanCong = await _context.Phancongs.FirstOrDefaultAsync(pc => pc.mssv == mssv && pc.madot == madot && pc.status == "true");
 
             var lichSu = await _context.Lichsus.Where(ls => ls.Id == phanCong.Id).ToListAsync();
-            return  lichSu;
-            
+            return lichSu;
+
         }
 
         public async Task<ICollection<Lichsu>> GetLichsus()
@@ -61,10 +71,7 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Lichsus.Where(r => r.Id == mapc && r.phancong.status == "true").ToListAsync();
         }
 
-        public async Task<bool> LichsuExists(Guid mapc, string dateTime)
-        {
-            return await _context.Lichsus.AnyAsync(r => r.Id == mapc && r.ngay == dateTime && r.phancong.status == "true");
-        }
+
 
         public async Task<bool> Save()
         {
@@ -72,10 +79,17 @@ namespace Ueh.BackendApi.Repositorys
             return saved > 0 ? true : false;
         }
 
-        public Task<bool> UpdateLichsu(Lichsu lichsu)
+        public async Task<bool> UpdateLichsu(Lichsu lichsu)
         {
-            _context.Update(lichsu);
-            return Save();
+            ;
+            var kiemtra = await _context.Lichsus.FirstOrDefaultAsync(s => s.Id == lichsu.Id && s.ngay == lichsu.ngay);
+
+            if (kiemtra != null)
+            {
+                kiemtra.noidung = lichsu.noidung;
+                _context.Update(kiemtra);
+            }
+            return await Save();
         }
 
 

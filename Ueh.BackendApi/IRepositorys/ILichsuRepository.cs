@@ -9,7 +9,6 @@ namespace Ueh.BackendApi.IRepositorys
         Task<ICollection<Lichsu>> GetLichsus();
         Task<Lichsu> GetLichsu(Guid mapc);
         Task<ICollection<Lichsu>> GetLichsusOfASinhvien(Guid mapc);
-        Task<bool> LichsuExists(Guid mapc, string dateTime);
         Task<bool> CreateLichsu(LichsuRequest lichsu, string mssv);
         Task<bool> UpdateLichsu(Lichsu lichsu);
         Task<bool> DeleteLichsu(Lichsu lichsu);
