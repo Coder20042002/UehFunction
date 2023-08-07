@@ -251,7 +251,7 @@ namespace Ueh.BackendApi.Repositorys
 
             if (userinfo.role == "student")
             {
-                var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId);
+                var sinhvien = await _context.Sinhviens.FirstOrDefaultAsync(s => s.mssv == userlogin.userId && s.madot == dot.madot);
                 if (sinhvien != null)
                 {
                     var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.madot == dot.madot && p.status == "true");
