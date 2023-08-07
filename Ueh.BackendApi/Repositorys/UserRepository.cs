@@ -256,7 +256,7 @@ namespace Ueh.BackendApi.Repositorys
                 {
                     var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == userlogin.userId && p.madot == dot.madot && p.status == "true");
                     userrequest.makhoa = sinhvien.makhoa;
-                    userrequest.maloai = phancong != null ? phancong.sinhvien.maloai : "";
+                    userrequest.maloai = phancong != null ? sinhvien.maloai : "";
                 }
             }
             else
