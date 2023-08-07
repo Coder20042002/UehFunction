@@ -1,14 +1,10 @@
-﻿using AutoMapper.Execution;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using ServiceStack;
-using System.IO.Compression;
-using System.Text;
 using Ueh.BackendApi.Data.EF;
 using Ueh.BackendApi.Data.Entities;
 using Ueh.BackendApi.IRepositorys;
 using Ueh.BackendApi.Request;
-using CompressionLevel = System.IO.Compression.CompressionLevel;
 
 namespace Ueh.BackendApi.Repositorys
 {
@@ -37,9 +33,9 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Ketquas.Where(kq => phanCongIds.Contains(kq.mapc)).OrderBy(s => s.mapc).ToListAsync();
         }
 
-        public async Task<Ketqua> GetDiemByMssv(string mssv)
+        public async Task<Ketqua> GetDiemByMssv(string madot,string mssv)
         {
-            var phanCongIds = await _context.Phancongs.Where(pc => pc.status == "true" && pc.mssv == mssv).FirstOrDefaultAsync();
+            var phanCongIds = await _context.Phancongs.Where(pc => pc.madot == madot && pc.status == "true" && pc.mssv == mssv).FirstOrDefaultAsync();
             return await _context.Ketquas.Where(kq => kq.mapc == phanCongIds.Id).FirstOrDefaultAsync();
         }
 
@@ -55,9 +51,9 @@ namespace Ueh.BackendApi.Repositorys
             return await _context.Ketquas.AnyAsync(kq => kq.mapc == mapc && phanCongIds.Contains(kq.mapc));
         }
 
-        public async Task<bool> UpdateDiem(Ketqua updateketqua, string mssv)
+        public async Task<bool> UpdateDiem(Ketqua updateketqua,string madot, string mssv)
         {
-            var phancong = await _context.Phancongs.FirstOrDefaultAsync(p => p.mssv == mssv);
+            var phancong = await _context.Phancongs.FirstOrDefaultAsync(p =>p.madot == madot && p.mssv == mssv && p.status == "true");
 
             if (phancong == null)
             {
@@ -211,12 +207,12 @@ namespace Ueh.BackendApi.Repositorys
             }
         }
 
-        public async Task<DiemchitietRequest> DiemChiTietSv(string mssv)
+        public async Task<DiemchitietRequest> DiemChiTietSv(string madot, string mssv)
         {
 
-            var sinhvienKhoa = await _context.Sinhviens
+            var sinhvien = await _context.Sinhviens
               .Include(sk => sk.khoa)
-              .FirstOrDefaultAsync(sk => sk.mssv == mssv);
+              .FirstOrDefaultAsync(sk => sk.madot == madot && sk.mssv == mssv);
 
             var phancong = await _context.Phancongs
                 .Include(p => p.sinhvien)
@@ -224,7 +220,7 @@ namespace Ueh.BackendApi.Repositorys
                 .Include(p => p.chitiets)
                 .Include(p => p.giangvien)
                 .Include(p => p.dot)
-                .FirstOrDefaultAsync(p => p.mssv == mssv);
+                .FirstOrDefaultAsync(p => p.madot == madot && p.mssv == mssv && p.status == "true");
 
             if (phancong == null)
             {
@@ -232,7 +228,6 @@ namespace Ueh.BackendApi.Repositorys
             }
 
             var ketqua = await _context.Ketquas
-                .Include(k => k.phancong)
                 .FirstOrDefaultAsync(k => k.mapc == phancong.Id);
 
             if (ketqua == null)
@@ -241,6 +236,10 @@ namespace Ueh.BackendApi.Repositorys
             }
 
             double sum = (double)((ketqua.tieuchi1 ?? 0) + (ketqua.tieuchi2 ?? 0) + (ketqua.tieuchi3 ?? 0) + (ketqua.tieuchi4 ?? 0) + (ketqua.tieuchi5 ?? 0) + (ketqua.tieuchi6 ?? 0) + (ketqua.tieuchi7 ?? 0));
+            if (ketqua.phancong.sinhvien.maloai == "HKDN")
+            {
+                sum = (double)(sum * 0.6 + (ketqua.diemDN ?? 0) * 0.4);
+            }
             if (sum >= 10)
             {
                 sum = 10;
@@ -248,7 +247,7 @@ namespace Ueh.BackendApi.Repositorys
 
             var diemChiTietRequest = new DiemchitietRequest
             {
-                tenkhoa = sinhvienKhoa.khoa.tenkhoa,
+                tenkhoa = sinhvien.khoa.tenkhoa,
                 tencn = phancong.sinhvien.chuyennganh.tencn,
                 tendot = phancong.dot.tendot,
                 hotensv = phancong.sinhvien.ho + " " + phancong.sinhvien.ten,
@@ -265,19 +264,18 @@ namespace Ueh.BackendApi.Repositorys
                 tieuchi6 = ketqua.tieuchi6,
                 tieuchi7 = ketqua.tieuchi7,
                 diemDN = ketqua.diemDN,
-                diemtong = sum
-            };
+                diemtong = Math.Round(sum, 2)
+        };
 
             return diemChiTietRequest;
         }
-        public async Task<List<DiemchitietRequest>> GetDanhSachDiemChiTietSv(string madot,string magv)
+        public async Task<List<DiemchitietRequest>> GetDanhSachDiemChiTietSv(string madot, string magv)
         {
             // Truy vấn danh sách sinh viên từ bảng phân công
 
             var danhSachSinhVien = await _context.Phancongs
                .Where(p => p.magv == magv && p.madot == madot && p.status == "true")
                .Select(p => p.sinhvien)
-               .OrderByDescending(t => t.ten)
                .ToListAsync();
 
             List<DiemchitietRequest> danhSachDiemChiTiet = new List<DiemchitietRequest>();
@@ -286,7 +284,7 @@ namespace Ueh.BackendApi.Repositorys
             // Duyệt qua từng sinh viên trong danh sách để lấy thông tin điểm chi tiết
             foreach (Sinhvien sinhvien in danhSachSinhVien)
             {
-                DiemchitietRequest diemChiTiet = await DiemChiTietSv(sinhvien.mssv);
+                DiemchitietRequest diemChiTiet = await DiemChiTietSv(madot, sinhvien.mssv);
                 if (diemChiTiet != null)
                 {
                     danhSachDiemChiTiet.Add(diemChiTiet);

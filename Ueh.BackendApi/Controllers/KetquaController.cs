@@ -39,9 +39,9 @@ namespace Ueh.BackendApi.Controllers
 
         [HttpGet("DiemChiTietSv")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<DiemchitietRequest>))]
-        public async Task<IActionResult> DiemChiTietSv(string mssv)
+        public async Task<IActionResult> DiemChiTietSv(string madot,string mssv)
         {
-            var Ketquas = await _KetquaRepository.DiemChiTietSv(mssv);
+            var Ketquas = await _KetquaRepository.DiemChiTietSv(madot,mssv);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -76,10 +76,10 @@ namespace Ueh.BackendApi.Controllers
         [HttpGet("sinhvien")]
         [ProducesResponseType(200, Type = typeof(Ketqua))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetDiemByMssv([FromQuery] string mssv)
+        public async Task<IActionResult> GetDiemByMssv(string madot, string mssv)
         {
 
-            var Ketqua = _mapper.Map<KetquaDto>(await _KetquaRepository.GetDiemByMssv(mssv));
+            var Ketqua = _mapper.Map<KetquaDto>(await _KetquaRepository.GetDiemByMssv(madot,mssv));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -105,7 +105,7 @@ namespace Ueh.BackendApi.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateDiem(KetquaDto updatedKetqua, [FromQuery] string mssv)
+        public async Task<IActionResult> UpdateDiem(KetquaDto updatedKetqua, string madot,string mssv)
         {
             if (updatedKetqua == null)
                 return BadRequest(ModelState);
@@ -115,7 +115,7 @@ namespace Ueh.BackendApi.Controllers
 
             var KetquaMap = _mapper.Map<Ketqua>(updatedKetqua);
 
-            if (!await _KetquaRepository.UpdateDiem(KetquaMap, mssv))
+            if (!await _KetquaRepository.UpdateDiem(KetquaMap,madot, mssv))
             {
                 ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật ");
                 return StatusCode(500, ModelState);
